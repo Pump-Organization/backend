@@ -9,3 +9,7 @@ To run this Flask app, follow these steps:
 ```bash
 docker compose up
 ```
+
+## Adminer
+
+To use Adminer (https://www.adminer.org/) for database management, Docker Compose then navigate to http://localhost:8080 in a browser.
