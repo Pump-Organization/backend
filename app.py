@@ -9,8 +9,8 @@ load_dotenv()
 app = Flask(__name__)
 
 # Configuration for SQLAlchemy
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://{}:{}@pump-db-host:5432/pump_db" \
-    .format(os.getenv("POSTGRES_USER"), os.getenv("POSTGRES_PASSWORD"))
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://{}:{}@{}/{}".format(
+    os.getenv("POSTGRES_USER"), os.getenv("POSTGRES_PASSWORD"), os.getenv("POSTGRES_HOST"), os.getenv("POSTGRES_DB"))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize SQLAlchemy
@@ -22,6 +22,7 @@ class User(db.Model):
     id = Column(Integer, primary_key=True)
     username = Column(String, unique=True)
     email = Column(String)
+    bio = Column(String)
 
 
 @app.route('/')
@@ -30,6 +31,4 @@ def hello_world():
 
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(debug=True, port=8000, host='0.0.0.0')
