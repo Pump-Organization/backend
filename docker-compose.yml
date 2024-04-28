@@ -13,16 +13,20 @@ services:
     volumes:
       - .:/app   # Mount the current directory to /app in the container
     restart: always   # Restart the container if it exits
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
 
   pump-db-host:
     image: postgres
     restart: always
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: pump_db
+      POSTGRES_DB: ${POSTGRES_DB}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d pump_db -U ${POSTGRES_USER}"]
+      test: ["CMD-SHELL", "pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}"]
       interval: 1s
       timeout: 5s
       retries: 5
