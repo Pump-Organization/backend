@@ -1,8 +1,9 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, String
+
+from db.db import db
 
 load_dotenv()
 
@@ -14,7 +15,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://{}:{}@{}/{}".format(
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize SQLAlchemy
-db = SQLAlchemy(app)
+db.init_app(app)
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -23,7 +24,6 @@ class User(db.Model):
     username = Column(String, unique=True)
     email = Column(String)
     bio = Column(String)
-
 
 @app.route('/')
 def hello_world():

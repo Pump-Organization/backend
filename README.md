@@ -16,7 +16,7 @@ To use Adminer (https://www.adminer.org/) for database management, Docker Compos
 
 ## Making Migrations
 
-After making creating or updating models, the db schema must be updated using Alembic (https://alembic.sqlalchemy.org/en/latest/index.html)
+After creating or updating models, the db schema must be updated using Alembic (https://alembic.sqlalchemy.org/en/latest/index.html)
 
 1. **Detached Docker Compose**:
 ```bash

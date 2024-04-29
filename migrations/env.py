@@ -7,9 +7,11 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from app import db
+from db.db import db
+from db.models.post import Post
+from db.models.user import User
 
-load_dotenv("../.env")
+load_dotenv()
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
