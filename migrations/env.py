@@ -8,8 +8,10 @@ from sqlalchemy import pool
 from alembic import context
 
 from db.db import db
-from db.models.post import Post
+from db.models.workout import Workout
 from db.models.user import User
+from db.models.friendship import Friendship
+from db.models.attendee import Attendee
 
 load_dotenv()
 
