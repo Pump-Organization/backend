@@ -18,3 +18,4 @@ class Workout(db.Model):
     created_at = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     
     organizer = relationship("User", foreign_keys=[organizer_id])
+    

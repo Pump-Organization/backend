@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask
+from api.users import UsersView
 
 from db.db import db
 
@@ -16,9 +17,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Initialize SQLAlchemy
 db.init_app(app)
 
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
+# Register Views
+UsersView.register(app)
+
+# @app.route('/')
+# def hello_world():
+#     return 'Hello, World!'
 
 
 if __name__ == '__main__':
