@@ -19,16 +19,18 @@ class Service:
             db.session.commit()
             return self.ServiceResponse(status_code=200, data=instance)
         except Exception as e:  
-            logger.debug(f"ERROR: {str(e)}")
+            logger.warn(f"########ERRORTYPE: {type(e).__name__}") 
+            logger.warn(f"ERROR: {str(e)}")
             return self.ServiceResponse(status_code=500, data=f"error: {ErrorConstants.INTERNAL_SERVER_ERROR}")
         
     def get_data(self, id):
         try:
             instance = self.model.query.get(id)
             return self.ServiceResponse(status_code=200, data=instance)
-        except Exception as e:  
-            logger.debug(f"ERROR: {str(e)}")
-            return self.ServiceResponse(status_code=500, data=f"error: {ErrorConstants.INTERNAL_SERVER_ERROR}")
+        except Exception as e: 
+            logger.warn(f"########ERRORTYPE: {type(e).__name__}") 
+            logger.warn(f"ERROR: {str(e)}")
+            return self.ServiceResponse(status_code=500, data=f"error: {type(e).__name__}") # {ErrorConstants.INTERNAL_SERVER_ERROR}")
         
     def update_data(self, id, updated_data):
         try:
@@ -46,7 +48,7 @@ class Service:
 
     def delete_data(self, id):
         try:
-            instance = self.get_data(id)
+            instance = self.model.query.get(id)
             if instance:
                 db.session.delete(instance)
                 db.session.commit()
