@@ -1,10 +1,6 @@
 from db.models.user import User
-from db.db import db
 from services.service import Service
 
-import logging
-
-logger = logging.getLogger()
 
 class UserService(Service):
     def __init__(self) -> None:
@@ -12,12 +8,12 @@ class UserService(Service):
 
     def create_user(self, data):
         new_user = User(
-            username=data.get('username'),
-            name=data.get('name'),
-            profile_pic=data.get('profile_pic'),
-            location=data.get('location'),
-            email=data.get('email'),
-            bio=data.get('bio')
+            username = data.get('username'),
+            name = data.get('name'),
+            profile_pic = data.get('profile_pic'),
+            location = data.get('location'),
+            email = data.get('email'),
+            bio = data.get('bio')
         )
         return self.add_data(new_user)
     
