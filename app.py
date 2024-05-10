@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask
+from api.friendships import FriendshipsView
 from api.users import UsersView
 from api.workouts import WorkoutsView
 from constants.custom_json_provider import CustomJSONProvider
@@ -23,6 +24,7 @@ db.init_app(app)
 
 ################## REGISTER VIEWS ########################
 UsersView.register(app)
+FriendshipsView.register(app)
 WorkoutsView.register(app)
 
 

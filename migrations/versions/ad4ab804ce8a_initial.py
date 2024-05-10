@@ -1,8 +1,8 @@
-"""test
+"""initial
 
-Revision ID: d2e87fc7b338
+Revision ID: ad4ab804ce8a
 Revises: 
-Create Date: 2024-05-05 21:13:42.342470
+Create Date: 2024-05-10 15:17:54.737853
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'd2e87fc7b338'
+revision: str = 'ad4ab804ce8a'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -34,12 +34,12 @@ def upgrade() -> None:
     )
     op.create_table('friendship',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('requester_id', sa.Integer(), nullable=True),
-    sa.Column('requested_id', sa.Integer(), nullable=True),
+    sa.Column('sender_id', sa.Integer(), nullable=True),
+    sa.Column('recipient_id', sa.Integer(), nullable=True),
     sa.Column('status', sa.Enum('requested', 'accepted', name='friendshipstatusenum'), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['requested_id'], ['user.id'], ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['requester_id'], ['user.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['recipient_id'], ['user.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['sender_id'], ['user.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('workout',
@@ -59,6 +59,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('workout_id', sa.Integer(), nullable=True),
+    sa.Column('status', sa.Enum('pending', 'accepted', 'rejected', name='attendeestatusenum'), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['workout_id'], ['workout.id'], ondelete='CASCADE'),

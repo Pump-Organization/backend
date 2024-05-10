@@ -59,7 +59,7 @@ class Service:
                 db.session.commit()
                 return self.ServiceResponse(status_code=204)
             else:
-                self.ServiceResponse(status_code=404, data=f"error: {ErrorConstants.NOT_FOUND}")
+                return self.ServiceResponse(status_code=404, data=f"error: {ErrorConstants.NOT_FOUND}")
         except Exception as e:
             return self.handle_error(e)
         
