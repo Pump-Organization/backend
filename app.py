@@ -1,9 +1,10 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask
-from api.friendships import FriendshipsView
 from api.users import UsersView
 from api.workouts import WorkoutsView
+from api.friendships import FriendshipsView
+from api.attendees import AttendeesView
 from constants.custom_json_provider import CustomJSONProvider
 from db.db import db
 import logging
@@ -14,7 +15,7 @@ load_dotenv()
 
 app = Flask(__name__)
 
-################## SQLALCHEMY ############################
+#################################### SQLALCHEMY ##############################################
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://{}:{}@{}/{}".format(
     os.getenv("POSTGRES_USER"), os.getenv("POSTGRES_PASSWORD"), os.getenv("POSTGRES_HOST"), os.getenv("POSTGRES_DB"))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -22,13 +23,14 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
 
-################## REGISTER VIEWS ########################
+#################################### REGISTER VIEWS ##########################################
 UsersView.register(app)
-FriendshipsView.register(app)
 WorkoutsView.register(app)
+FriendshipsView.register(app)
+AttendeesView.register(app)
 
 
-################## CUSTOM CONFIGS ########################
+#################################### CUSTOM CONFIGS ##########################################
 app.json = CustomJSONProvider(app)
 
 
