@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
-from flask import Flask, jsonify
-from sqlalchemy.exc import IntegrityError
+from flask import Flask
 from api.users import UsersView
 from api.workouts import WorkoutsView
 from constants.custom_json_provider import CustomJSONProvider
@@ -21,13 +20,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-
-################## ERROR HANDLERS ########################
-def integrity_error(e):
-    logger.warn(f"ERROR: {str(e)}")
-    return jsonify({'error': 'Foreign key constraint failed. Object not found.'}), 404
-
-app.register_error_handler(IntegrityError, integrity_error)
 
 ################## REGISTER VIEWS ########################
 UsersView.register(app)
