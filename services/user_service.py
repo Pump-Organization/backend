@@ -1,5 +1,9 @@
+import bcrypt
 from db.models.user import User
 from services.service import Service
+import logging
+
+logger = logging.getLogger()
 
 
 class UserService(Service):
@@ -7,13 +11,16 @@ class UserService(Service):
         super().__init__(User)
 
     def create_user(self, data):
+        salt, password = self.set_password(data.get('password'))
         new_user = User(
             username = data.get('username'),
             name = data.get('name'),
             profile_pic = data.get('profile_pic'),
             location = data.get('location'),
             email = data.get('email'),
-            bio = data.get('bio')
+            bio = data.get('bio'),
+            salt = salt,
+            hashed_password = password
         )
         return self.add_data(new_user)
     
@@ -25,4 +32,19 @@ class UserService(Service):
     
     def delete_user(self, user_id):
         return self.delete_data(user_id)
+    
+    def set_password(self, password):
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
+        decoded_salt = salt.decode('utf-8')
+
+        return decoded_salt, hashed_password
+    
+    def check_password(self, data):
+        user_id = data.get('user_id')
+        password = data.get('password')
+        user = self.get_data(user_id)
+        logger.warn(user.data)
+        hashed_password = user.data.hashed_password
+        return str(bcrypt.checkpw(password.encode(), hashed_password.encode()))
         

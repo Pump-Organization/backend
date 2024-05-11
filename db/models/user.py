@@ -15,4 +15,6 @@ class User(db.Model):
     location: str = Column(String)
     email: str = Column(String)
     bio: str = Column(String)
+    hashed_password: str = Column(String)
+    salt: str = Column(String)
     created_at: str = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))

@@ -5,9 +5,10 @@ from services.user_service import UserService
 class UsersView(FlaskView):
     route_base = 'users'
 
-    @route('', methods=['GET'])
+    @route('test', methods=['POST'])
     def test(self):
-        return "Hello World", 200
+        data = request.get_json()
+        return UserService().check_password(data)
     
     @route('', methods=['POST'])
     def create_user(self):
