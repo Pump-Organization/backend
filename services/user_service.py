@@ -1,9 +1,6 @@
 import bcrypt
 from db.models.user import User
 from services.service import Service
-import logging
-
-logger = logging.getLogger()
 
 
 class UserService(Service):
@@ -44,7 +41,6 @@ class UserService(Service):
         user_id = data.get('user_id')
         password = data.get('password')
         user = self.get_data(user_id)
-        logger.warn(user.data)
         hashed_password = user.data.hashed_password
         return str(bcrypt.checkpw(password.encode(), hashed_password.encode()))
         
