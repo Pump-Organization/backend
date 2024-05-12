@@ -22,3 +22,10 @@ class FriendshipService(Service):
     
     def delete_friendship(self, friendship_id):
         return self.delete_data(friendship_id)
+    
+    def get_frienship_count(self, user_id):
+        num_friendships = Friendship.query.filter(
+            (Friendship.sender_id == user_id) | (Friendship.recipient_id == user_id),
+            Friendship.status ==  "accepted"
+        ).count()
+        return self.ServiceResponse(status_code=200, data=num_friendships)
