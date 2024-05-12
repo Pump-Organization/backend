@@ -5,6 +5,7 @@ from api.users import UsersView
 from api.workouts import WorkoutsView
 from api.friendships import FriendshipsView
 from api.attendees import AttendeesView
+from api.profiles import ProfilesView
 from constants.custom_json_provider import CustomJSONProvider
 from db.db import db
 import logging
@@ -28,6 +29,7 @@ UsersView.register(app)
 WorkoutsView.register(app)
 FriendshipsView.register(app)
 AttendeesView.register(app)
+ProfilesView.register(app)
 
 
 #################################### CUSTOM CONFIGS ##########################################
