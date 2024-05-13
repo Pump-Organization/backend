@@ -1,9 +1,16 @@
 import datetime
+import enum
 from dataclasses import dataclass
-from sqlalchemy import Column, Integer, String, ForeignKey, Date, Time, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, Date, Time, DateTime, Enum
 from sqlalchemy.orm import relationship
 
 from db.db import db
+
+class WorkoutTypeEnum(str, enum.Enum):
+    lift = "lift",
+    run = "run",
+    bike = "bike"
+
 
 @dataclass
 class Workout(db.Model):
@@ -14,7 +21,7 @@ class Workout(db.Model):
     title: str = Column(String)
     description: str = Column(String, nullable=True)
     workout_pic: str = Column(String, nullable=True)  # url
-    workout_type: str = Column(String) # TODO: make this an enum
+    workout_type: str = Column(Enum(WorkoutTypeEnum)) # TODO: make this an enum
     date: datetime.date = Column(Date)
     time: datetime.time = Column(Time)
     created_at: str = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
