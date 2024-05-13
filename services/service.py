@@ -1,7 +1,7 @@
 from db.db import db
 from constants.error_constants import ErrorConstants
 import logging
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, DataError
 
 logger = logging.getLogger()
 
@@ -17,7 +17,7 @@ class Service:
     def handle_error(self, error):
         logger.warn(f"########ERRORTYPE: {type(error).__name__}") 
         logger.warn(f"ERROR: {str(error)}")
-        if type(error) == IntegrityError:
+        if type(error) in (IntegrityError, DataError):
             return self.ServiceResponse(status_code=400, data=f"error: {ErrorConstants.BAD_DATA}")
         return self.ServiceResponse(status_code=500, data=f"error: {ErrorConstants.INTERNAL_SERVER_ERROR}")
 
