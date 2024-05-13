@@ -12,8 +12,8 @@ class Workout(db.Model):
     id: int = Column(Integer, primary_key=True)
     organizer_id: int = Column(Integer, ForeignKey("user.id", ondelete='CASCADE'))
     title: str = Column(String)
-    description: str = Column(String)
-    workout_pic: str = Column(String)  # url
+    description: str = Column(String, nullable=True)
+    workout_pic: str = Column(String, nullable=True)  # url
     workout_type: str = Column(String) # TODO: make this an enum
     date: datetime.date = Column(Date)
     time: datetime.time = Column(Time)

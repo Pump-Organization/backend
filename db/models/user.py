@@ -10,11 +10,11 @@ class User(db.Model):
 
     id: int = Column(Integer, primary_key=True)
     username: str = Column(String, unique=True)
-    name: str = Column(String)
-    profile_pic: str = Column(String)  # url
-    location: str = Column(String)
+    name: str = Column(String, nullable=True)
+    profile_pic: str = Column(String, nullable=True)  # url
+    location: str = Column(String, nullable=True)
     email: str = Column(String)
-    bio: str = Column(String)
+    bio: str = Column(String, nullable=True)
     hashed_password: str = Column(String)
     salt: str = Column(String)
     created_at: str = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
