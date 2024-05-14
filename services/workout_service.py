@@ -1,4 +1,5 @@
 from db.models.workout import Workout
+from db.models.attendee import Attendee
 from services.service import Service
 from datetime import datetime
 
@@ -12,7 +13,6 @@ class WorkoutService(Service):
         parsed_time = datetime.strptime(data.get('time'), '%H:%M')
         
         new_workout = Workout(
-            organizer_id = data.get('organizer_id'),
             title = data.get('title'),
             description = data.get('description'),
             workout_type = data.get('workout_type'),
@@ -20,7 +20,20 @@ class WorkoutService(Service):
             date = parsed_date,
             time = parsed_time
         )
-        return self.add_data(new_workout)
+        workout_response = self.add_data(new_workout, False)
+        if workout_response.status_code == 200:
+            self.session.flush()
+            organizer = Attendee(
+                workout_id = new_workout.id,
+                user_id = data.get('organizer_id'),
+                attendee_type = "organizer",
+                status = "accepted"
+            )
+            attendee_response = self.add_data(organizer)
+            if attendee_response.status_code != 200:
+                return attendee_response
+
+        return workout_response
     
     def get_workout(self, workout_id):
         return self.get_data(workout_id)

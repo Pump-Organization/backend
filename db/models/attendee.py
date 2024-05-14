@@ -11,6 +11,9 @@ class AttendeeStatusEnum(str, enum.Enum):
     accepted = "accepted"
     rejected = "rejected"
 
+class AttendeeTypeEnum(str, enum.Enum):
+    organizer = "organizer"
+    guest = "guest"
 
 @dataclass
 class Attendee(db.Model):
@@ -19,6 +22,7 @@ class Attendee(db.Model):
     id: int = Column(Integer, primary_key=True)
     user_id: int = Column(Integer, ForeignKey("user.id", ondelete='CASCADE'))
     workout_id: int = Column(Integer, ForeignKey("workout.id", ondelete='CASCADE'))
+    attendee_type: str = Column(Enum(AttendeeTypeEnum))
     status: str = Column(Enum(AttendeeStatusEnum))
     created_at: str = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     

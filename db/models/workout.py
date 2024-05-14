@@ -2,7 +2,6 @@ import datetime
 import enum
 from dataclasses import dataclass
 from sqlalchemy import Column, Integer, String, ForeignKey, Date, Time, DateTime, Enum
-from sqlalchemy.orm import relationship
 
 from db.db import db
 
@@ -17,7 +16,6 @@ class Workout(db.Model):
     __tablename__ = 'workout'
 
     id: int = Column(Integer, primary_key=True)
-    organizer_id: int = Column(Integer, ForeignKey("user.id", ondelete='CASCADE'))
     title: str = Column(String)
     description: str = Column(String, nullable=True)
     workout_pic: str = Column(String, nullable=True)  # url
@@ -26,7 +24,6 @@ class Workout(db.Model):
     time: datetime.time = Column(Time)
     created_at: str = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     
-    organizer = relationship("User", foreign_keys=[organizer_id])
     
     def to_json(self):
         return {
