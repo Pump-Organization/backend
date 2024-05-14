@@ -10,6 +10,7 @@ class AttendeeService(Service):
         attendee = Attendee(
             user_id = data.get('user_id'),
             workout_id = data.get('workout_id'),
+            attendee_type = data.get('attendee_type', 'guest'),
             status = "pending"
         )
         return self.add_data(attendee)
