@@ -2,6 +2,7 @@ from db.models.workout import Workout
 from db.models.attendee import Attendee
 from services.service import Service
 from datetime import datetime
+from sqlalchemy import func
 
 
 class WorkoutService(Service):
@@ -43,4 +44,24 @@ class WorkoutService(Service):
     
     def delete_workout(self, workout_id):
         return self.delete_data(workout_id)
+    
+    def get_top_workout_types(self, user_id):
+        subquery = (
+            self.session.query(Workout.workout_type, func.count(Workout.workout_type).label('count'))
+            .join(Attendee, Attendee.workout_id == Workout.id)
+            .filter(Attendee.user_id == user_id)
+            .group_by(Workout.workout_type)
+            .subquery()
+        )
+
+        top_event_types = (
+            self.session.query(subquery.c.workout_type, subquery.c.count)
+            .order_by(subquery.c.count.desc())
+            .limit(3)
+            .all()
+        )
+
+        result_dict = {workout_type: count for workout_type, count in top_event_types}
+
+        return self.ServiceResponse(status_code=200, data=result_dict)
         

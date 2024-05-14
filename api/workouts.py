@@ -5,10 +5,6 @@ from services.workout_service import WorkoutService
 class WorkoutsView(FlaskView):
     route_base = 'workouts'
 
-    @route('', methods=['GET'])
-    def test(self):
-        return "Hello World", 200
-    
     @route('', methods=['POST'])
     def create_workout(self):
         request_data = request.get_json()
