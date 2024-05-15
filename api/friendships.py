@@ -1,13 +1,16 @@
 from flask_classful import FlaskView, route
 from flask import jsonify, request
+from decorators.token_required import token_required
 from services.friendship_service import FriendshipService
 
 class FriendshipsView(FlaskView):
     route_base = 'friendships'
 
     @route('', methods=['POST'])
+    @token_required
     def create_friendship(self):
         request_data = request.get_json()
+        request_data['sender_id'] = request.user_id
         service_response = FriendshipService().create_friendship(request_data)
         return jsonify(service_response.data), service_response.status_code
     
@@ -17,6 +20,7 @@ class FriendshipsView(FlaskView):
         return jsonify(service_response.data), service_response.status_code
 
     @route('/<friendship_id>', methods=['PATCH'])
+    @token_required
     def update_friendship(self, friendship_id):
         request_data = request.get_json()
         service_response = FriendshipService().update_friendship(friendship_id, data=request_data)

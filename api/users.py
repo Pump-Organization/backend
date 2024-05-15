@@ -1,5 +1,6 @@
 from flask_classful import FlaskView, route
 from flask import jsonify, request
+from decorators.token_required import token_required
 from services.user_service import UserService
 
 class UsersView(FlaskView):
@@ -22,6 +23,7 @@ class UsersView(FlaskView):
         return jsonify(service_response.data), service_response.status_code
 
     @route('/<user_id>', methods=['PATCH'])
+    @token_required
     def update_user(self, user_id):
         request_data = request.get_json()
         service_response = UserService().update_user(user_id, data=request_data)
