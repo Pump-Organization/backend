@@ -3,4 +3,5 @@ class ErrorConstants:
     NOT_FOUND = 'not found'
     BAD_DATA = 'bad data'
     INVALID_CREDENTIALS = 'invalid username or password'
+    UNAUTHORIZED = 'unauthorized'
     
