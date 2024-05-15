@@ -36,11 +36,4 @@ class UserService(Service):
         decoded_salt = salt.decode('utf-8')
 
         return decoded_salt, hashed_password
-    
-    def check_password(self, data):
-        user_id = data.get('user_id')
-        password = data.get('password')
-        user = self.get_data(user_id)
-        hashed_password = user.data.hashed_password
-        return str(bcrypt.checkpw(password.encode(), hashed_password.encode()))
         

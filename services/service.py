@@ -67,3 +67,9 @@ class Service:
         except Exception as e:
             return self.handle_error(e)
         
+    def query_by_attribute(self, **attributes):
+        try:
+            return self.ServiceResponse(status_code=200, data=self.session.query(self.model).filter_by(**attributes).first())
+        except Exception as e:
+           return self.handle_error(e)
+        
