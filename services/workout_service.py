@@ -73,3 +73,15 @@ class WorkoutService(Service):
 
         return self.ServiceResponse(status_code=200, data=result_dict)
         
+    def get_upcoming_workouts(self, user_id, date, status="accepted"):
+        workouts = (
+            self.session.query(Workout)
+            .join(Attendee, Attendee.workout_id == Workout.id)
+            .filter(Attendee.user_id == user_id)
+            .filter(Attendee.status == status)
+            .filter(Workout.date == date)
+            .all()
+        )
+
+        return self.ServiceResponse(status_code=200, data=workouts)
+    
