@@ -1,5 +1,5 @@
 from flask_classful import FlaskView, route
-from flask import jsonify, request
+from flask import request
 from services.auth_service import AuthService
 
 class LoginView(FlaskView):
@@ -9,4 +9,4 @@ class LoginView(FlaskView):
     def login(self):
         request_data = request.get_json()
         service_response = AuthService().login(request_data)
-        return jsonify(service_response.data), service_response.status_code
+        return service_response.data, service_response.status_code

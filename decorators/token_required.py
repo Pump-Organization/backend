@@ -1,7 +1,7 @@
 import jwt
 import os
 from dotenv import load_dotenv
-from flask import request, jsonify
+from flask import request
 from functools import wraps
 from constants.error_constants import ErrorConstants
 
@@ -13,7 +13,7 @@ def token_required(f):
     def decorated_function(*args, **kwargs):
         token = request.headers.get('Authorization')
         if not token:
-            return jsonify({'error': 'Token is missing'}), 401
+            return {'error': 'Token is missing'}, 401
 
         try:
             # Expecting 'Bearer <token>'
