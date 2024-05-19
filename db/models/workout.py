@@ -1,7 +1,8 @@
-import datetime
+import datetime as dt
 import enum
 from dataclasses import dataclass
 from sqlalchemy import Column, Integer, String, ForeignKey, Date, Time, DateTime, Enum
+from sqlalchemy.orm import relationship
 
 from db.db import db
 
@@ -20,20 +21,16 @@ class Workout(db.Model):
     description: str = Column(String, nullable=True)
     workout_pic: str = Column(String, nullable=True)  # url
     workout_type: str = Column(Enum(WorkoutTypeEnum)) # TODO: make this an enum
-    date: datetime.date = Column(Date)
-    time: datetime.time = Column(Time)
-    created_at: str = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
-    
+    datetime: dt.datetime = Column(DateTime)
+    created_at: str = Column(DateTime, default=dt.datetime.now(dt.timezone.utc))
     
     def to_json(self):
         return {
             'id': self.id,
-            'organizer_id': self.organizer_id,
             'title': self.title,
             'description': self.description,
             'workout_pic': self.workout_pic,
             'workout_type': self.workout_type,
-            'date': self.date.isoformat(),  # Serialize date to ISO format
-            'time': self.time.isoformat(),  # Serialize time to ISO format
+            'datetime': self.datetime.isoformat(),  # Serialize datetime to ISO format
             'created_at': self.created_at.isoformat()  # Serialize datetime to ISO format
         }
