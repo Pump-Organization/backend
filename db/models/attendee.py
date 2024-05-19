@@ -1,6 +1,5 @@
 import datetime
 import enum
-from dataclasses import dataclass
 from sqlalchemy import Column, Enum, Integer, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
@@ -14,7 +13,6 @@ class AttendeeTypeEnum(str, enum.Enum):
     organizer = "organizer"
     guest = "guest"
 
-@dataclass
 class Attendee(db.Model):
     __tablename__ = 'attendee'
 
@@ -27,3 +25,13 @@ class Attendee(db.Model):
     
     user = relationship("User", foreign_keys=[user_id])
     workout = relationship("Workout", foreign_keys=[workout_id])
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'workout_id': self.workout_id,
+            'attendee_type': self.attendee_type,
+            'status': self.status
+        }
+    

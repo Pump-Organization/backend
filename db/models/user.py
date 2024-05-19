@@ -1,10 +1,8 @@
 import datetime
-from dataclasses import dataclass
 from sqlalchemy import Column, Integer, String, DateTime
 
 from db.db import db
 
-@dataclass
 class User(db.Model):
     __tablename__ = 'user'
 
@@ -18,3 +16,14 @@ class User(db.Model):
     hashed_password: str = Column(String)
     salt: str = Column(String)
     created_at: str = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'name': self.name,
+            'profile_pic': self.profile_pic,
+            'location': self.location,
+            'email': self.email,
+            'bio': self.bio
+        }

@@ -1,8 +1,6 @@
 import datetime as dt
 import enum
-from dataclasses import dataclass
 from sqlalchemy import Column, Integer, String, ForeignKey, Date, Time, DateTime, Enum
-from sqlalchemy.orm import relationship
 
 from db.db import db
 
@@ -12,7 +10,6 @@ class WorkoutTypeEnum(str, enum.Enum):
     bike = "bike"
 
 
-@dataclass
 class Workout(db.Model):
     __tablename__ = 'workout'
 
@@ -31,6 +28,5 @@ class Workout(db.Model):
             'description': self.description,
             'workout_pic': self.workout_pic,
             'workout_type': self.workout_type,
-            'datetime': self.datetime.isoformat(),  # Serialize datetime to ISO format
-            'created_at': self.created_at.isoformat()  # Serialize datetime to ISO format
+            'datetime': self.datetime.isoformat()  # Serialize datetime to ISO format
         }

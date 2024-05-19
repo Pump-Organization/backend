@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask_classful import FlaskView, route
-from flask import jsonify, request
+from flask import request
 from decorators.token_required import token_required
 from services.workout_service import WorkoutService
 
@@ -14,7 +14,7 @@ class WorkoutsView(FlaskView):
         date = datetime.strptime(request.args.get('date'), '%m/%d/%y')
         user_id = request.user_id
         service_response = WorkoutService().get_upcoming_workouts(user_id, date)
-        return jsonify(service_response.data), service_response.status_code
+        return [workout.to_json() for workout in service_response.data], service_response.status_code
     
     @route('invites', methods=['GET'])
     @token_required
@@ -22,7 +22,7 @@ class WorkoutsView(FlaskView):
         date = datetime.strptime(request.args.get('date'), '%m/%d/%y')
         user_id = request.user_id
         service_response = WorkoutService().get_upcoming_workouts(user_id, date, "pending")
-        return jsonify(service_response.data), service_response.status_code
+        return [workout.to_json() for workout in service_response.data], service_response.status_code
 
     @route('', methods=['POST'])
     @token_required
@@ -30,21 +30,21 @@ class WorkoutsView(FlaskView):
         request_data = request.get_json()
         request_data['organizer_id'] = request.user_id
         service_response = WorkoutService().create_workout(request_data)
-        return jsonify(service_response.data), service_response.status_code
+        return service_response.data.to_json(), service_response.status_code
     
     @route('/<workout_id>', methods=['GET'])
     def get_workout(self, workout_id):
         service_response = WorkoutService().get_workout(workout_id)
-        return jsonify(service_response.data), service_response.status_code
+        return service_response.data.to_json(), service_response.status_code
 
     @route('/<workout_id>', methods=['PATCH'])
     @token_required
     def update_workout(self, workout_id):
         request_data = request.get_json()
         service_response = WorkoutService().update_workout(workout_id, data=request_data)
-        return jsonify(service_response.data), service_response.status_code
+        return service_response.data.to_json(), service_response.status_code
 
     @route('/<workout_id>', methods=['DELETE'])
     def delete_workout(self, workout_id):
         service_response = WorkoutService().delete_workout(workout_id)
-        return jsonify(service_response.data), service_response.status_code
+        return service_response.data, service_response.status_code

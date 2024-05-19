@@ -32,7 +32,7 @@ class WorkoutService(Service):
             attendee_response = self.add_data(organizer)
             if attendee_response.status_code != 200:
                 return attendee_response
-            for invitee_id in data.get('invitees'):
+            for invitee_id in data.get('invitees', []):
                 guest = Attendee(
                     workout_id = new_workout.id,
                     user_id = invitee_id,

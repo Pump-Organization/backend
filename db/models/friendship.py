@@ -1,6 +1,5 @@
 import enum
 import datetime
-from dataclasses import dataclass
 from sqlalchemy import Column, Integer, ForeignKey, Enum, DateTime
 from sqlalchemy.orm import relationship
 
@@ -10,7 +9,7 @@ class FriendshipStatusEnum(str, enum.Enum):
     requested = "requested"
     accepted = "accepted"
 
-@dataclass
+
 class Friendship(db.Model):
     __tablename__ = 'friendship'
 
@@ -22,3 +21,11 @@ class Friendship(db.Model):
 
     sender = relationship("User", foreign_keys=[sender_id])
     recipient = relationship("User", foreign_keys=[recipient_id])
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'sender_id': self.sender_id,
+            'recipient_id': self.recipient_id,
+            'status': self.status
+        }
