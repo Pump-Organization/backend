@@ -1,8 +1,9 @@
 from db.models.workout import Workout
 from db.models.attendee import Attendee
 from services.service import Service
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy import func
+import constants
 
 
 class WorkoutService(Service):
@@ -10,16 +11,14 @@ class WorkoutService(Service):
         super().__init__(Workout)
 
     def create_workout(self, data):
-        parsed_date = datetime.strptime(data.get('date'), '%m/%d/%y')
-        parsed_time = datetime.strptime(data.get('time'), '%H:%M')
+        parsed_datetime = datetime.strptime(data['datetime'], constants.DATETIME_REPRESENTATION)
         
         new_workout = Workout(
             title = data.get('title'),
             description = data.get('description'),
             workout_type = data.get('workout_type'),
             workout_pic = data.get('workout_pic'),
-            date = parsed_date,
-            time = parsed_time
+            datetime = parsed_datetime
         )
         workout_response = self.add_data(new_workout, False)
         if workout_response.status_code == 200:
@@ -79,7 +78,7 @@ class WorkoutService(Service):
             .join(Attendee, Attendee.workout_id == Workout.id)
             .filter(Attendee.user_id == user_id)
             .filter(Attendee.status == status)
-            .filter(Workout.date == date)
+            .filter(Workout.datetime >= date, Workout.datetime < date + timedelta(days=1))
             .all()
         )
 
