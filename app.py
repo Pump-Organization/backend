@@ -1,3 +1,4 @@
+import logging
 import os
 from dotenv import load_dotenv
 from flask import Flask
@@ -9,7 +10,7 @@ from api.profiles import ProfilesView
 from api.login import LoginView
 from constants.custom_json_provider import CustomJSONProvider
 from db.db import db
-import logging
+
 
 logger = logging.getLogger()
 

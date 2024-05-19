@@ -9,7 +9,6 @@ from db.db import db
 class AttendeeStatusEnum(str, enum.Enum):
     pending = "pending"
     accepted = "accepted"
-    rejected = "rejected"
 
 class AttendeeTypeEnum(str, enum.Enum):
     organizer = "organizer"
