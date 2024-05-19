@@ -1,8 +1,8 @@
-"""initial
+"""test
 
-Revision ID: 7fac064e0dcf
+Revision ID: 656af406e20b
 Revises: 
-Create Date: 2024-05-14 04:13:13.775247
+Create Date: 2024-05-19 15:54:23.175109
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '7fac064e0dcf'
+revision: str = '656af406e20b'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -40,8 +40,7 @@ def upgrade() -> None:
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('workout_pic', sa.String(), nullable=True),
     sa.Column('workout_type', sa.Enum('lift', 'run', 'bike', name='workouttypeenum'), nullable=True),
-    sa.Column('date', sa.Date(), nullable=True),
-    sa.Column('time', sa.Time(), nullable=True),
+    sa.Column('datetime', sa.DateTime(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
@@ -50,7 +49,7 @@ def upgrade() -> None:
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('workout_id', sa.Integer(), nullable=True),
     sa.Column('attendee_type', sa.Enum('organizer', 'guest', name='attendeetypeenum'), nullable=True),
-    sa.Column('status', sa.Enum('pending', 'accepted', 'rejected', name='attendeestatusenum'), nullable=True),
+    sa.Column('status', sa.Enum('pending', 'accepted', name='attendeestatusenum'), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['workout_id'], ['workout.id'], ondelete='CASCADE'),

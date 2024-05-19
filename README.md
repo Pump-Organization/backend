@@ -20,20 +20,15 @@ After creating or updating models (or making a new db container), the db schema 
 
 1. **Detached Docker Compose**:
 ```bash
-% docker compose up -d
+make detached
 ```
 
-2. **Start an interactive shell in the app**:
+2. **If required, create the migration version**:
 ```bash
-% docker compose exec pump_backend sh
+make makemigration MESSAGE="<message"
 ```
 
-3. **Create migration version**:
+3. **Apply migration**:
 ```bash
-\# alembic revision --autogenerate -m '<version_name>'
-```
-
-4. **Apply migration**:
-```bash
-\# alembic upgrade head
+make migrate
 ```
