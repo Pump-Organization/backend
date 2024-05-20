@@ -1,12 +1,12 @@
 from datetime import datetime
-from db.models import Attendee, AttendeeStatusEnum, Workout
+from sqlalchemy import or_, and_
+from db.models import Attendee, AttendeeStatusEnum, Workout, Friendship
 from services.user_service import UserService
 from services.friendship_service import FriendshipService
 from services.workout_service import WorkoutService
 from services.attendee_service import AttendeeService
 from services.service import Service
 import constants
-
 
 class ProfileService(Service):
     def get_profile(self, user_id):
@@ -42,3 +42,30 @@ class ProfileService(Service):
         response_data = [workout.to_json() for workout in past_workouts]
         
         return self.ServiceResponse(data=response_data, status_code=200)
+    
+    def get_feed(self, user_id):
+        friend_ids_subquery = self.session.query(Friendship.sender_id.label('friend_id')).filter(
+            and_(
+                Friendship.recipient_id == user_id,
+                Friendship.status == 'accepted'
+            )
+        ).union(
+            self.session.query(Friendship.recipient_id.label('friend_id')).filter(
+                and_(
+                    Friendship.sender_id == user_id,
+                    Friendship.status == 'accepted'
+                )
+            )
+        ).subquery()
+        friend_ids = [row.friend_id for row in self.session.query(friend_ids_subquery).all()]
+    
+        current_time = datetime.now()
+
+        feed_query = self.session.query(Workout).join(Attendee).filter(
+            and_(
+                Attendee.user_id.in_(friend_ids),
+                Workout.datetime < current_time
+            )
+        ).distinct().order_by(Workout.datetime.desc())
+
+        return self.ServiceResponse(data=feed_query.all(), status_code=200)

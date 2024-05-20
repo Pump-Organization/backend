@@ -6,6 +6,7 @@ from api.users import UsersView
 from api.workouts import WorkoutsView
 from api.friendships import FriendshipsView
 from api.attendees import AttendeesView
+from api.feed import FeedView
 from api.profiles import ProfilesView
 from api.login import LoginView
 from constants.custom_json_provider import CustomJSONProvider
@@ -34,6 +35,7 @@ FriendshipsView.register(app)
 AttendeesView.register(app)
 ProfilesView.register(app)
 LoginView.register(app)
+FeedView.register(app)
 
 
 #################################### ERROR HANDLERS ##########################################
