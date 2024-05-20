@@ -3,7 +3,7 @@ import jwt
 import os
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
-from constants.error_constants import ErrorConstants
+from constants.error_constants import UnauthorizedError
 from db.models.user import User
 from services.service import Service
 
@@ -19,7 +19,7 @@ class AuthService(Service):
         username = data.get('username')
         user = self.query_by_attribute(username=username)
         if not user or not self.check_password(user.data, data.get('password')):
-            return self.ServiceResponse(status_code=401, data=ErrorConstants.INVALID_CREDENTIALS)
+            raise UnauthorizedError
         
         token = self.generate_jwt_token(user.data.id)
         return self.ServiceResponse(status_code=200, data={'token': token})

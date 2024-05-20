@@ -1,5 +1,5 @@
 from db.db import db
-from constants.error_constants import ErrorConstants
+from constants.error_constants import AppError, NotFoundError, BadDataError
 import logging
 from sqlalchemy.exc import IntegrityError, DataError
 
@@ -19,8 +19,10 @@ class Service:
         logger.warn(f"########ERRORTYPE: {type(error).__name__}") 
         logger.warn(f"ERROR: {str(error)}")
         if type(error) in (IntegrityError, DataError, LookupError):
-            return self.ServiceResponse(status_code=400, data=f"error: {ErrorConstants.BAD_DATA}")
-        return self.ServiceResponse(status_code=500, data=f"error: {ErrorConstants.INTERNAL_SERVER_ERROR}")
+            raise BadDataError
+        if type(error) == NotFoundError:
+            raise NotFoundError
+        raise AppError
 
     def add_data(self, instance, commit=True):
         try:
@@ -35,7 +37,7 @@ class Service:
         try:
             instance = self.model.query.get(id)
             if not instance:
-                return self.ServiceResponse(status_code=404, data=f"error: {ErrorConstants.NOT_FOUND}")
+                raise NotFoundError
             return self.ServiceResponse(status_code=200, data=instance)
         except Exception as e: 
            return self.handle_error(e)
@@ -50,7 +52,7 @@ class Service:
                     self.session.commit()
                 return self.ServiceResponse(status_code=200, data=instance)
             else:
-                return self.ServiceResponse(status_code=404, data=f"error: {ErrorConstants.NOT_FOUND}")
+                raise NotFoundError
         except Exception as e:
             return self.handle_error(e)
         
@@ -63,7 +65,7 @@ class Service:
                     self.session.commit()
                 return self.ServiceResponse(status_code=204)
             else:
-                return self.ServiceResponse(status_code=404, data=f"error: {ErrorConstants.NOT_FOUND}")
+                raise NotFoundError
         except Exception as e:
             return self.handle_error(e)
         

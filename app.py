@@ -9,6 +9,7 @@ from api.attendees import AttendeesView
 from api.profiles import ProfilesView
 from api.login import LoginView
 from constants.custom_json_provider import CustomJSONProvider
+from constants.error_constants import AppError, BadDataError, UnauthorizedError, ForbiddenError, NotFoundError
 from db.db import db
 
 
@@ -33,6 +34,17 @@ FriendshipsView.register(app)
 AttendeesView.register(app)
 ProfilesView.register(app)
 LoginView.register(app)
+
+
+#################################### ERROR HANDLERS ##########################################
+def handle_app_error(error):
+    return {'error': error.message}, error.status_code
+
+app.register_error_handler(BadDataError, handle_app_error)
+app.register_error_handler(UnauthorizedError, handle_app_error)
+app.register_error_handler(ForbiddenError, handle_app_error)
+app.register_error_handler(NotFoundError, handle_app_error)
+app.register_error_handler(AppError, handle_app_error)
 
 
 #################################### CUSTOM CONFIGS ##########################################
