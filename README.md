@@ -25,7 +25,7 @@ make detached
 
 2. **If required, create the migration version**:
 ```bash
-make makemigration MESSAGE="<message"
+make makemigration MESSAGE="<message>"
 ```
 
 3. **Apply migration**:
