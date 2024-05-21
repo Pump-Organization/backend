@@ -17,4 +17,5 @@ class UnauthorizedError(AppError):
 class ForbiddenError(AppError):
     status_code = 403
     message = "forbidden"
-    
+
+CUSTOM_ERRORS = {AppError, NotFoundError, BadDataError, UnauthorizedError, ForbiddenError}
