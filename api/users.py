@@ -6,11 +6,6 @@ from services.friendship_service import FriendshipService
 
 class UsersView(FlaskView):
     route_base = 'users'
-
-    @route('test', methods=['POST'])
-    def test(self):
-        data = request.get_json()
-        return UserService().check_password(data)
     
     @route('', methods=['POST'])
     def create_user(self):

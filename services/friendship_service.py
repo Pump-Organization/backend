@@ -1,5 +1,5 @@
 from services.service import Service
-from db.models.friendship import Friendship
+from db.models.friendship import Friendship, FriendshipStatusEnum
 from db.models.user import User
 from sqlalchemy import and_
 
@@ -12,7 +12,7 @@ class FriendshipService(Service):
         friendship = Friendship(
             sender_id = data.get('sender_id'),
             recipient_id = data.get('recipient_id'),
-            status = "requested"
+            status = FriendshipStatusEnum.requested
         )
         return self.add_data(friendship)
     
@@ -28,7 +28,7 @@ class FriendshipService(Service):
     def get_frienship_count(self, user_id):
         num_friendships = Friendship.query.filter(
             (Friendship.sender_id == user_id) | (Friendship.recipient_id == user_id),
-            Friendship.status ==  "accepted"
+            Friendship.status ==  FriendshipStatusEnum.accepted
         ).count()
         return self.ServiceResponse(status_code=200, data=num_friendships)
     
@@ -36,14 +36,23 @@ class FriendshipService(Service):
         friends = self.session.query(User).join(Friendship, Friendship.sender_id == User.id).filter(
             and_(
                 Friendship.recipient_id == user_id,
-                Friendship.status == "accepted"
+                Friendship.status == FriendshipStatusEnum.accepted
             )
         ).union(
             self.session.query(User).join(Friendship, Friendship.recipient_id == User.id).filter(
                 and_(
                     Friendship.sender_id == user_id,
-                    Friendship.status == "accepted"
+                    Friendship.status == FriendshipStatusEnum.accepted
                 )
             )
         ).all()
         return self.ServiceResponse(status_code=200, data=friends)
+    
+    def get_friend_requests(self, user_id):
+        friend_requests = self.session.query(User).join(Friendship, Friendship.sender_id == User.id).filter(
+            and_(
+                Friendship.recipient_id == user_id,
+                Friendship.status == FriendshipStatusEnum.requested
+            )
+        ).all()
+        return self.ServiceResponse(status_code=200, data=friend_requests)

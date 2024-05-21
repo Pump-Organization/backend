@@ -30,3 +30,10 @@ class FriendshipsView(FlaskView):
     def delete_friendship(self, friendship_id):
         service_response = FriendshipService().delete_friendship(friendship_id)
         return service_response.data, service_response.status_code
+    
+    @route('/requests', methods=['GET'])
+    @token_required
+    def get_friend_requests(self):
+        user_id = request.user_id
+        service_response = FriendshipService().get_friend_requests(user_id)
+        return [requester.to_quickview() for requester in service_response.data]
