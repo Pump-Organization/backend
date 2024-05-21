@@ -1,6 +1,6 @@
 import enum
 import datetime
-from sqlalchemy import Column, Integer, ForeignKey, Enum, DateTime
+from sqlalchemy import Column, Integer, ForeignKey, Enum, DateTime, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from db.db import db
@@ -21,6 +21,10 @@ class Friendship(db.Model):
 
     sender = relationship("User", foreign_keys=[sender_id])
     recipient = relationship("User", foreign_keys=[recipient_id])
+
+    __table_args__ = (
+        UniqueConstraint('sender_id', 'recipient_id', name='unique_friendship'),
+    )
 
     def to_json(self):
         return {
