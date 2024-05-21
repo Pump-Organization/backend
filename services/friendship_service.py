@@ -1,5 +1,7 @@
 from services.service import Service
 from db.models.friendship import Friendship
+from db.models.user import User
+from sqlalchemy import and_
 
 
 class FriendshipService(Service):
@@ -29,3 +31,19 @@ class FriendshipService(Service):
             Friendship.status ==  "accepted"
         ).count()
         return self.ServiceResponse(status_code=200, data=num_friendships)
+    
+    def get_friends(self, user_id):
+        friends = self.session.query(User).join(Friendship, Friendship.sender_id == User.id).filter(
+            and_(
+                Friendship.recipient_id == user_id,
+                Friendship.status == "accepted"
+            )
+        ).union(
+            self.session.query(User).join(Friendship, Friendship.recipient_id == User.id).filter(
+                and_(
+                    Friendship.sender_id == user_id,
+                    Friendship.status == "accepted"
+                )
+            )
+        ).all()
+        return self.ServiceResponse(status_code=200, data=friends)

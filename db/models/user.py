@@ -27,3 +27,11 @@ class User(db.Model):
             'email': self.email,
             'bio': self.bio
         }
+ 
+    def to_quickview(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'name': self.name,
+            'profile_pic': self.profile_pic
+        }
