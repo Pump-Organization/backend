@@ -11,7 +11,7 @@ class FriendshipsView(FlaskView):
     def get_friends(self):
         user_id = request.user_id
         service_response = FriendshipService().get_friends(user_id)
-        return [friend.to_quickview() for friend in service_response.data], service_response.status_code
+        return [serialize_friend(friend.friendship_id, friend[0]) for friend in service_response.data], service_response.status_code
 
     @route('', methods=['POST'])
     @token_required
@@ -34,6 +34,7 @@ class FriendshipsView(FlaskView):
         return service_response.data.to_json(), service_response.status_code
 
     @route('/<friendship_id>', methods=['DELETE'])
+    @token_required
     def delete_friendship(self, friendship_id):
         service_response = FriendshipService().delete_friendship(friendship_id)
         return service_response.data, service_response.status_code
@@ -41,6 +42,11 @@ class FriendshipsView(FlaskView):
     @route('/requests', methods=['GET'])
     @token_required
     def get_friend_requests(self):
-        user_id = request.user_id
-        service_response = FriendshipService().get_friend_requests(user_id)
-        return [requester.to_quickview() for requester in service_response.data]
+        service_response = FriendshipService().get_friend_requests()
+        return [serialize_friend(friend_request.friendship_id, friend_request[0]) for friend_request in service_response.data]
+    
+
+def serialize_friend(friendship_id, user):
+    user_json = user.to_quickview()
+    user_json["friendship_id"] = friendship_id
+    return user_json
