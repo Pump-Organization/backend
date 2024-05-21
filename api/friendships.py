@@ -6,6 +6,13 @@ from services.friendship_service import FriendshipService
 class FriendshipsView(FlaskView):
     route_base = 'friendships'
 
+    @route('', methods=['GET'])
+    @token_required
+    def get_friends(self):
+        user_id = request.user_id
+        service_response = FriendshipService().get_friends(user_id)
+        return [friend.to_quickview() for friend in service_response.data], service_response.status_code
+
     @route('', methods=['POST'])
     @token_required
     def create_friendship(self):
