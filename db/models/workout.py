@@ -1,6 +1,6 @@
 import datetime as dt
 import enum
-from sqlalchemy import Column, Integer, String, ForeignKey, Date, Time, DateTime, Enum
+from sqlalchemy import Column, Integer, String, DateTime, Enum
 
 from db.db import db
 
@@ -17,7 +17,7 @@ class Workout(db.Model):
     title: str = Column(String)
     description: str = Column(String, nullable=True)
     workout_pic: str = Column(String, nullable=True)  # url
-    workout_type: str = Column(Enum(WorkoutTypeEnum)) # TODO: make this an enum
+    workout_type: str = Column(Enum(WorkoutTypeEnum))
     datetime: dt.datetime = Column(DateTime)
     created_at: str = Column(DateTime, default=dt.datetime.now(dt.timezone.utc))
     
