@@ -19,7 +19,6 @@ def token_required(f):
             # Expecting 'Bearer <token>'
             token = token.split()[1]
             payload = jwt.decode(token, os.getenv('JWT_SECRET'), algorithms=['HS256'])
-            request.user_id = payload['user_id']
             g.user_id = payload['user_id']
         except jwt.ExpiredSignatureError:
             raise UnauthorizedError
