@@ -1,23 +1,16 @@
 from flask_classful import FlaskView, route
-from flask import request
+from flask import g, request
 from decorators.token_required import token_required
 from services.friendship_service import FriendshipService
 
 class FriendshipsView(FlaskView):
     route_base = 'friendships'
 
-    @route('', methods=['GET'])
-    @token_required
-    def get_friends(self):
-        user_id = request.user_id
-        service_response = FriendshipService().get_friends(user_id)
-        return [serialize_friend(friend.friendship_id, friend[0]) for friend in service_response.data], service_response.status_code
-
     @route('', methods=['POST'])
     @token_required
     def create_friendship(self):
         request_data = request.get_json()
-        request_data['sender_id'] = request.user_id
+        request_data['sender_id'] = g.user_id
         service_response = FriendshipService().create_friendship(request_data)
         return service_response.data.to_json(), service_response.status_code
     

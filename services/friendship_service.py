@@ -39,7 +39,7 @@ class FriendshipService(Service):
         try:
             friendship = self.model.query.get(friendship_id)
             if not friendship:
-                raise NotFoundError
+                return self.ServiceResponse(status_code=204)
             if g.user_id not in (friendship.sender_id, friendship.recipient_id):
                 raise ForbiddenError
             self.session.delete(friendship)
