@@ -1,4 +1,6 @@
 import bcrypt
+from flask import g
+from constants.error_constants import ForbiddenError, NotFoundError
 from db.models.user import User
 from services.service import Service
 
@@ -25,10 +27,29 @@ class UserService(Service):
         return self.get_data(user_id)
     
     def update_user(self, user_id, data):
-        return self.update_data(id=user_id, updated_data=data)
+        try:
+            if g.user_id != int(user_id):
+                raise ForbiddenError
+            user = self.model.query.get(user_id)
+            if user:
+                for key, value in data.items():
+                    setattr(user, key, value)
+                self.session.commit()
+                return self.ServiceResponse(status_code=200, data=user)
+            else:
+                raise NotFoundError
+        except Exception as e:
+            return self.handle_error(e)
     
     def delete_user(self, user_id):
-        return self.delete_data(user_id)
+        try:
+            if g.user_id != int(user_id):
+                raise ForbiddenError
+            self.session.query(User).filter(User.id==user_id).delete()
+            self.session.commit()
+            return self.ServiceResponse(status_code=204)
+        except Exception as e:
+            return self.handle_error(e)
     
     def set_password(self, password):
         salt = bcrypt.gensalt()
