@@ -1,6 +1,6 @@
 import datetime
 import enum
-from sqlalchemy import Column, Enum, Integer, ForeignKey, DateTime
+from sqlalchemy import Column, Enum, Integer, ForeignKey, DateTime, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from db.db import db
@@ -25,6 +25,10 @@ class Attendee(db.Model):
     
     user = relationship("User", foreign_keys=[user_id])
     workout = relationship("Workout", foreign_keys=[workout_id])
+
+    __table_args__ = (
+        UniqueConstraint('user_id', 'workout_id', name='unique_attendee'),
+    )
 
     def to_json(self):
         return {
