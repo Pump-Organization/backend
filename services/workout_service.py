@@ -1,7 +1,9 @@
 from db.models.workout import Workout
-from db.models.attendee import Attendee
+from db.models.attendee import Attendee, AttendeeTypeEnum
 from services.service import Service
+from constants.error_constants import ForbiddenError, NotFoundError
 from datetime import datetime, timedelta
+from flask import g
 from sqlalchemy import func
 import constants
 
@@ -47,10 +49,29 @@ class WorkoutService(Service):
         return self.get_data(workout_id)
     
     def update_workout(self, workout_id, data):
-        return self.update_data(id=workout_id, updated_data=data)
+        if g.user_id != self.get_organizer_id(workout_id):
+            raise ForbiddenError
+        try:
+            workout = self.model.query.get(workout_id)
+            if workout:
+                for key, value in data.items():
+                    setattr(workout, key, value)
+                self.session.commit()
+                return self.ServiceResponse(status_code=200, data=workout)
+            else:
+                raise NotFoundError
+        except Exception as e:
+            return self.handle_error(e)
     
     def delete_workout(self, workout_id):
-        return self.delete_data(workout_id)
+        if g.user_id != self.get_organizer_id(workout_id):
+            raise ForbiddenError
+        try:
+            self.session.query(Workout).filter(Workout.id==workout_id).delete()
+            self.session.commit()
+            return self.ServiceResponse(status_code=204)
+        except Exception as e:
+            return self.handle_error(e)
     
     def get_top_workout_types(self, user_id):
         subquery = (
@@ -84,3 +105,9 @@ class WorkoutService(Service):
 
         return self.ServiceResponse(status_code=200, data=workouts)
     
+    def get_organizer_id(self, workout_id):
+        organizer = self.session.query(Attendee).filter(
+            Attendee.workout_id == workout_id,
+            Attendee.attendee_type == AttendeeTypeEnum.organizer
+        ).first()
+        return organizer.user_id if organizer else None

@@ -45,6 +45,7 @@ class WorkoutsView(FlaskView):
         return service_response.data.to_json(), service_response.status_code
 
     @route('/<workout_id>', methods=['DELETE'])
+    @token_required
     def delete_workout(self, workout_id):
         service_response = WorkoutService().delete_workout(workout_id)
         return service_response.data, service_response.status_code

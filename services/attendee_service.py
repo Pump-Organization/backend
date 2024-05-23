@@ -1,5 +1,5 @@
 from flask import g
-from db.models.attendee import Attendee
+from db.models.attendee import Attendee, AttendeeTypeEnum
 from constants.error_constants import ForbiddenError, NotFoundError
 from services.service import Service
 
@@ -9,7 +9,8 @@ class AttendeeService(Service):
         super().__init__(Attendee)
 
     def create_attendee(self, data):
-        # TODO: Should only be allowed by workout organizer
+        if g.user_id != self.get_workout_organizer(data.get('workout_id')):
+            raise ForbiddenError
         attendee = Attendee(
             user_id = data.get('user_id'),
             workout_id = data.get('workout_id'),
@@ -36,5 +37,21 @@ class AttendeeService(Service):
             return self.handle_error(e)
     
     def delete_attendee(self, attendee_id):
-        # TODO: both the attendee user and the workout organizer should be allowed to do this
-        return self.delete_data(attendee_id)
+        try:
+            attendee = self.model.query.get(attendee_id)
+            if not attendee:
+                return self.ServiceResponse(status_code=204)
+            if g.user_id != attendee.user_id and g.user_id != self.get_workout_organizer(attendee.workout_id):
+                raise ForbiddenError
+            self.session.delete(attendee)
+            self.session.commit()
+            return self.ServiceResponse(status_code=204)
+        except Exception as e:
+            return self.handle_error(e)
+    
+    def get_workout_organizer(self, workout_id):
+        organizer = self.session.query(Attendee).filter(
+            Attendee.workout_id == workout_id,
+            Attendee.attendee_type == AttendeeTypeEnum.organizer
+        ).first()
+        return organizer.user_id if organizer else None

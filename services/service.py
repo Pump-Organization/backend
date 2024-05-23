@@ -44,33 +44,6 @@ class Service:
         except Exception as e: 
            return self.handle_error(e)
         
-    def update_data(self, id, updated_data, commit=True):
-        try:
-            instance = self.model.query.get(id)
-            if instance:
-                for key, value in updated_data.items():
-                    setattr(instance, key, value)
-                if commit:
-                    self.session.commit()
-                return self.ServiceResponse(status_code=200, data=instance)
-            else:
-                raise NotFoundError
-        except Exception as e:
-            return self.handle_error(e)
-        
-    def delete_data(self, id, commit=True):
-        try:
-            instance = self.model.query.get(id)
-            if instance:
-                self.session.delete(instance)
-                if commit:
-                    self.session.commit()
-                return self.ServiceResponse(status_code=204)
-            else:
-                raise NotFoundError
-        except Exception as e:
-            return self.handle_error(e)
-        
     def query_by_attribute(self, **attributes):
         try:
             return self.ServiceResponse(status_code=200, data=self.session.query(self.model).filter_by(**attributes).first())
