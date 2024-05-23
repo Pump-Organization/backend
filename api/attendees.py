@@ -26,6 +26,7 @@ class AttendeesView(FlaskView):
         return service_response.data.to_json(), service_response.status_code
 
     @route('/<attendee_id>', methods=['DELETE'])
+    @token_required
     def delete_attendee(self, attendee_id):
         service_response = AttendeeService().delete_attendee(attendee_id)
         return service_response.data, service_response.status_code
