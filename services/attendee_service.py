@@ -1,5 +1,5 @@
 from flask import g
-from db.models.attendee import Attendee, AttendeeTypeEnum
+from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
 from constants.error_constants import ForbiddenError, NotFoundError
 from services.service import Service
 
@@ -36,9 +36,12 @@ class AttendeeService(Service):
         except Exception as e:
             return self.handle_error(e)
     
-    def delete_attendee(self, attendee_id):
+    def delete_attendee(self, workout_id, user_id):
         try:
-            attendee = self.model.query.get(attendee_id)
+            attendee = self.session.query(Attendee).filter(
+                Attendee.workout_id == workout_id,
+                Attendee.user_id == user_id
+            ).first()
             if not attendee:
                 return self.ServiceResponse(status_code=204)
             if g.user_id != attendee.user_id and g.user_id != self.get_workout_organizer(attendee.workout_id):
@@ -55,3 +58,13 @@ class AttendeeService(Service):
             Attendee.attendee_type == AttendeeTypeEnum.organizer
         ).first()
         return organizer.user_id if organizer else None
+    
+    def accept_workout(self, workout_id, user_id):
+        attendee = self.session.query(Attendee).filter(
+            Attendee.workout_id == workout_id,
+            Attendee.user_id == user_id
+        ).first()
+
+        attendee.status = AttendeeStatusEnum.accepted
+        self.session.commit()
+        return self.ServiceResponse(data=attendee, status_code=200)
