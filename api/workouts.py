@@ -2,6 +2,7 @@ from datetime import datetime
 from flask_classful import FlaskView, route
 from flask import g, request
 from decorators.token_required import token_required
+from services.attendee_service import AttendeeService
 from services.workout_service import WorkoutService
 
 
@@ -48,4 +49,16 @@ class WorkoutsView(FlaskView):
     @token_required
     def delete_workout(self, workout_id):
         service_response = WorkoutService().delete_workout(workout_id)
+        return service_response.data, service_response.status_code
+    
+    @route('/<workout_id>/accept', methods=['POST'])
+    @token_required
+    def accept_workout(self, workout_id):
+        service_response = AttendeeService().accept_workout(workout_id, g.user_id)
+        return service_response.data.to_json(), service_response.status_code
+    
+    @route('/<workout_id>/reject', methods=['POST'])
+    @token_required
+    def reject_workout(self, workout_id):
+        service_response = AttendeeService().delete_attendee(workout_id, g.user_id)
         return service_response.data, service_response.status_code
