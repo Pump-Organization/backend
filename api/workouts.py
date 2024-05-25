@@ -51,6 +51,11 @@ class WorkoutsView(FlaskView):
         service_response = WorkoutService().delete_workout(workout_id)
         return service_response.data, service_response.status_code
     
+    @route('/<workout_id>/users', methods=['GET'])
+    def list_workout_attendees(self, workout_id):
+        service_response = AttendeeService().list_workout_attendees(workout_id)
+        return [user.to_quickview() for user in service_response.data], service_response.status_code
+    
     @route('/<workout_id>/accept', methods=['POST'])
     @token_required
     def accept_workout(self, workout_id):
