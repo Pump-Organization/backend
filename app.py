@@ -10,7 +10,7 @@ from api.feed import FeedView
 from api.profiles import ProfilesView
 from api.login import LoginView
 from constants.custom_json_provider import CustomJSONProvider
-from constants.error_constants import AppError, BadDataError, UnauthorizedError, ForbiddenError, NotFoundError
+from constants.error_constants import CUSTOM_ERRORS, AppError
 from db.db import db
 
 
@@ -38,15 +38,14 @@ LoginView.register(app)
 FeedView.register(app)
 
 
-#################################### ERROR HANDLERS ##########################################
+#################################### ERROR HANDLER ##########################################
 def handle_app_error(error):
+    if type(error) not in CUSTOM_ERRORS:
+        error = AppError(str(error))
+    logger.critical(f"################# ERROR: {error.log}")
     return {'error': error.message}, error.status_code
 
-app.register_error_handler(BadDataError, handle_app_error)
-app.register_error_handler(UnauthorizedError, handle_app_error)
-app.register_error_handler(ForbiddenError, handle_app_error)
-app.register_error_handler(NotFoundError, handle_app_error)
-app.register_error_handler(AppError, handle_app_error)
+app.register_error_handler(Exception, handle_app_error)
 
 
 #################################### CUSTOM CONFIGS ##########################################
