@@ -1,5 +1,6 @@
 from flask import g
 from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
+from db.models.user import User
 from constants.error_constants import ForbiddenError, NotFoundError
 from services.service import Service
 
@@ -51,6 +52,16 @@ class AttendeeService(Service):
             return self.ServiceResponse(status_code=204)
         except Exception as e:
             return self.handle_error(e)
+        
+    def list_workout_attendees(self, workout_id):
+        users = (
+            self.session.query(User)
+            .join(Attendee, Attendee.user_id == User.id)
+            .filter(
+                Attendee.workout_id == workout_id
+            ).all()
+        )
+        return self.ServiceResponse(status_code=200, data=users)
     
     def get_workout_organizer(self, workout_id):
         organizer = self.session.query(Attendee).filter(
