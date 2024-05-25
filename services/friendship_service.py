@@ -27,7 +27,7 @@ class FriendshipService(Service):
             if not friendship:
                 raise NotFoundError
             if g.user_id not in (friendship.sender_id, friendship.recipient_id):
-                raise ForbiddenError
+                raise ForbiddenError("error updating friendship, unauthorized")
             for key, value in data.items():
                 setattr(friendship, key, value)
             self.session.commit()
@@ -41,7 +41,7 @@ class FriendshipService(Service):
             if not friendship:
                 return self.ServiceResponse(status_code=204)
             if g.user_id not in (friendship.sender_id, friendship.recipient_id):
-                raise ForbiddenError
+                raise ForbiddenError("error deleting friendship, unauthorized")
             self.session.delete(friendship)
             self.session.commit()
             return self.ServiceResponse(status_code=204)

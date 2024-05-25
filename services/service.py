@@ -1,9 +1,7 @@
 from db.db import db
 from constants.error_constants import CUSTOM_ERRORS, AppError, NotFoundError, BadDataError
-import logging
 from sqlalchemy.exc import IntegrityError, DataError
 
-logger = logging.getLogger()
 
 class Service:
     class ServiceResponse:
@@ -16,14 +14,12 @@ class Service:
         self.session = db.session
 
     def handle_error(self, error):
-        logger.warn(f"########ERRORTYPE: {type(error).__name__}") 
-        logger.warn(f"ERROR: {str(error)}")
         if type(error) in CUSTOM_ERRORS:
             raise error
         if type(error) in (IntegrityError, DataError, LookupError):
-            raise BadDataError
+            raise BadDataError(str(error))
         if type(error) == NotFoundError:
-            raise NotFoundError
+            raise NotFoundError(str(error))
         raise AppError
 
     def add_data(self, instance, commit=True):

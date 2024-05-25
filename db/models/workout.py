@@ -25,21 +25,20 @@ class Workout(db.Model):
     @validates('title')
     def validate_workout_title(self, key, title):
         if len(title) > 50:
-            raise BadDataError
+            raise BadDataError("error writing workout, invalid title")
         return title
     
     @validates('description')
     def validate_workout_description(self, key, description):
         if len(description) > 2200:
-            raise BadDataError
+            raise BadDataError("error writing workout, invalid description")
         return description
     
     @validates('workout_pic')
     def validate_workout_pic_url(self, key, url):
         if len(url) > 2083:
-            raise BadDataError
+            raise BadDataError("error writing workout, invalid pic url")
         return url
-
     
     def to_json(self):
         return {
@@ -50,3 +49,4 @@ class Workout(db.Model):
             'workout_type': self.workout_type,
             'datetime': self.datetime.isoformat()  # Serialize datetime to ISO format
         }
+    

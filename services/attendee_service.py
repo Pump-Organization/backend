@@ -11,7 +11,7 @@ class AttendeeService(Service):
 
     def create_attendee(self, data):
         if g.user_id != self.get_workout_organizer(data.get('workout_id')):
-            raise ForbiddenError
+            raise ForbiddenError("error adding attendee, unauthorized")
         attendee = Attendee(
             user_id = data.get('user_id'),
             workout_id = data.get('workout_id'),
@@ -29,7 +29,7 @@ class AttendeeService(Service):
             if not attendee:
                 raise NotFoundError
             if attendee.user_id != g.user_id:
-                raise ForbiddenError
+                raise ForbiddenError("error updating attendee, unauthorized")
             for key, value in data.items():
                 setattr(attendee, key, value)
             self.session.commit()
@@ -46,7 +46,7 @@ class AttendeeService(Service):
             if not attendee:
                 return self.ServiceResponse(status_code=204)
             if g.user_id != attendee.user_id and g.user_id != self.get_workout_organizer(attendee.workout_id):
-                raise ForbiddenError
+                raise ForbiddenError("error deleting attendee, unauthorized")
             self.session.delete(attendee)
             self.session.commit()
             return self.ServiceResponse(status_code=204)
