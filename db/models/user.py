@@ -1,5 +1,9 @@
 import datetime
+import re
+from constants.error_constants import BadDataError
+from email.utils import parseaddr
 from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy.orm import validates
 
 from db.db import db
 
@@ -16,6 +20,42 @@ class User(db.Model):
     hashed_password: str = Column(String)
     salt: str = Column(String)
     created_at: str = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
+
+    @validates('username')
+    def validate_username(self, key, username):
+        if not re.match("^(?=.*[a-z])[a-z0-9_]{3,30}$", username):
+            raise BadDataError
+        return username
+    
+    @validates('email')
+    def validate_email(self, key, address):
+        if '@' not in parseaddr(address)[1]:
+            raise BadDataError
+        return parseaddr(address)[1]
+    
+    @validates('name')
+    def validate_name(self, key, name):
+        if len(name) > 50:
+            raise BadDataError
+        return name
+    
+    @validates('profile_pic')
+    def validate_profile_pic_url(self, key, url):
+        if len(url) > 2083:
+            raise BadDataError
+        return url
+    
+    @validates('location')
+    def validate_location(self, key, location):
+        if len(location) > 100:
+            raise BadDataError
+        return location
+    
+    @validates('bio')
+    def validate_location(self, key, bio):
+        if len(bio) > 150:
+            raise BadDataError
+        return bio
 
     def to_json(self):
         return {
