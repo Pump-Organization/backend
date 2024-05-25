@@ -1,7 +1,8 @@
 import datetime as dt
 import enum
+from constants.error_constants import BadDataError
 from sqlalchemy import Column, Integer, String, DateTime, Enum
-
+from sqlalchemy.orm import validates
 from db.db import db
 
 class WorkoutTypeEnum(str, enum.Enum):
@@ -20,6 +21,25 @@ class Workout(db.Model):
     workout_type: str = Column(Enum(WorkoutTypeEnum))
     datetime: dt.datetime = Column(DateTime)
     created_at: str = Column(DateTime, default=dt.datetime.now(dt.timezone.utc))
+
+    @validates('title')
+    def validate_workout_title(self, key, title):
+        if len(title) > 50:
+            raise BadDataError
+        return title
+    
+    @validates('description')
+    def validate_workout_description(self, key, description):
+        if len(description) > 2200:
+            raise BadDataError
+        return description
+    
+    @validates('workout_pic')
+    def validate_workout_pic_url(self, key, url):
+        if len(url) > 2083:
+            raise BadDataError
+        return url
+
     
     def to_json(self):
         return {
