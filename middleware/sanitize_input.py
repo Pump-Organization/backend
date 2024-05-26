@@ -18,5 +18,3 @@ def sanitize_input(data):
     else:
         return data
     
-
-    

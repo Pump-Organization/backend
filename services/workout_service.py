@@ -50,7 +50,7 @@ class WorkoutService(Service):
     
     def update_workout(self, workout_id, data):
         if g.user_id != self.get_organizer_id(workout_id):
-            raise ForbiddenError("error updating workout, unauthorized")
+            raise ForbiddenError
         try:
             workout = self.model.query.get(workout_id)
             if workout:
@@ -65,7 +65,7 @@ class WorkoutService(Service):
     
     def delete_workout(self, workout_id):
         if g.user_id != self.get_organizer_id(workout_id):
-            raise ForbiddenError("error deleting workout, unauthorized")
+            raise ForbiddenError
         try:
             self.session.query(Workout).filter(Workout.id==workout_id).delete()
             self.session.commit()

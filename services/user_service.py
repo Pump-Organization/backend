@@ -29,7 +29,7 @@ class UserService(Service):
     def update_user(self, user_id, data):
         try:
             if g.user_id != int(user_id):
-                raise ForbiddenError("error updating user, unauthorized")
+                raise ForbiddenError
             user = self.model.query.get(user_id)
             if user:
                 for key, value in data.items():
@@ -44,7 +44,7 @@ class UserService(Service):
     def delete_user(self, user_id):
         try:
             if g.user_id != int(user_id):
-                raise ForbiddenError("error deleting user, unauthorized")
+                raise ForbiddenError
             self.session.query(User).filter(User.id==user_id).delete()
             self.session.commit()
             return self.ServiceResponse(status_code=204)

@@ -17,9 +17,9 @@ class Service:
         if type(error) in CUSTOM_ERRORS:
             raise error
         if type(error) in (IntegrityError, DataError, LookupError):
-            raise BadDataError(str(error))
+            raise BadDataError
         if type(error) == NotFoundError:
-            raise NotFoundError(str(error))
+            raise NotFoundError
         raise AppError
 
     def add_data(self, instance, commit=True):
