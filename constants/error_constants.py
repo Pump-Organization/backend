@@ -1,6 +1,6 @@
 class AppError(Exception):
-    def __init__(self, error_message=None):
-        self.log = error_message
+    def __init__(self):
+        super().__init__()
     status_code = 500
     message = "internal server error"
 

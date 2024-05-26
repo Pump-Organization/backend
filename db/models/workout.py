@@ -25,7 +25,7 @@ class Workout(db.Model):
     @validates('title')
     def validate_workout_title(self, key, title):
         if len(title) > 50:
-            raise BadDataError("error writing workout, invalid title")
+            raise BadDataError
         return title
     
     @validates('description')
@@ -33,7 +33,7 @@ class Workout(db.Model):
         if not description:
             return
         if len(description) > 2200:
-            raise BadDataError("error writing workout, invalid description")
+            raise BadDataError
         return description
     
     @validates('workout_pic')
@@ -41,7 +41,7 @@ class Workout(db.Model):
         if not url:
             return
         if len(url) > 2083:
-            raise BadDataError("error writing workout, invalid pic url")
+            raise BadDataError
         return url
     
     def to_json(self):

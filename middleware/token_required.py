@@ -21,9 +21,9 @@ def token_required(f):
             payload = jwt.decode(token, os.getenv('JWT_SECRET'), algorithms=['HS256'])
             g.user_id = payload['user_id']
         except jwt.ExpiredSignatureError:
-            raise UnauthorizedError("token expired")
+            raise UnauthorizedError
         except jwt.InvalidTokenError:
-            raise UnauthorizedError("invalid token")
+            raise UnauthorizedError
 
         return f(*args, **kwargs)
 

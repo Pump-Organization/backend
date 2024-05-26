@@ -1,5 +1,6 @@
 import logging
 import os
+import traceback
 from dotenv import load_dotenv
 from flask import Flask, request
 from api.users import UsersView
@@ -42,8 +43,8 @@ FeedView.register(app)
 #################################### ERROR HANDLER ##########################################
 def handle_app_error(error):
     if type(error) not in CUSTOM_ERRORS:
-        error = AppError(str(error))
-    logger.critical(f"################# ERROR: {error.log}")
+        error = AppError
+    logger.critical(traceback.format_exc())
     return {'error': error.message}, error.status_code
 
 app.register_error_handler(Exception, handle_app_error)
@@ -55,13 +56,13 @@ def sanitize_request_data():
     if request.method in ['POST', 'PUT', 'PATCH']:
         if request.json:
             if request.json != sanitize_input(request.json):
-                raise BadDataError('html detected in data')
+                raise BadDataError
         if request.form:
             if request.form != sanitize_input(request.form):
-                raise BadDataError('html detected in data')
+                raise BadDataError
     if request.args:
         if request.args.to_dict() != sanitize_input(request.args.to_dict()):
-            raise BadDataError('html detected in args')
+            raise BadDataError
 
 
 #################################### CUSTOM CONFIGS ##########################################

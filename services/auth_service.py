@@ -19,7 +19,7 @@ class AuthService(Service):
         username = data.get('username')
         user = self.query_by_attribute(username=username)
         if not user or not self.check_password(user.data, data.get('password')):
-            raise UnauthorizedError("login error, invalid credentials")
+            raise UnauthorizedError
         
         token = self.generate_jwt_token(user.data.id)
         return self.ServiceResponse(status_code=200, data={'token': token})

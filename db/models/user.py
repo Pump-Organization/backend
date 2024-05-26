@@ -24,13 +24,13 @@ class User(db.Model):
     @validates('username')
     def validate_username(self, key, username):
         if not re.match("^(?=.*[a-z])[a-z0-9_]{3,30}$", username):
-            raise BadDataError("error writing user, invalid username")
+            raise BadDataError
         return username
     
     @validates('email')
     def validate_email(self, key, address):
         if '@' not in parseaddr(address)[1]:
-            raise BadDataError("error writing user, invalid email")
+            raise BadDataError
         return parseaddr(address)[1]
     
     @validates('name')
@@ -38,7 +38,7 @@ class User(db.Model):
         if not name:
             return
         if len(name) > 50:
-            raise BadDataError("error writing user, invalid name")
+            raise BadDataError
         return name
     
     @validates('profile_pic')
@@ -46,7 +46,7 @@ class User(db.Model):
         if not url:
             return
         if len(url) > 2083:
-            raise BadDataError("error writing user, invalid profile pic url")
+            raise BadDataError
         return url
     
     @validates('location')
@@ -54,7 +54,7 @@ class User(db.Model):
         if not location:
             return
         if len(location) > 100:
-            raise BadDataError("error writing user, invalid location")
+            raise BadDataError
         return location
     
     @validates('bio')
@@ -62,7 +62,7 @@ class User(db.Model):
         if not bio:
             return
         if len(bio) > 150:
-            raise BadDataError("error writing user, invalid bio")
+            raise BadDataError
         return bio
 
     def to_json(self):
