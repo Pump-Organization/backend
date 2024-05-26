@@ -35,24 +35,32 @@ class User(db.Model):
     
     @validates('name')
     def validate_name(self, key, name):
+        if not name:
+            return
         if len(name) > 50:
             raise BadDataError("error writing user, invalid name")
         return name
     
     @validates('profile_pic')
     def validate_profile_pic_url(self, key, url):
+        if not url:
+            return
         if len(url) > 2083:
             raise BadDataError("error writing user, invalid profile pic url")
         return url
     
     @validates('location')
     def validate_location(self, key, location):
+        if not location:
+            return
         if len(location) > 100:
             raise BadDataError("error writing user, invalid location")
         return location
     
     @validates('bio')
     def validate_bio(self, key, bio):
+        if not bio:
+            return
         if len(bio) > 150:
             raise BadDataError("error writing user, invalid bio")
         return bio

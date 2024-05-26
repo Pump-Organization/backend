@@ -1,6 +1,6 @@
 from flask_classful import FlaskView, route
 from flask import g, request
-from decorators.token_required import token_required
+from middleware.token_required import token_required
 from services.friendship_service import FriendshipService
 
 class FriendshipsView(FlaskView):

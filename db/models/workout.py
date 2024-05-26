@@ -30,12 +30,16 @@ class Workout(db.Model):
     
     @validates('description')
     def validate_workout_description(self, key, description):
+        if not description:
+            return
         if len(description) > 2200:
             raise BadDataError("error writing workout, invalid description")
         return description
     
     @validates('workout_pic')
     def validate_workout_pic_url(self, key, url):
+        if not url:
+            return
         if len(url) > 2083:
             raise BadDataError("error writing workout, invalid pic url")
         return url
