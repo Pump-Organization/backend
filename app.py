@@ -3,6 +3,9 @@ import os
 import traceback
 from dotenv import load_dotenv
 from flask import Flask, request
+from flask_limiter import Limiter
+from flask_limiter.errors import RateLimitExceeded
+from flask_limiter.util import get_remote_address
 from api.users import UsersView
 from api.workouts import WorkoutsView
 from api.friendships import FriendshipsView
@@ -21,6 +24,11 @@ logger = logging.getLogger()
 load_dotenv()
 
 app = Flask(__name__)
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["50 per hour", "5 per minute"]
+)
 
 #################################### SQLALCHEMY ##############################################
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://{}:{}@{}/{}".format(
@@ -42,7 +50,9 @@ FeedView.register(app)
 
 #################################### ERROR HANDLER ##########################################
 def handle_app_error(error):
-    if type(error) not in CUSTOM_ERRORS:
+    if type(error) == RateLimitExceeded:
+        return {'error': 'rate limit exceeded'}, 429
+    elif type(error) not in CUSTOM_ERRORS:
         error = AppError
     logger.critical(traceback.format_exc())
     return {'error': error.message}, error.status_code
