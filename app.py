@@ -21,7 +21,12 @@ from middleware.sanitize_input import sanitize_input
 
 logger = logging.getLogger()
 
-load_dotenv()
+flask_env = os.getenv('FLASK_ENV', 'production')
+if flask_env == 'development':
+    env_path = '.env.dev'
+else:
+    env_path = '.env'
+load_dotenv(dotenv_path=env_path)
 
 app = Flask(__name__)
 limiter = Limiter(
@@ -77,6 +82,10 @@ def sanitize_request_data():
 
 #################################### CUSTOM CONFIGS ##########################################
 app.json = CustomJSONProvider(app)
+
+@app.route("/")
+def healthcheck():
+    return flask_env
 
 
 if __name__ == '__main__':
