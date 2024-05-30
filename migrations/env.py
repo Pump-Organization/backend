@@ -10,7 +10,12 @@ from alembic import context
 from db.db import db
 from db.models import Workout, User, Friendship, Attendee
 
-load_dotenv()
+flask_env = os.getenv('FLASK_ENV', 'production')
+if flask_env == 'development':
+    env_path = '.env.dev'
+else:
+    env_path = '.env'
+load_dotenv(dotenv_path=env_path)
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

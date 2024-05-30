@@ -5,8 +5,13 @@ from flask import g, request
 from functools import wraps
 from constants.error_constants import  UnauthorizedError
 
-load_dotenv()
 
+flask_env = os.getenv('FLASK_ENV', 'production')
+if flask_env == 'development':
+    env_path = '.env.dev'
+else:
+    env_path = '.env'
+load_dotenv(dotenv_path=env_path)
 
 def token_required(f):
     @wraps(f)
