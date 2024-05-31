@@ -18,7 +18,6 @@ class User(db.Model):
     email: str = Column(String)
     bio: str = Column(String, nullable=True)
     hashed_password: str = Column(String)
-    salt: str = Column(String)
     created_at: str = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
 
     @validates('username')

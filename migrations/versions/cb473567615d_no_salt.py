@@ -1,8 +1,8 @@
-"""test
+"""no_salt
 
-Revision ID: 656af406e20b
+Revision ID: cb473567615d
 Revises: 
-Create Date: 2024-05-19 15:54:23.175109
+Create Date: 2024-05-31 22:36:01.951947
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '656af406e20b'
+revision: str = 'cb473567615d'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -29,7 +29,6 @@ def upgrade() -> None:
     sa.Column('email', sa.String(), nullable=True),
     sa.Column('bio', sa.String(), nullable=True),
     sa.Column('hashed_password', sa.String(), nullable=True),
-    sa.Column('salt', sa.String(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('username')
@@ -53,7 +52,8 @@ def upgrade() -> None:
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['workout_id'], ['workout.id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('user_id', 'workout_id', name='unique_attendee')
     )
     op.create_table('friendship',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -63,7 +63,8 @@ def upgrade() -> None:
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['recipient_id'], ['user.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['sender_id'], ['user.id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('sender_id', 'recipient_id', name='unique_friendship')
     )
     # ### end Alembic commands ###
 

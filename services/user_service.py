@@ -1,4 +1,4 @@
-import bcrypt
+from argon2 import PasswordHasher
 from flask import g
 from constants.error_constants import ForbiddenError, NotFoundError
 from db.models.user import User
@@ -10,7 +10,7 @@ class UserService(Service):
         super().__init__(User)
 
     def create_user(self, data):
-        salt, password = self.set_password(data.get('password'))
+        password = self.set_password(data.get('password'))
         new_user = User(
             username = data.get('username'),
             name = data.get('name'),
@@ -18,7 +18,6 @@ class UserService(Service):
             location = data.get('location'),
             email = data.get('email'),
             bio = data.get('bio'),
-            salt = salt,
             hashed_password = password
         )
         return self.add_data(new_user)
@@ -52,9 +51,7 @@ class UserService(Service):
             return self.handle_error(e)
     
     def set_password(self, password):
-        salt = bcrypt.gensalt()
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
-        decoded_salt = salt.decode('utf-8')
-
-        return decoded_salt, hashed_password
+        ph = PasswordHasher()
+        hashed_password = ph.hash(password)
+        return hashed_password
         

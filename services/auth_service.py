@@ -1,4 +1,5 @@
-import bcrypt
+from argon2 import PasswordHasher
+from argon2.exceptions import VerificationError
 import jwt
 import os
 from datetime import datetime, timedelta, timezone
@@ -6,6 +7,7 @@ from dotenv import load_dotenv
 from constants.error_constants import UnauthorizedError
 from db.models.user import User
 from services.service import Service
+from services.user_service import UserService
 
 
 flask_env = os.getenv('FLASK_ENV', 'production')
@@ -30,8 +32,16 @@ class AuthService(Service):
 
 
     def check_password(self, user, password):
-        hashed_password = user.hashed_password
-        return bcrypt.checkpw(password.encode(), hashed_password.encode())
+        ph = PasswordHasher()
+        try:
+            ph.verify(user.hashed_password, password)
+        except VerificationError:
+            return False
+        
+        if ph.check_needs_rehash(user.hashed_password):
+            user.hashed_password = UserService().set_password(password)
+            self.session.commit()
+        return True
         
     def generate_jwt_token(self, user_id):
         payload = {
