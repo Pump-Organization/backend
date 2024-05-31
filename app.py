@@ -23,7 +23,7 @@ logger = logging.getLogger()
 
 flask_env = os.getenv('FLASK_ENV', 'production')
 if flask_env == 'development':
-    env_path = '.env.dev'
+    env_path = '.env.development'
 else:
     env_path = '.env'
 load_dotenv(dotenv_path=env_path)
@@ -88,5 +88,5 @@ def healthcheck():
     return flask_env
 
 
-if __name__ == '__main__':
+if flask_env == 'local' and __name__ == '__main__':
     app.run(debug=True, port=8000, host='0.0.0.0')
