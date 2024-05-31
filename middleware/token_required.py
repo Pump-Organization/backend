@@ -8,7 +8,7 @@ from constants.error_constants import  UnauthorizedError
 
 flask_env = os.getenv('FLASK_ENV', 'production')
 if flask_env == 'development':
-    env_path = '.env.dev'
+    env_path = '.env.development'
 else:
     env_path = '.env'
 load_dotenv(dotenv_path=env_path)
