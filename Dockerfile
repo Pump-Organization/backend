@@ -1,7 +1,7 @@
 FROM python:3.11.9-alpine3.19
 
 # Install PostgreSQL development files
-RUN apk update && apk add --no-cache postgresql-dev gcc musl-dev
+RUN apk update && apk add --no-cache postgresql-dev gcc musl-dev libffi-dev
 
 WORKDIR /app
 
