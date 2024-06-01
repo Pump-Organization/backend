@@ -1,6 +1,6 @@
 from argon2 import PasswordHasher
 from flask import g
-from constants.error_constants import ForbiddenError, NotFoundError
+from constants.error_constants import ForbiddenError, NotFoundError, ConflictError
 from db.models.user import User
 from services.service import Service
 
@@ -10,6 +10,11 @@ class UserService(Service):
         super().__init__(User)
 
     def create_user(self, data):
+        if User.query.filter_by(username=data.get('username')).first():
+            raise ConflictError("username taken")
+        if User.query.filter_by(email=data.get('email')).first():
+            raise ConflictError("email taken")
+
         password = self.set_password(data.get('password'))
         new_user = User(
             username = data.get('username'),

@@ -1,6 +1,8 @@
 class AppError(Exception):
-    def __init__(self):
+    def __init__(self, message):
         super().__init__()
+        if message is not None:
+            self.message = message
     status_code = 500
     message = "internal server error"
 
@@ -20,4 +22,8 @@ class ForbiddenError(AppError):
     status_code = 403
     message = "forbidden"
 
-CUSTOM_ERRORS = {AppError, NotFoundError, BadDataError, UnauthorizedError, ForbiddenError}
+class ConflictError(AppError):
+    status_code = 409
+    message = "conflict"
+
+CUSTOM_ERRORS = {AppError, NotFoundError, BadDataError, UnauthorizedError, ForbiddenError, ConflictError}

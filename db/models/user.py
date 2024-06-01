@@ -15,7 +15,7 @@ class User(db.Model):
     name: str = Column(String, nullable=True)
     profile_pic: str = Column(String, nullable=True)  # url
     location: str = Column(String, nullable=True)
-    email: str = Column(String)
+    email: str = Column(String, unique=True)
     bio: str = Column(String, nullable=True)
     hashed_password: str = Column(String)
     created_at: str = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
