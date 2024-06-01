@@ -1,6 +1,7 @@
 from argon2 import PasswordHasher
 from flask import g
 from constants.error_constants import ForbiddenError, NotFoundError, ConflictError
+from constants import USERS_PER_PAGE
 from db.models.user import User
 from services.service import Service
 
@@ -59,4 +60,11 @@ class UserService(Service):
         ph = PasswordHasher()
         hashed_password = ph.hash(password)
         return hashed_password
+    
+    def search_users(self, query, page=1):
+        users = User.query.filter(
+            (User.username.ilike(f'%{query}%')) |
+            (User.name.ilike(f'%{query}%'))
+        ).paginate(page=page, per_page=USERS_PER_PAGE, error_out=False)
+        return self.ServiceResponse(status_code=200, data=users)
         
