@@ -18,6 +18,7 @@ class ProfileService(Service):
         response_data = {
             'id': user_response.data.id,
             'username': user_response.data.username,
+            'name': user_response.data.name,
             'profile_pic': user_response.data.profile_pic,
             'location': user_response.data.location,
             'email': user_response.data.email,
