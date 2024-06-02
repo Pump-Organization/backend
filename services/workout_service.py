@@ -78,6 +78,7 @@ class WorkoutService(Service):
             self.session.query(Workout.workout_type, func.count(Workout.workout_type).label('count'))
             .join(Attendee, Attendee.workout_id == Workout.id)
             .filter(Attendee.user_id == user_id)
+            .where(Workout.datetime < datetime.now())
             .group_by(Workout.workout_type)
             .subquery()
         )

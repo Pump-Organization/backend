@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import or_, and_
+from sqlalchemy import and_
 from db.models import Attendee, AttendeeStatusEnum, Workout, Friendship
 from services.user_service import UserService
 from services.friendship_service import FriendshipService
