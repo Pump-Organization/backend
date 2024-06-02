@@ -9,6 +9,9 @@ custom:
     app: app.app
   pythonRequirements:
     dockerizePip: true
+  apiGatewayThrottling:
+    maxRequestsPerSecond: 50
+    maxConcurrentRequests: 25
 
 provider:
   name: aws
@@ -25,3 +28,4 @@ plugins:
   - serverless-wsgi
   - serverless-python-requirements
   - serverless-dotenv-plugin
+  - serverless-api-gateway-throttling
