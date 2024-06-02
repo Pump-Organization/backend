@@ -39,10 +39,8 @@ class ProfileService(Service):
             Attendee.status == AttendeeStatusEnum.accepted,
             Workout.datetime < now
         ).order_by(Workout.datetime.desc()).offset(offset).limit(per_page).all()
-
-        response_data = [workout.to_json() for workout in past_workouts]
         
-        return self.ServiceResponse(data=response_data, status_code=200)
+        return self.ServiceResponse(data=past_workouts, status_code=200)
     
     def get_feed(self, user_id):
         friend_ids_subquery = self.session.query(Friendship.sender_id.label('friend_id')).filter(
