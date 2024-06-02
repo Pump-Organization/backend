@@ -1,5 +1,7 @@
+.coverage
 .env
 .env.development
+.pytest_cache
 .serverless
 node_modules/
 venv/

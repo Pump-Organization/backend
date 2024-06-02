@@ -1,0 +1,8 @@
+[run]
+source = api, middleware, services
+
+[report]
+exclude_lines =
+    # Exclude import lines
+    import
+    from
