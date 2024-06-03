@@ -1,19 +1,12 @@
-from tests.mocks.token_required import mock_token_required
 from unittest.mock import patch
-patch('middleware.token_required.token_required', new=mock_token_required).start()
-
 import json
 import pytest
-from app import app as flask_app
 from tests.mocks.user_service import MockUserService
 from tests.mocks.friendship_service import MockFriendshipService
+from tests.unittests.api_unit_test import APIUnitTest
 
 
-class TestUserAPIs:
-    @pytest.fixture
-    def client(self):
-        return flask_app.test_client()
-
+class TestUserAPIs(APIUnitTest):
     @pytest.fixture(autouse=True)
     def mocks(self):
         with patch('api.users.UserService', new=MockUserService), \

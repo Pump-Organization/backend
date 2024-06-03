@@ -9,7 +9,6 @@ class FeedView(FlaskView):
     @route('', methods=['GET'])
     @token_required
     def get_feed(self):
-        user_id = g.user_id
-        service_response = ProfileService().get_feed(user_id)
+        service_response = ProfileService().get_feed()
         return [workout.to_json() for workout in service_response.data], service_response.status_code
     

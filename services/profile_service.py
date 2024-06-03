@@ -1,4 +1,5 @@
 from datetime import datetime
+from flask import g
 from sqlalchemy import and_
 from db.models import Attendee, AttendeeStatusEnum, Workout, Friendship
 from services.user_service import UserService
@@ -42,7 +43,8 @@ class ProfileService(Service):
         
         return self.ServiceResponse(data=past_workouts, status_code=200)
     
-    def get_feed(self, user_id):
+    def get_feed(self):
+        user_id = g.user_id
         friend_ids_subquery = self.session.query(Friendship.sender_id.label('friend_id')).filter(
             and_(
                 Friendship.recipient_id == user_id,

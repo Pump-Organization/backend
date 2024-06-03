@@ -4,19 +4,14 @@ patch('middleware.token_required.token_required', new=mock_token_required).start
 
 import json
 import pytest
-from app import app as flask_app
 from tests.mocks.friendship_service import MockFriendshipService
+from tests.unittests.api_unit_test import APIUnitTest
 
 
-class TestFriendshipAPIs:
-    @pytest.fixture
-    def client(self):
-        return flask_app.test_client()
-
+class TestFriendshipAPIs(APIUnitTest):
     @pytest.fixture(autouse=True)
     def mocks(self):
-        with patch('api.friendships.FriendshipService', new=MockFriendshipService), \
-             patch('api.friendships.FriendshipService', new=MockFriendshipService):
+        with patch('api.friendships.FriendshipService', new=MockFriendshipService):
             yield
 
     def test_create_friendship(self, client):

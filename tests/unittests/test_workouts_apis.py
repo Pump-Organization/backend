@@ -1,19 +1,12 @@
-from tests.mocks.token_required import mock_token_required
-from unittest.mock import patch
-patch('middleware.token_required.token_required', new=mock_token_required).start()
-
 import json
 import pytest
-from app import app as flask_app
 from tests.mocks.workout_service import MockWorkoutService
 from tests.mocks.attendee_service import MockAttendeeService
+from tests.unittests.api_unit_test import APIUnitTest
+from unittest.mock import patch
 
 
-class TestWorkoutAPIs:
-    @pytest.fixture
-    def client(self):
-        return flask_app.test_client()
-    
+class TestWorkoutAPIs(APIUnitTest):    
     @pytest.fixture(autouse=True)
     def mocks(self):
         with patch('api.workouts.WorkoutService', new=MockWorkoutService), \
@@ -101,4 +94,3 @@ class TestWorkoutAPIs:
     def test_reject_workout(self, client):
         response = client.post('/workouts/1/reject', json={})
         assert response.status_code == 204
-        
