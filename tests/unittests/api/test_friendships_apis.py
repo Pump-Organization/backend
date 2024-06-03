@@ -5,7 +5,7 @@ patch('middleware.token_required.token_required', new=mock_token_required).start
 import json
 import pytest
 from tests.mocks.friendship_service import MockFriendshipService
-from tests.unittests.api_unit_test import APIUnitTest
+from tests.unittests.api.api_unit_test import APIUnitTest
 
 
 class TestFriendshipAPIs(APIUnitTest):

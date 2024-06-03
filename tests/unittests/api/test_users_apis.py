@@ -3,7 +3,7 @@ import json
 import pytest
 from tests.mocks.user_service import MockUserService
 from tests.mocks.friendship_service import MockFriendshipService
-from tests.unittests.api_unit_test import APIUnitTest
+from tests.unittests.api.api_unit_test import APIUnitTest
 
 
 class TestUserAPIs(APIUnitTest):

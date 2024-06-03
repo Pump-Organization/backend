@@ -1,7 +1,7 @@
 import json
 import pytest
 from tests.mocks.profile_service import MockProfileService
-from tests.unittests.api_unit_test import APIUnitTest
+from tests.unittests.api.api_unit_test import APIUnitTest
 from unittest.mock import patch
 
 

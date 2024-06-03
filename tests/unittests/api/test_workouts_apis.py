@@ -2,7 +2,7 @@ import json
 import pytest
 from tests.mocks.workout_service import MockWorkoutService
 from tests.mocks.attendee_service import MockAttendeeService
-from tests.unittests.api_unit_test import APIUnitTest
+from tests.unittests.api.api_unit_test import APIUnitTest
 from unittest.mock import patch
 
 
