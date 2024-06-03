@@ -25,3 +25,18 @@ class MockFriendshipService(FriendshipService):
 
     def get_friends(self, user_id):
         return Service.ServiceResponse(status_code=200, data=[mock_friend1, mock_friend2])
+
+    def create_friendship(self, data):
+        return Service.ServiceResponse(status_code=200, data=MockFriendship(1, 1, 2, "pending"))
+    
+    def get_friendship(self, friendship_id):
+        return Service.ServiceResponse(status_code=200, data=MockFriendship(1, 1, 2, "pending"))
+    
+    def update_friendship(self, friendship_id, data):
+        return Service.ServiceResponse(status_code=200, data=MockFriendship(1, 1, 2, "accepted"))
+    
+    def delete_friendship(self, friendship_id):
+        return Service.ServiceResponse(status_code=204)
+    
+    def get_friend_requests(self):
+        return Service.ServiceResponse(status_code=200, data=[mock_friend2])
