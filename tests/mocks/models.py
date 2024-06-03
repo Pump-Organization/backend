@@ -32,3 +32,12 @@ class MockAttendee(MockModel):
         self.user_id = user_id
         self.attendee_type = attendee_type
         self.status = status
+
+class MockProfile(MockModel):
+    def __init__(self, name, email, username, profile_pic, num_friends, workout_counts):
+        self.name = name
+        self.email = email
+        self.username = username
+        self.profile_pic = profile_pic
+        self.num_friends = num_friends
+        self.workout_counts = workout_counts
