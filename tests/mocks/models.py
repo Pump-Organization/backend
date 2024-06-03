@@ -18,3 +18,17 @@ class MockFriendship(MockModel):
         self.sender_id = sender_id
         self.recipient_id = recipient_id
         self.status = status
+
+class MockWorkout(MockModel):
+    def __init__(self, title, description, workout_type):
+        self.title = title
+        self.description = description
+        self.workout_type = workout_type
+
+class MockAttendee(MockModel):
+    def __init__(self, attendee_id, workout_id, user_id, attendee_type="guest", status="pending"):
+        self.attendee_id = attendee_id
+        self.workout_id = workout_id
+        self.user_id = user_id
+        self.attendee_type = attendee_type
+        self.status = status

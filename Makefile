@@ -25,7 +25,7 @@ downgrade:
 	$(DOCKER_COMPOSE) exec $(SERVICE) alembic downgrade $(REVISION)
 
 test:
-	$(DOCKER_COMPOSE) exec $(SERVICE) pytest --cov
+	$(DOCKER_COMPOSE) exec $(SERVICE) pytest --cov -vv
 
 # Help command
 help:
