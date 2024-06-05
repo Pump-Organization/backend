@@ -2,6 +2,7 @@ from db.models.workout import Workout
 from db.models.attendee import Attendee, AttendeeTypeEnum
 from services.service import Service
 from constants.error_constants import ForbiddenError, NotFoundError
+from constants import WORKOUTS_PER_PAGE
 from datetime import datetime, timedelta
 from flask import g
 from sqlalchemy import func
@@ -94,15 +95,12 @@ class WorkoutService(Service):
 
         return self.ServiceResponse(status_code=200, data=result_dict)
         
-    def get_upcoming_workouts(self, user_id, date, status="accepted"):
-        workouts = (
-            self.session.query(Workout)
-            .join(Attendee, Attendee.workout_id == Workout.id)
-            .filter(Attendee.user_id == user_id)
-            .filter(Attendee.status == status)
-            .filter(Workout.datetime >= date, Workout.datetime < date + timedelta(days=1))
-            .all()
-        )
+    def get_upcoming_workouts(self, user_id, date, status="accepted", page=1):
+        workouts = self.session.query(Workout).join(Attendee, Attendee.workout_id == Workout.id)\
+            .filter(Attendee.user_id == user_id)\
+            .filter(Attendee.status == status)\
+            .filter(Workout.datetime >= date, Workout.datetime < date + timedelta(days=1))\
+            .limit(WORKOUTS_PER_PAGE).offset((page - 1) * WORKOUTS_PER_PAGE)
 
         return self.ServiceResponse(status_code=200, data=workouts)
     

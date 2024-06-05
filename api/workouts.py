@@ -11,18 +11,20 @@ class WorkoutsView(FlaskView):
 
     @route('upcoming', methods=['GET'])
     @token_required
-    def get_upcoming(self): # TODO: Add pagination
+    def get_upcoming(self):
+        page = request.args.get('page', 1, int)
         date = datetime.strptime(request.args.get('date'), '%m/%d/%y')
         user_id = g.user_id
-        service_response = WorkoutService().get_upcoming_workouts(user_id, date)
+        service_response = WorkoutService().get_upcoming_workouts(user_id, date, "accepted", page)
         return [workout.to_json() for workout in service_response.data], service_response.status_code
     
     @route('invites', methods=['GET'])
     @token_required
-    def get_invites(self): # TODO: Add pagination
+    def get_invites(self):
+        page = request.args.get('page', 1, int)
         date = datetime.strptime(request.args.get('date'), '%m/%d/%y')
         user_id = g.user_id
-        service_response = WorkoutService().get_upcoming_workouts(user_id, date, "pending")
+        service_response = WorkoutService().get_upcoming_workouts(user_id, date, "pending", page)
         return [workout.to_json() for workout in service_response.data], service_response.status_code
 
     @route('', methods=['POST'])
