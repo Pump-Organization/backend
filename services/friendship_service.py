@@ -26,7 +26,7 @@ class FriendshipService(Service):
             friendship = self.model.query.get(friendship_id)
             if not friendship:
                 raise NotFoundError
-            if g.user_id not in (friendship.sender_id, friendship.recipient_id):
+            if g.user_id != friendship.sender_id:
                 raise ForbiddenError
             for key, value in data.items():
                 setattr(friendship, key, value)
