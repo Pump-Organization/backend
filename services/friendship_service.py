@@ -1,6 +1,7 @@
 from services.service import Service
 from db.models.friendship import Friendship, FriendshipStatusEnum
 from db.models.user import User
+from constants import USERS_PER_PAGE
 from constants.error_constants import ForbiddenError, NotFoundError
 from sqlalchemy import and_
 from flask import g
@@ -71,11 +72,11 @@ class FriendshipService(Service):
         ).all()
         return self.ServiceResponse(status_code=200, data=friends)
     
-    def get_friend_requests(self):
+    def get_friend_requests(self, page=1):
         friend_requests = self.session.query(User, Friendship.id.label("friendship_id")).join(Friendship, Friendship.sender_id == User.id).filter(
             and_(
                 Friendship.recipient_id == g.user_id,
                 Friendship.status == FriendshipStatusEnum.requested
             )
-        ).all()
+        ).limit(USERS_PER_PAGE).offset((page - 1) * USERS_PER_PAGE)
         return self.ServiceResponse(status_code=200, data=friend_requests)
