@@ -11,7 +11,7 @@ class WorkoutsView(FlaskView):
 
     @route('upcoming', methods=['GET'])
     @token_required
-    def get_upcoming(self):
+    def get_upcoming(self): # TODO: Add pagination
         date = datetime.strptime(request.args.get('date'), '%m/%d/%y')
         user_id = g.user_id
         service_response = WorkoutService().get_upcoming_workouts(user_id, date)
@@ -19,7 +19,7 @@ class WorkoutsView(FlaskView):
     
     @route('invites', methods=['GET'])
     @token_required
-    def get_invites(self):
+    def get_invites(self): # TODO: Add pagination
         date = datetime.strptime(request.args.get('date'), '%m/%d/%y')
         user_id = g.user_id
         service_response = WorkoutService().get_upcoming_workouts(user_id, date, "pending")
@@ -52,7 +52,7 @@ class WorkoutsView(FlaskView):
         return service_response.data, service_response.status_code
     
     @route('/<workout_id>/users', methods=['GET'])
-    def list_workout_attendees(self, workout_id):
+    def list_workout_attendees(self, workout_id): # TODO: Add pagination
         service_response = AttendeeService().list_workout_attendees(workout_id)
         return [user.to_quickview() for user in service_response.data], service_response.status_code
     

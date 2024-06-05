@@ -8,7 +8,7 @@ class SearchView(FlaskView):
 
     @route('', methods=['GET'])
     @token_required
-    def get_feed(self):
+    def search_users(self):
         search_query = request.args.get('q', "")
         page = request.args.get('page', 1, type=int)
         service_response = UserService().search_users(search_query, page)

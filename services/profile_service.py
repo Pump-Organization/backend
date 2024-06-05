@@ -43,7 +43,7 @@ class ProfileService(Service):
         
         return self.ServiceResponse(data=past_workouts, status_code=200)
     
-    def get_feed(self):
+    def get_feed(self, page=1):
         user_id = g.user_id
         friend_ids_subquery = self.session.query(Friendship.sender_id.label('friend_id')).filter(
             and_(
@@ -67,6 +67,6 @@ class ProfileService(Service):
                 Attendee.user_id.in_(friend_ids),
                 Workout.datetime < current_time
             )
-        ).distinct().order_by(Workout.datetime.desc())
+        ).distinct().order_by(Workout.datetime.desc()).limit(constants.POSTS_PER_PAGE).offset((page - 1) * constants.POSTS_PER_PAGE)
 
         return self.ServiceResponse(data=feed_query.all(), status_code=200)
