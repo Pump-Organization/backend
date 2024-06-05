@@ -34,7 +34,7 @@ class FriendshipsView(FlaskView):
     
     @route('/requests', methods=['GET'])
     @token_required
-    def get_friend_requests(self): # TODO: Add pagination
+    def get_friend_requests(self):
         page = request.args.get('page', 1, int)
         service_response = FriendshipService().get_friend_requests(page)
         return [serialize_friend(friend_request.friendship_id, friend_request[0]) for friend_request in service_response.data]

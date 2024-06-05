@@ -56,7 +56,7 @@ class FriendshipService(Service):
         ).count()
         return self.ServiceResponse(status_code=200, data=num_friendships)
     
-    def get_friends(self, user_id):
+    def get_friends(self, user_id, page=1):
         friends = self.session.query(User, Friendship.id.label("friendship_id")).join(Friendship, Friendship.sender_id == User.id).filter(
             and_(
                 Friendship.recipient_id == user_id,
@@ -69,7 +69,7 @@ class FriendshipService(Service):
                     Friendship.status == FriendshipStatusEnum.accepted
                 )
             )
-        ).all()
+        ).limit(USERS_PER_PAGE).offset((page - 1) * USERS_PER_PAGE)
         return self.ServiceResponse(status_code=200, data=friends)
     
     def get_friend_requests(self, page=1):
