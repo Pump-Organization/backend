@@ -23,7 +23,7 @@ class MockFriendshipService(FriendshipService):
     def __init__(self) -> None:
         super().__init__()
 
-    def get_friends(self, user_id):
+    def get_friends(self, user_id, page=1):
         return Service.ServiceResponse(status_code=200, data=[mock_friend1, mock_friend2])
 
     def create_friendship(self, data):
@@ -38,5 +38,5 @@ class MockFriendshipService(FriendshipService):
     def delete_friendship(self, friendship_id):
         return Service.ServiceResponse(status_code=204)
     
-    def get_friend_requests(self):
+    def get_friend_requests(self, page=1):
         return Service.ServiceResponse(status_code=200, data=[mock_friend2])

@@ -18,5 +18,5 @@ class MockWorkoutService(WorkoutService):
     def delete_workout(self, workout_id):
         return Service.ServiceResponse(status_code=204)
     
-    def get_upcoming_workouts(self, user_id, date, status="accepted"):
+    def get_upcoming_workouts(self, user_id, date, status="accepted", page=1):
         return Service.ServiceResponse(status_code=200, data=[MockWorkout("Morning Run", "Morning run around the park", "run")])
