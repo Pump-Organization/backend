@@ -19,6 +19,8 @@ class Workout(db.Model):
     description: str = Column(String, nullable=True)
     workout_pic: str = Column(String, nullable=True)  # url
     workout_type: str = Column(Enum(WorkoutTypeEnum))
+    location: str = Column(String, nullable=True)
+    city: str = Column(String, nullable=True)
     datetime: dt.datetime = Column(DateTime)
     created_at: str = Column(DateTime, default=dt.datetime.now(dt.timezone.utc))
 
@@ -27,6 +29,18 @@ class Workout(db.Model):
         if len(title) > 50:
             raise BadDataError
         return title
+    
+    @validates('city')
+    def validate_workout_city(self, key, city):
+        if len(city) > 50:
+            raise BadDataError
+        return city
+    
+    @validates('location')
+    def validate_workout_location(self, key, location):
+        if len(location) > 50:
+            raise BadDataError
+        return location
     
     @validates('description')
     def validate_workout_description(self, key, description):
@@ -51,6 +65,8 @@ class Workout(db.Model):
             'description': self.description,
             'workout_pic': self.workout_pic,
             'workout_type': self.workout_type,
+            'location': self.location,
+            'city': self.city,
             'datetime': self.datetime.isoformat()  # Serialize datetime to ISO format
         }
     
