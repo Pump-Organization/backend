@@ -23,7 +23,7 @@ class Attendee(db.Model):
     status: str = Column(Enum(AttendeeStatusEnum))
     created_at: str = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     
-    user = relationship("User", foreign_keys=[user_id])
+    user = relationship("User", back_populates="attendances")
     workout = relationship("Workout", foreign_keys=[workout_id])
 
     __table_args__ = (

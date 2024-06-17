@@ -19,6 +19,8 @@ class User(db.Model):
     bio: str = Column(String, nullable=True)
     hashed_password: str = Column(String)
     created_at: str = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
+    
+    attendances = db.relationship('Attendee', back_populates='user')
 
     @validates('username')
     def validate_username(self, key, username):

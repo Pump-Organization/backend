@@ -11,5 +11,5 @@ class FeedView(FlaskView):
     def get_feed(self):
         page = request.args.get('page', 1, type=int)
         service_response = ProfileService().get_feed(page)
-        return [workout.to_json() for workout in service_response.data], service_response.status_code
+        return service_response.data, service_response.status_code
     

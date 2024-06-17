@@ -24,6 +24,8 @@ class Workout(db.Model):
     datetime: dt.datetime = Column(DateTime)
     created_at: str = Column(DateTime, default=dt.datetime.now(dt.timezone.utc))
 
+    attendees = db.relationship('Attendee', back_populates='workout')
+
     @validates('title')
     def validate_workout_title(self, key, title):
         if len(title) > 50:

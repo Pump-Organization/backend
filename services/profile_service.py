@@ -1,7 +1,8 @@
 from datetime import datetime
 from flask import g
 from sqlalchemy import and_
-from db.models import Attendee, AttendeeStatusEnum, Workout, Friendship
+from sqlalchemy.orm import joinedload
+from db.models import Attendee, AttendeeStatusEnum, AttendeeTypeEnum, Workout, Friendship
 from services.user_service import UserService
 from services.friendship_service import FriendshipService
 from services.workout_service import WorkoutService
@@ -67,6 +68,15 @@ class ProfileService(Service):
                 Attendee.user_id.in_(friend_ids),
                 Workout.datetime < current_time
             )
+        ).options(
+            joinedload(Workout.attendees).joinedload(Attendee.user)
         ).distinct().order_by(Workout.datetime.desc()).limit(constants.POSTS_PER_PAGE).offset((page - 1) * constants.POSTS_PER_PAGE)
 
-        return self.ServiceResponse(data=feed_query.all(), status_code=200)
+        results = []
+        for workout in feed_query.all():
+            organizer = next(attendee.user for attendee in workout.attendees if attendee.attendee_type == AttendeeTypeEnum.organizer)
+            workout_json = workout.to_json()
+            workout_json['organizer_username'] = organizer.username if organizer else None
+            results.append(workout_json)
+
+        return self.ServiceResponse(data=results, status_code=200)
