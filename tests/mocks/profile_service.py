@@ -23,5 +23,7 @@ class MockProfileService(ProfileService):
             })
     
     def get_profile_workouts(self, user_id, page):
-        return Service.ServiceResponse(status_code=200, data=[MockWorkout("Morning Run", "Morning run around the park", "run")])
+        return Service.ServiceResponse(status_code=200, data=[{"title": "Morning Run", 
+                                                               "description": "Morning run around the park", 
+                                                               "workout_type": "run"}])
     

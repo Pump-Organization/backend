@@ -1,5 +1,5 @@
 from db.models.workout import Workout
-from db.models.attendee import Attendee, AttendeeTypeEnum
+from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
 from services.service import Service
 from constants.error_constants import ForbiddenError, NotFoundError
 from constants import WORKOUTS_PER_PAGE
@@ -109,9 +109,9 @@ class WorkoutService(Service):
         for workout in workouts:
             organizer = next(attendee.user for attendee in workout.attendees if attendee.attendee_type == AttendeeTypeEnum.organizer)
             workout_json = workout.to_json()
-            workout_json['organizer'] = organizer.username if organizer else None
+            workout_json['organizer_username'] = organizer.username if organizer else None
+            workout_json['num_attendees'] = sum(1 for attendee in workout.attendees if attendee.status == AttendeeStatusEnum.accepted)
             results.append(workout_json)
-
         return self.ServiceResponse(status_code=200, data=results)
     
     def get_organizer_id(self, workout_id):

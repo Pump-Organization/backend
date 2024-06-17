@@ -40,9 +40,19 @@ class ProfileService(Service):
             Attendee.user_id == user_id,
             Attendee.status == AttendeeStatusEnum.accepted,
             Workout.datetime < now
-        ).order_by(Workout.datetime.desc()).offset(offset).limit(per_page).all()
+        ).options(
+            joinedload(Workout.attendees).joinedload(Attendee.user)
+        ).order_by(Workout.datetime.desc()).offset(offset).limit(per_page)
         
-        return self.ServiceResponse(data=past_workouts, status_code=200)
+        results = []
+        for workout in past_workouts.all():
+            organizer = next(attendee.user for attendee in workout.attendees if attendee.attendee_type == AttendeeTypeEnum.organizer)
+            workout_json = workout.to_json()
+            workout_json['organizer_username'] = organizer.username if organizer else None
+            workout_json['num_attendees'] = sum(1 for attendee in workout.attendees if attendee.status == AttendeeStatusEnum.accepted)
+            results.append(workout_json)
+        
+        return self.ServiceResponse(data=results, status_code=200)
     
     def get_feed(self, page=1):
         user_id = g.user_id
@@ -77,6 +87,7 @@ class ProfileService(Service):
             organizer = next(attendee.user for attendee in workout.attendees if attendee.attendee_type == AttendeeTypeEnum.organizer)
             workout_json = workout.to_json()
             workout_json['organizer_username'] = organizer.username if organizer else None
+            workout_json['num_attendees'] = sum(1 for attendee in workout.attendees if attendee.status == AttendeeStatusEnum.accepted)
             results.append(workout_json)
 
         return self.ServiceResponse(data=results, status_code=200)

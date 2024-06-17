@@ -14,4 +14,4 @@ class ProfilesView(FlaskView):
     def get_profile_workouts(self, user_id):
         page = request.args.get('page', 1, int)
         service_response = ProfileService().get_profile_workouts(user_id, page)
-        return [workout.to_json() for workout in service_response.data], service_response.status_code
+        return service_response.data, service_response.status_code
