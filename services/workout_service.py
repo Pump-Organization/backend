@@ -6,6 +6,7 @@ from constants import WORKOUTS_PER_PAGE
 from datetime import datetime, timedelta
 from flask import g
 from sqlalchemy import func
+from sqlalchemy.orm import joinedload
 import constants
 
 
@@ -96,13 +97,22 @@ class WorkoutService(Service):
         return self.ServiceResponse(status_code=200, data=result_dict)
         
     def get_upcoming_workouts(self, user_id, date, status="accepted", page=1):
-        workouts = self.session.query(Workout).join(Attendee, Attendee.workout_id == Workout.id)\
-            .filter(Attendee.user_id == user_id)\
-            .filter(Attendee.status == status)\
-            .filter(Workout.datetime >= date, Workout.datetime < date + timedelta(days=1))\
-            .limit(WORKOUTS_PER_PAGE).offset((page - 1) * WORKOUTS_PER_PAGE)
+        workouts = self.session.query(Workout).join(Attendee, Attendee.workout_id == Workout.id
+        ).filter(Attendee.user_id == user_id
+        ).filter(Attendee.status == status
+        ).filter(Workout.datetime >= date, Workout.datetime < date + timedelta(days=1)
+        ).options(
+            joinedload(Workout.attendees).joinedload(Attendee.user)
+        ).limit(WORKOUTS_PER_PAGE).offset((page - 1) * WORKOUTS_PER_PAGE)
 
-        return self.ServiceResponse(status_code=200, data=workouts)
+        results = []
+        for workout in workouts:
+            organizer = next(attendee.user for attendee in workout.attendees if attendee.attendee_type == AttendeeTypeEnum.organizer)
+            workout_json = workout.to_json()
+            workout_json['organizer'] = organizer.username if organizer else None
+            results.append(workout_json)
+
+        return self.ServiceResponse(status_code=200, data=results)
     
     def get_organizer_id(self, workout_id):
         organizer = self.session.query(Attendee).filter(

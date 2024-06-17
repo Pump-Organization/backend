@@ -8,7 +8,9 @@ class MockProfileService(ProfileService):
         super().__init__()
 
     def get_feed(self, page=1):
-        return Service.ServiceResponse(status_code=200, data=[MockWorkout("Morning Run", "Morning run around the park", "run")])
+        return Service.ServiceResponse(status_code=200, data=[{"title": "Morning Run",
+                                                               "description": "Morning run around the park",
+                                                               "workout_type": "run"}])
     
     def get_profile(self, user_id):
         return Service.ServiceResponse(status_code=200, data={
