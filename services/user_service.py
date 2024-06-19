@@ -35,7 +35,7 @@ class UserService(Service):
         try:
             if g.user_id != int(user_id):
                 raise ForbiddenError
-            user = self.session.query(User).filter(User.id==user_id)
+            user = self.session.query(User).filter(User.id==user_id).first()
             if user:
                 for key, value in data.items():
                     setattr(user, key, value)
