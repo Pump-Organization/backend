@@ -22,6 +22,8 @@ class WorkoutService(Service):
             description = data.get('description'),
             workout_type = data.get('workout_type'),
             workout_pic = data.get('workout_pic'),
+            location = data.get('location'),
+            city = data.get('city'),
             datetime = parsed_datetime
         )
         workout_response = self.add_data(new_workout, False)
