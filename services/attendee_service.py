@@ -54,14 +54,17 @@ class AttendeeService(Service):
             return self.handle_error(e)
         
     def list_workout_attendees(self, workout_id):
-        users = (
-            self.session.query(User)
+        attendees_info = (
+            self.session.query(User, Attendee.status)
             .join(Attendee, Attendee.user_id == User.id)
             .filter(
                 Attendee.workout_id == workout_id
             ).all()
         )
-        return self.ServiceResponse(status_code=200, data=users)
+        data = [
+            {'user': user.to_quickview(), 'status': status} for user, status in attendees_info
+        ]
+        return self.ServiceResponse(status_code=200, data=data)
     
     def get_workout_organizer(self, workout_id):
         organizer = self.session.query(Attendee).filter(

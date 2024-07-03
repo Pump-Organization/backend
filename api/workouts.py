@@ -56,7 +56,7 @@ class WorkoutsView(FlaskView):
     @route('/<workout_id>/users', methods=['GET'])
     def list_workout_attendees(self, workout_id): # TODO: Add pagination
         service_response = AttendeeService().list_workout_attendees(workout_id)
-        return [user.to_quickview() for user in service_response.data], service_response.status_code
+        return [attendee for attendee in service_response.data], service_response.status_code
     
     @route('/<workout_id>/accept', methods=['POST'])
     @token_required
@@ -69,3 +69,13 @@ class WorkoutsView(FlaskView):
     def reject_workout(self, workout_id):
         service_response = AttendeeService().delete_attendee(workout_id, g.user_id)
         return service_response.data, service_response.status_code
+    
+
+    def serialize_attendee(self, attendee):
+        return {
+            'id': attendee.id,
+            'username': attendee.username,
+            'name': attendee.name,
+            'profile_pic': attendee.profile_pic,
+            'status': attendee.status
+        }
