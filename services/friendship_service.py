@@ -48,6 +48,21 @@ class FriendshipService(Service):
             return self.ServiceResponse(status_code=204)
         except Exception as e:
             return self.handle_error(e)
+        
+    def is_friend(self, user_id, friend_id):
+        friendship = Friendship.query.filter(
+            (Friendship.sender_id == user_id) & (Friendship.recipient_id == friend_id) |
+            (Friendship.sender_id == friend_id) & (Friendship.recipient_id == user_id)
+        ).first()
+
+        if friendship is None:
+            return {"status": "False", "friendship_id": None}
+        elif friendship.status == FriendshipStatusEnum.accepted:
+            return {"status": "True", "friendship_id": friendship.id}
+        else:
+            if friendship.sender_id == user_id:
+                return {"status": "Requested", "friendship_id": friendship.id}
+            return {"status": "Pending", "friendship_id": friendship.id}
     
     def get_frienship_count(self, user_id):
         num_friendships = Friendship.query.filter(
