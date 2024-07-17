@@ -91,7 +91,7 @@ class UserService(Service):
         ).subquery('friendship_status')
 
         # Perform the user search query
-        users_query = self.session.query(User).filter(User.username.ilike(f'%{query}%'))
+        users_query = self.session.query(User).filter(User.username.ilike(f'%{query}%')).distinct()
 
         # Join the user search results with the friendship subquery
         final_query = users_query.outerjoin(
