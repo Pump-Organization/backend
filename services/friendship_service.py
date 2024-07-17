@@ -56,13 +56,13 @@ class FriendshipService(Service):
         ).first()
 
         if friendship is None:
-            return {"status": "False", "friendship_id": None}
+            return {"status": None, "friendship_id": None}
         elif friendship.status == FriendshipStatusEnum.accepted:
-            return {"status": "True", "friendship_id": friendship.id}
+            return {"status": "accepted", "friendship_id": friendship.id}
         else:
             if friendship.sender_id == user_id:
-                return {"status": "Requested", "friendship_id": friendship.id}
-            return {"status": "Pending", "friendship_id": friendship.id}
+                return {"status": "requested", "friendship_id": friendship.id}
+            return {"status": "pending", "friendship_id": friendship.id}
     
     def get_frienship_count(self, user_id):
         num_friendships = Friendship.query.filter(
