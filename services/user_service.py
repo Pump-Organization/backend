@@ -7,6 +7,9 @@ from db.models.friendship import Friendship
 from services.service import Service
 from sqlalchemy import String, case, and_, or_, func
 from sqlalchemy.orm import aliased
+from logging import getLogger
+
+logger = getLogger(__name__)
 
 
 class UserService(Service):
@@ -65,45 +68,25 @@ class UserService(Service):
         return hashed_password
     
     def search_users(self, query, page=1):
-        # Define aliases for sender and recipient to use in the subquery
-        sender_alias = aliased(Friendship)
-        recipient_alias = aliased(Friendship)
-
         # Define the case statement for conditional status modification
         status_case = case(
-            (and_(recipient_alias.status == 'requested', recipient_alias.recipient_id == g.user_id), 'pending'),
-            (or_(sender_alias.status == 'accepted', recipient_alias.status == 'accepted'), 'accepted'),
-            (and_(sender_alias.status == 'requested', sender_alias.sender_id == g.user_id), 'requested'),
-            else_=func.cast('unknown', String)
+            (and_(Friendship.status == 'requested', Friendship.recipient_id == g.user_id), 'pending'),
+            (and_(Friendship.status == 'requested', Friendship.sender_id == g.user_id), 'requested'),
+            (or_(Friendship.status == 'accepted'), 'accepted'),
+            else_=func.cast('none', String)
         )
-
-        # Define the friendship subquery
-        friendship_subquery = self.session.query(
-            sender_alias.recipient_id.label('user_id'),
-            sender_alias.id.label('friendship_id'),
-            status_case.label('status')
-        ).filter(sender_alias.sender_id == g.user_id).union(
-            self.session.query(
-                recipient_alias.sender_id.label('user_id'),
-                recipient_alias.id.label('friendship_id'),
-                status_case
-            ).filter(recipient_alias.recipient_id == g.user_id)
-        ).subquery('friendship_status')
 
         # Perform the user search query
-        users_query = self.session.query(User).filter(User.username.ilike(f'%{query}%')).distinct()
-
-        # Join the user search results with the friendship subquery
-        final_query = users_query.outerjoin(
-            friendship_subquery,
-            User.id == friendship_subquery.c.user_id
-        ).add_columns(
-            friendship_subquery.c.status,
-            friendship_subquery.c.friendship_id
-        )
+        users_query = self.session.query(User, Friendship.id.label('friendship_id'), status_case.label('friendship_status'))\
+            .outerjoin(Friendship, or_(
+                and_(Friendship.sender_id == User.id, Friendship.recipient_id == g.user_id),
+                and_(Friendship.recipient_id == User.id, Friendship.sender_id == g.user_id)
+            ))\
+            .filter(User.username.ilike(f'%{query}%')).distinct(User.id)
 
         # Execute the query and paginate results
-        results = final_query.paginate(page=page, per_page=20).items
+        results = users_query.paginate(page=page, per_page=20).items
+        logger.info(f"####### Search results: {results}")
 
         return self.ServiceResponse(status_code=200, data=results)
         
