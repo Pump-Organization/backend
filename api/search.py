@@ -12,11 +12,11 @@ class SearchView(FlaskView):
         search_query = request.args.get('q', "")
         page = request.args.get('page', 1, type=int)
         service_response = UserService().search_users(search_query, page)
-        return [serialize_search_result(user, friendship_status, friendship_id) for user, friendship_status, friendship_id in service_response.data], service_response.status_code
+        return [serialize_search_result(user, friendship_id, friendship_status) for user, friendship_id, friendship_status in service_response.data], service_response.status_code
     
 
 
-def serialize_search_result(user, friendship_status, friendship_id):
+def serialize_search_result(user, friendship_id, friendship_status):
     ret = user.to_quickview()
     if friendship_status is None:
         friendship_status = "not_friends"
