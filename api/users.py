@@ -41,4 +41,5 @@ class UsersView(FlaskView):
 def serialize_friend(friendship_id, user):
     user_json = user.to_quickview()
     user_json["friendship_id"] = friendship_id
+    user_json["friendship_status"] = "accepted"
     return user_json
