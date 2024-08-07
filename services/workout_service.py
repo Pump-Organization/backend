@@ -20,7 +20,6 @@ class WorkoutService(Service):
         new_workout = Workout(
             title = data.get('title'),
             description = data.get('description'),
-            workout_type = data.get('workout_type'),
             workout_pic = data.get('workout_pic'),
             location = data.get('location'),
             city = data.get('city'),
@@ -81,27 +80,6 @@ class WorkoutService(Service):
         num_workouts = self.session.query(Attendee.workout_id).\
             filter(Attendee.user_id == user_id, Attendee.status == AttendeeStatusEnum.accepted).count()
         return self.ServiceResponse(status_code=200, data=num_workouts)
-    
-    def get_top_workout_types(self, user_id):
-        subquery = (
-            self.session.query(Workout.workout_type, func.count(Workout.workout_type).label('count'))
-            .join(Attendee, Attendee.workout_id == Workout.id)
-            .filter(Attendee.user_id == user_id)
-            .where(Workout.datetime < datetime.now())
-            .group_by(Workout.workout_type)
-            .subquery()
-        )
-
-        top_event_types = (
-            self.session.query(subquery.c.workout_type, subquery.c.count)
-            .order_by(subquery.c.count.desc())
-            .limit(3)
-            .all()
-        )
-
-        result_dict = {workout_type: count for workout_type, count in top_event_types}
-
-        return self.ServiceResponse(status_code=200, data=result_dict)
         
     def get_upcoming_workouts(self, user_id, date, status="accepted", page=1):
         workouts = self.session.query(Workout).join(Attendee, Attendee.workout_id == Workout.id

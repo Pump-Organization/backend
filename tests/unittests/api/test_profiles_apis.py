@@ -28,8 +28,7 @@ class TestProfileAPIs(APIUnitTest):
         assert response.status_code == 200
         assert json.loads(response.data) == [{
             "title": "Morning Run",
-            "description": "Morning run around the park",
-            "workout_type": "run"
+            "description": "Morning run around the park"
         }]
 
     

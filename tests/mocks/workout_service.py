@@ -20,5 +20,4 @@ class MockWorkoutService(WorkoutService):
     
     def get_upcoming_workouts(self, user_id, date, status="accepted", page=1):
         return Service.ServiceResponse(status_code=200, data=[{"title": "Morning Run", 
-                                                               "description": "Morning run around the park", 
-                                                               "workout_type": "run"}])
+                                                               "description": "Morning run around the park"}])

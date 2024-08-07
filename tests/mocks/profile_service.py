@@ -9,8 +9,7 @@ class MockProfileService(ProfileService):
 
     def get_feed(self, page=1):
         return Service.ServiceResponse(status_code=200, data=[{"title": "Morning Run",
-                                                               "description": "Morning run around the park",
-                                                               "workout_type": "run"}])
+                                                               "description": "Morning run around the park"}])
     
     def get_profile(self, user_id):
         return Service.ServiceResponse(status_code=200, data={
@@ -19,11 +18,10 @@ class MockProfileService(ProfileService):
             "username": "johndoe", 
             "profile_pic": "https://example.com/johndoe.jpg", 
             "num_friends": 2, 
-            "workout_counts": {"run": 2, "lift": 1, "bike": 1}
+            "num_workouts": 4
             })
     
     def get_profile_workouts(self, user_id, page):
         return Service.ServiceResponse(status_code=200, data=[{"title": "Morning Run", 
-                                                               "description": "Morning run around the park", 
-                                                               "workout_type": "run"}])
+                                                               "description": "Morning run around the park"}])
     

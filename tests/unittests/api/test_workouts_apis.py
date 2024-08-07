@@ -16,15 +16,13 @@ class TestWorkoutAPIs(APIUnitTest):
     def test_create_workout(self, client):
         data = {
             "title": "Morning Run",
-            "description": "Morning run around the park",
-            "workout_type": "run"
+            "description": "Morning run around the park"
         }
         response = client.post('/workouts', json=data)
         assert response.status_code == 200
         assert response.json == {
             "title": "Morning Run",
-            "description": "Morning run around the park",
-            "workout_type": "run"
+            "description": "Morning run around the park"
         }
 
     def test_get_workout(self, client):
@@ -32,8 +30,7 @@ class TestWorkoutAPIs(APIUnitTest):
         assert response.status_code == 200
         assert json.loads(response.data) == {
             "title": "Morning Run",
-            "description": "Morning run around the park",
-            "workout_type": "run"
+            "description": "Morning run around the park"
         }
 
     def test_update_workout(self, client):
@@ -44,8 +41,7 @@ class TestWorkoutAPIs(APIUnitTest):
         assert response.status_code == 200
         assert json.loads(response.data) == {
             "title": "Morning Jog",
-            "description": "Morning run around the park",
-            "workout_type": "run"
+            "description": "Morning run around the park"
         }
 
     def test_delete_workout(self, client):
@@ -57,8 +53,7 @@ class TestWorkoutAPIs(APIUnitTest):
         assert response.status_code == 200
         assert json.loads(response.data) == [{
             "title": "Morning Run",
-            "description": "Morning run around the park",
-            "workout_type": "run"
+            "description": "Morning run around the park"
         }]
     
     def test_get_invites(self, client):
@@ -66,8 +61,7 @@ class TestWorkoutAPIs(APIUnitTest):
         assert response.status_code == 200
         assert json.loads(response.data) == [{
             "title": "Morning Run",
-            "description": "Morning run around the park",
-            "workout_type": "run"
+            "description": "Morning run around the park"
         }]
 
     def test_list_workout_attendees(self, client):

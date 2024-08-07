@@ -1,8 +1,8 @@
-"""no_salt
+"""initial_commit
 
-Revision ID: cb473567615d
+Revision ID: b4cc3a4d068a
 Revises: 
-Create Date: 2024-05-31 22:36:01.951947
+Create Date: 2024-08-07 04:59:39.564845
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'cb473567615d'
+revision: str = 'b4cc3a4d068a'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -31,6 +31,7 @@ def upgrade() -> None:
     sa.Column('hashed_password', sa.String(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('email'),
     sa.UniqueConstraint('username')
     )
     op.create_table('workout',
@@ -38,7 +39,8 @@ def upgrade() -> None:
     sa.Column('title', sa.String(), nullable=True),
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('workout_pic', sa.String(), nullable=True),
-    sa.Column('workout_type', sa.Enum('lift', 'run', 'bike', name='workouttypeenum'), nullable=True),
+    sa.Column('location', sa.String(), nullable=True),
+    sa.Column('city', sa.String(), nullable=True),
     sa.Column('datetime', sa.DateTime(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')

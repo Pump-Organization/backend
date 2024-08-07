@@ -1,14 +1,9 @@
 import datetime as dt
 import enum
 from constants.error_constants import BadDataError
-from sqlalchemy import Column, Integer, String, DateTime, Enum
+from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import validates
 from db.db import db
-
-class WorkoutTypeEnum(str, enum.Enum):
-    lift = "lift",
-    run = "run",
-    bike = "bike"
 
 
 class Workout(db.Model):
@@ -18,7 +13,6 @@ class Workout(db.Model):
     title: str = Column(String)
     description: str = Column(String, nullable=True)
     workout_pic: str = Column(String, nullable=True)  # url
-    workout_type: str = Column(Enum(WorkoutTypeEnum))
     location: str = Column(String, nullable=True)
     city: str = Column(String, nullable=True)
     datetime: dt.datetime = Column(DateTime)
@@ -66,7 +60,6 @@ class Workout(db.Model):
             'title': self.title,
             'description': self.description,
             'workout_pic': self.workout_pic,
-            'workout_type': self.workout_type,
             'location': self.location,
             'city': self.city,
             'datetime': self.datetime.isoformat()  # Serialize datetime to ISO format

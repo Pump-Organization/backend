@@ -20,10 +20,9 @@ class MockFriendship(MockModel):
         self.status = status
 
 class MockWorkout(MockModel):
-    def __init__(self, title, description, workout_type):
+    def __init__(self, title, description):
         self.title = title
         self.description = description
-        self.workout_type = workout_type
 
 class MockAttendee(MockModel):
     def __init__(self, attendee_id, workout_id, user_id, attendee_type="guest", status="pending"):
