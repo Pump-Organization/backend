@@ -76,6 +76,11 @@ class WorkoutService(Service):
             return self.ServiceResponse(status_code=204)
         except Exception as e:
             return self.handle_error(e)
+        
+    def get_num_workouts(self, user_id):
+        num_workouts = self.session.query(Attendee.workout_id).\
+            filter(Attendee.user_id == user_id, Attendee.status == AttendeeStatusEnum.accepted).count()
+        return self.ServiceResponse(status_code=200, data=num_workouts)
     
     def get_top_workout_types(self, user_id):
         subquery = (
