@@ -102,7 +102,7 @@ class WorkoutService(Service):
         workouts = self.session.query(Workout).join(Attendee, Attendee.workout_id == Workout.id
         ).filter(Attendee.user_id == user_id
         ).filter(Attendee.status == status
-        ).filter(Workout.datetime >= date, Workout.datetime
+        ).filter(Workout.datetime >= date
         ).options(
             joinedload(Workout.attendees).joinedload(Attendee.user)
         ).limit(WORKOUTS_PER_PAGE).offset((page - 1) * WORKOUTS_PER_PAGE)
