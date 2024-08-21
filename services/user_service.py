@@ -1,8 +1,9 @@
 from argon2 import PasswordHasher
 from flask import g
-from constants.error_constants import ForbiddenError, NotFoundError, ConflictError
+from constants.error_constants import BadDataError, ConflictError, ForbiddenError, NotFoundError
 from constants import USERS_PER_PAGE
 from db.models.user import User
+from db.models.follower import Follower
 from db.models.friendship import Friendship
 from services.service import Service
 from sqlalchemy import String, case, and_, or_, func
@@ -66,6 +67,20 @@ class UserService(Service):
         ph = PasswordHasher()
         hashed_password = ph.hash(password)
         return hashed_password
+    
+    def follow_user(self, user_id):
+        try:
+            if g.user_id == int(user_id):
+                raise BadDataError("cannot follow self")
+            if Follower.query.filter_by(follower_id=g.user_id, followed_id=user_id).first():
+                raise ConflictError("already following")
+            new_follower = Follower(
+                follower_id = g.user_id,
+                followed_id = user_id
+            )
+            return self.add_data(new_follower)
+        except Exception as e:
+            return self.handle_error(e)
     
     def search_users(self, query, page=1):
         # Define the case statement for conditional status modification

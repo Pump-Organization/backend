@@ -63,7 +63,7 @@ app.register_error_handler(Exception, handle_app_error)
 @app.before_request
 def sanitize_request_data():
     if request.method in ['POST', 'PUT', 'PATCH']:
-        if request.json:
+        if request.get_json(silent=True):
             if request.json != sanitize_input(request.json):
                 raise BadDataError
         if request.form:
