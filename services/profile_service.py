@@ -33,7 +33,7 @@ class ProfileService(Service):
             'friendship_id': is_friend["friendship_id"],
             'num_friends': friendship_response.data,
             'num_followers': num_followers,
-            'num_followings': num_followings,
+            'num_following': num_followings,
             'num_workouts': num_workouts_response.data,
         }
 
