@@ -113,3 +113,11 @@ class UserService(Service):
     def is_following_user(self, follower_id):
         return Follower.query.filter_by(follower_id=g.user_id, followed_id=follower_id).first() != None
         
+
+    def get_num_followers(self, user_id):
+        num_followers = Follower.query.filter_by(followed_id=user_id).count()
+        return num_followers
+    
+    def get_num_followings(self, user_id):
+        num_followings = Follower.query.filter_by(follower_id=user_id).count()
+        return num_followings

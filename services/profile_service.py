@@ -16,6 +16,8 @@ class ProfileService(Service):
             return user_response
         is_friend = FriendshipService().is_friend(g.user_id, user_id)
         is_following = UserService().is_following_user(user_id)
+        num_followers = UserService().get_num_followers(user_id)
+        num_followings = UserService().get_num_followings(user_id)
         friendship_response = FriendshipService().get_frienship_count(user_id)
         num_workouts_response = WorkoutService().get_num_workouts(user_id)
         response_data = {
@@ -30,6 +32,8 @@ class ProfileService(Service):
             'is_friend': is_friend["status"],
             'friendship_id': is_friend["friendship_id"],
             'num_friends': friendship_response.data,
+            'num_followers': num_followers,
+            'num_followings': num_followings,
             'num_workouts': num_workouts_response.data,
         }
 
