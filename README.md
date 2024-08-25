@@ -12,20 +12,23 @@ To run this Flask app, follow these steps:
 
 ## Adminer
 
-To use Adminer (https://www.adminer.org/) for database management, Docker Compose then navigate to http://localhost:8080 in a browser.
+To use Adminer (https://www.adminer.org/) for database visualization, Docker Compose then navigate to http://localhost:8080 in a browser.
 
 ## Making Migrations
 
-After creating or updating models (or making a new db container), the db schema must be updated using Alembic (https://alembic.sqlalchemy.org/en/latest/index.html)
+After pulling model changes, the db must be upgraded to the new migrations using Alembic (https://alembic.sqlalchemy.org/en/latest/index.html). This is only necessary when the db schema is changed.
 
-1. **Detached Docker Compose**:
+For now, we can nuke our db then rebuild with the new migrations. After we deploy, we'll meet to apply migrations.
+
+
+1. **Delete local Pump containers and volumes**:
 ```bash
-make detached
+make down
 ```
 
-2. **If required, create the migration version**:
+2. **Detached Docker Compose**:
 ```bash
-make makemigration MESSAGE="<message>"
+make detached
 ```
 
 3. **Apply migration**:
