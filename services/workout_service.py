@@ -59,7 +59,7 @@ class WorkoutService(Service):
             for key, value in data.items():
                 setattr(workout, key, value)
             self.session.commit()
-            return self.ServiceResponse(status_code=200, data=workout)
+            return workout
         else:
             raise NotFoundError
     
@@ -68,12 +68,12 @@ class WorkoutService(Service):
             raise ForbiddenError
         self.session.query(Workout).filter(Workout.id==workout_id).delete()
         self.session.commit()
-        return self.ServiceResponse(status_code=204)
+        return
         
     def get_num_workouts(self, user_id):
         num_workouts = self.session.query(Attendee.workout_id).\
             filter(Attendee.user_id == user_id, Attendee.status == AttendeeStatusEnum.accepted).count()
-        return self.ServiceResponse(status_code=200, data=num_workouts)
+        return num_workouts
         
     def get_upcoming_workouts(self, user_id, date, status="accepted", page=1):
         workouts = self.session.query(Workout).join(Attendee, Attendee.workout_id == Workout.id
@@ -91,7 +91,7 @@ class WorkoutService(Service):
             workout_json['organizer_username'] = organizer.username if organizer else None
             workout_json['num_attendees'] = sum(1 for attendee in workout.attendees if attendee.status == AttendeeStatusEnum.accepted)
             results.append(workout_json)
-        return self.ServiceResponse(status_code=200, data=results)
+        return results
     
     def get_organizer_id(self, workout_id):
         organizer = self.session.query(Attendee).filter(

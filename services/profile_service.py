@@ -11,33 +11,31 @@ import constants
 
 class ProfileService(Service):
     def get_profile(self, user_id):
-        user_response = UserService().get_user(user_id)
-        if user_response.status_code != 200:
-            return user_response
+        user_data = UserService().get_user(user_id)
         is_friend = FriendshipService().is_friend(g.user_id, user_id)
         is_following = UserService().is_following_user(user_id)
         num_followers = UserService().get_num_followers(user_id)
         num_followings = UserService().get_num_followings(user_id)
-        friendship_response = FriendshipService().get_frienship_count(user_id)
-        num_workouts_response = WorkoutService().get_num_workouts(user_id)
+        friendship_count = FriendshipService().get_friendship_count(user_id)
+        num_workouts = WorkoutService().get_num_workouts(user_id)
         response_data = {
-            'id': user_response.data.id,
-            'username': user_response.data.username,
-            'name': user_response.data.name,
-            'profile_pic': user_response.data.profile_pic,
-            'location': user_response.data.location,
-            'email': user_response.data.email,
-            'bio': user_response.data.bio,
+            'id': user_data.id,
+            'username': user_data.username,
+            'name': user_data.name,
+            'profile_pic': user_data.profile_pic,
+            'location': user_data.location,
+            'email': user_data.email,
+            'bio': user_data.bio,
             'is_following': is_following,
             'is_friend': is_friend["status"],
             'friendship_id': is_friend["friendship_id"],
-            'num_friends': friendship_response.data,
+            'num_friends': friendship_count,
             'num_followers': num_followers,
             'num_following': num_followings,
-            'num_workouts': num_workouts_response.data,
+            'num_workouts': num_workouts,
         }
 
-        return self.ServiceResponse(status_code=200, data=response_data)
+        return response_data
     
     def get_profile_workouts(self, user_id, page):
         per_page = constants.POSTS_PER_PAGE
@@ -60,7 +58,7 @@ class ProfileService(Service):
             workout_json['num_attendees'] = sum(1 for attendee in workout.attendees if attendee.status == AttendeeStatusEnum.accepted)
             results.append(workout_json)
         
-        return self.ServiceResponse(data=results, status_code=200)
+        return results
 
     def get_feed(self, page=1):
         following_ids_subquery = self.session.query(Follower.followed_id.label('followed_id'))\
@@ -86,4 +84,4 @@ class ProfileService(Service):
             workout_json['num_attendees'] = sum(1 for attendee in workout.attendees if attendee.status == AttendeeStatusEnum.accepted)
             results.append(workout_json)
 
-        return self.ServiceResponse(data=results, status_code=200)
+        return results

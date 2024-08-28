@@ -32,7 +32,7 @@ class AttendeeService(Service):
         for key, value in data.items():
             setattr(attendee, key, value)
         self.session.commit()
-        return self.ServiceResponse(status_code=200, data=attendee)
+        return attendee
     
     def delete_attendee(self, workout_id, user_id):
         attendee = self.session.query(Attendee).filter(
@@ -40,12 +40,12 @@ class AttendeeService(Service):
             Attendee.user_id == user_id
         ).first()
         if not attendee:
-            return self.ServiceResponse(status_code=204)
+            return
         if g.user_id != attendee.user_id and g.user_id != self.get_workout_organizer(attendee.workout_id):
             raise ForbiddenError
         self.session.delete(attendee)
         self.session.commit()
-        return self.ServiceResponse(status_code=204)
+        return
         
     def list_workout_attendees(self, workout_id):
         attendees_info = (
@@ -58,7 +58,7 @@ class AttendeeService(Service):
         data = [
             {'user': user.to_quickview(), 'status': status} for user, status in attendees_info
         ]
-        return self.ServiceResponse(status_code=200, data=data)
+        return data
     
     def get_workout_organizer(self, workout_id):
         organizer = self.session.query(Attendee).filter(
@@ -75,4 +75,4 @@ class AttendeeService(Service):
 
         attendee.status = AttendeeStatusEnum.accepted
         self.session.commit()
-        return self.ServiceResponse(data=attendee, status_code=200)
+        return attendee

@@ -44,7 +44,7 @@ class UserService(Service):
             for key, value in data.items():
                 setattr(user, key, value)
             self.session.commit()
-            return self.ServiceResponse(status_code=200, data=user)
+            return user
         else:
             raise NotFoundError
     
@@ -53,7 +53,7 @@ class UserService(Service):
             raise ForbiddenError
         self.session.query(User).filter(User.id==user_id).delete()
         self.session.commit()
-        return self.ServiceResponse(status_code=204)
+        return
     
     def set_password(self, password):
         ph = PasswordHasher()
@@ -78,15 +78,21 @@ class UserService(Service):
         if follower:
             self.session.delete(follower)
             self.session.commit()
-        return self.ServiceResponse(status_code=204)
+        return
         
     def get_followers(self, user_id, page=1):
-        followers = self.session.query(User).join(Follower, Follower.follower_id == User.id).filter(Follower.followed_id == user_id).paginate(page=page, per_page=USERS_PER_PAGE).items
-        return self.ServiceResponse(status_code=200, data=followers)
+        followers = self.session.query(User)\
+            .join(Follower, Follower.follower_id == User.id)\
+            .filter(Follower.followed_id == user_id)\
+            .paginate(page=page, per_page=USERS_PER_PAGE).items
+        return followers
     
     def get_followings(self, user_id, page=1):
-        followings = self.session.query(User).join(Follower, Follower.followed_id == User.id).filter(Follower.follower_id == user_id).paginate(page=page, per_page=USERS_PER_PAGE).items
-        return self.ServiceResponse(status_code=200, data=followings)
+        followings = self.session.query(User)\
+            .join(Follower, Follower.followed_id == User.id)\
+            .filter(Follower.follower_id == user_id)\
+            .paginate(page=page, per_page=USERS_PER_PAGE).items
+        return followings
 
     def search_users(self, query, page=1):
         is_following = case(
@@ -96,7 +102,7 @@ class UserService(Service):
             .outerjoin(Follower, User.id == Follower.followed_id)\
             .filter(User.username.ilike(f'%{query}%'))
         results = users_query.paginate(page=page, per_page=USERS_PER_PAGE).items
-        return self.ServiceResponse(status_code=200, data=results)
+        return results
     
     def is_following_user(self, follower_id):
         return Follower.query.filter_by(follower_id=g.user_id, followed_id=follower_id).first() != None
