@@ -23,31 +23,25 @@ class FriendshipService(Service):
         return self.get_data(friendship_id)
     
     def update_friendship(self, friendship_id, data):
-        try:
-            friendship = self.model.query.get(friendship_id)
-            if not friendship:
-                raise NotFoundError
-            if g.user_id != friendship.recipient_id:
-                raise ForbiddenError
-            for key, value in data.items():
-                setattr(friendship, key, value)
-            self.session.commit()
-            return self.ServiceResponse(status_code=200, data=friendship)
-        except Exception as e:
-            return self.handle_error(e)
+        friendship = self.model.query.get(friendship_id)
+        if not friendship:
+            raise NotFoundError
+        if g.user_id != friendship.recipient_id:
+            raise ForbiddenError
+        for key, value in data.items():
+            setattr(friendship, key, value)
+        self.session.commit()
+        return self.ServiceResponse(status_code=200, data=friendship)
     
     def delete_friendship(self, friendship_id):
-        try:
-            friendship = self.model.query.get(friendship_id)
-            if not friendship:
-                return self.ServiceResponse(status_code=204)
-            if g.user_id not in (friendship.sender_id, friendship.recipient_id):
-                raise ForbiddenError
-            self.session.delete(friendship)
-            self.session.commit()
+        friendship = self.model.query.get(friendship_id)
+        if not friendship:
             return self.ServiceResponse(status_code=204)
-        except Exception as e:
-            return self.handle_error(e)
+        if g.user_id not in (friendship.sender_id, friendship.recipient_id):
+            raise ForbiddenError
+        self.session.delete(friendship)
+        self.session.commit()
+        return self.ServiceResponse(status_code=204)
         
     def is_friend(self, user_id, friend_id):
         friendship = Friendship.query.filter(

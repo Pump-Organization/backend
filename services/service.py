@@ -23,26 +23,17 @@ class Service:
         raise AppError
 
     def add_data(self, instance, commit=True):
-        try:
-            self.session.add(instance)
-            if commit:
-                self.session.commit()
-            return self.ServiceResponse(status_code=200, data=instance)
-        except Exception as e:  
-            return self.handle_error(e)
+        self.session.add(instance)
+        if commit:
+            self.session.commit()
+        return self.ServiceResponse(status_code=200, data=instance)
         
     def get_data(self, id):
-        try:
-            instance = self.model.query.get(id)
-            if not instance:
-                raise NotFoundError
-            return self.ServiceResponse(status_code=200, data=instance)
-        except Exception as e: 
-           return self.handle_error(e)
+        instance = self.model.query.get(id)
+        if not instance:
+            raise NotFoundError
+        return self.ServiceResponse(status_code=200, data=instance)
         
     def query_by_attribute(self, **attributes):
-        try:
-            return self.ServiceResponse(status_code=200, data=self.session.query(self.model).filter_by(**attributes).first())
-        except Exception as e:
-           return self.handle_error(e)
+        return self.ServiceResponse(status_code=200, data=self.session.query(self.model).filter_by(**attributes).first())
         

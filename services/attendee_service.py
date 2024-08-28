@@ -24,34 +24,28 @@ class AttendeeService(Service):
         return self.get_data(attendee_id)
     
     def update_attendee(self, attendee_id, data):
-        try:
-            attendee = self.model.query.get(attendee_id)
-            if not attendee:
-                raise NotFoundError
-            if attendee.user_id != g.user_id:
-                raise ForbiddenError
-            for key, value in data.items():
-                setattr(attendee, key, value)
-            self.session.commit()
-            return self.ServiceResponse(status_code=200, data=attendee)
-        except Exception as e:
-            return self.handle_error(e)
+        attendee = self.model.query.get(attendee_id)
+        if not attendee:
+            raise NotFoundError
+        if attendee.user_id != g.user_id:
+            raise ForbiddenError
+        for key, value in data.items():
+            setattr(attendee, key, value)
+        self.session.commit()
+        return self.ServiceResponse(status_code=200, data=attendee)
     
     def delete_attendee(self, workout_id, user_id):
-        try:
-            attendee = self.session.query(Attendee).filter(
-                Attendee.workout_id == workout_id,
-                Attendee.user_id == user_id
-            ).first()
-            if not attendee:
-                return self.ServiceResponse(status_code=204)
-            if g.user_id != attendee.user_id and g.user_id != self.get_workout_organizer(attendee.workout_id):
-                raise ForbiddenError
-            self.session.delete(attendee)
-            self.session.commit()
+        attendee = self.session.query(Attendee).filter(
+            Attendee.workout_id == workout_id,
+            Attendee.user_id == user_id
+        ).first()
+        if not attendee:
             return self.ServiceResponse(status_code=204)
-        except Exception as e:
-            return self.handle_error(e)
+        if g.user_id != attendee.user_id and g.user_id != self.get_workout_organizer(attendee.workout_id):
+            raise ForbiddenError
+        self.session.delete(attendee)
+        self.session.commit()
+        return self.ServiceResponse(status_code=204)
         
     def list_workout_attendees(self, workout_id):
         attendees_info = (

@@ -37,29 +37,23 @@ class UserService(Service):
         return self.get_data(user_id)
     
     def update_user(self, user_id, data):
-        try:
-            if g.user_id != int(user_id):
-                raise ForbiddenError
-            user = self.session.query(User).filter(User.id==user_id).first()
-            if user:
-                for key, value in data.items():
-                    setattr(user, key, value)
-                self.session.commit()
-                return self.ServiceResponse(status_code=200, data=user)
-            else:
-                raise NotFoundError
-        except Exception as e:
-            return self.handle_error(e)
+        if g.user_id != int(user_id):
+            raise ForbiddenError
+        user = self.session.query(User).filter(User.id==user_id).first()
+        if user:
+            for key, value in data.items():
+                setattr(user, key, value)
+            self.session.commit()
+            return self.ServiceResponse(status_code=200, data=user)
+        else:
+            raise NotFoundError
     
     def delete_user(self, user_id):
-        try:
-            if g.user_id != int(user_id):
-                raise ForbiddenError
-            self.session.query(User).filter(User.id==user_id).delete()
-            self.session.commit()
-            return self.ServiceResponse(status_code=204)
-        except Exception as e:
-            return self.handle_error(e)
+        if g.user_id != int(user_id):
+            raise ForbiddenError
+        self.session.query(User).filter(User.id==user_id).delete()
+        self.session.commit()
+        return self.ServiceResponse(status_code=204)
     
     def set_password(self, password):
         ph = PasswordHasher()
@@ -67,30 +61,24 @@ class UserService(Service):
         return hashed_password
     
     def follow_user(self, user_id):
-        try:
-            if g.user_id == int(user_id):
-                raise BadDataError("cannot follow self")
-            if Follower.query.filter_by(follower_id=g.user_id, followed_id=user_id).first():
-                raise ConflictError("already following")
-            new_follower = Follower(
-                follower_id = g.user_id,
-                followed_id = user_id
-            )
-            return self.add_data(new_follower)
-        except Exception as e:
-            return self.handle_error(e)
+        if g.user_id == int(user_id):
+            raise BadDataError("cannot follow self")
+        if Follower.query.filter_by(follower_id=g.user_id, followed_id=user_id).first():
+            raise ConflictError("already following")
+        new_follower = Follower(
+            follower_id = g.user_id,
+            followed_id = user_id
+        )
+        return self.add_data(new_follower)
         
     def unfollow_user(self, user_id):
-        try:
-            if g.user_id == int(user_id):
-                raise BadDataError("cannot unfollow self")
-            follower = Follower.query.filter_by(follower_id=g.user_id, followed_id=user_id).first()
-            if follower:
-                self.session.delete(follower)
-                self.session.commit()
-            return self.ServiceResponse(status_code=204)
-        except Exception as e:
-            return self.handle_error(e)
+        if g.user_id == int(user_id):
+            raise BadDataError("cannot unfollow self")
+        follower = Follower.query.filter_by(follower_id=g.user_id, followed_id=user_id).first()
+        if follower:
+            self.session.delete(follower)
+            self.session.commit()
+        return self.ServiceResponse(status_code=204)
         
     def get_followers(self, user_id, page=1):
         followers = self.session.query(User).join(Follower, Follower.follower_id == User.id).filter(Follower.followed_id == user_id).paginate(page=page, per_page=USERS_PER_PAGE).items
