@@ -68,7 +68,7 @@ class WorkoutService(Service):
     
     def delete_workout(self, workout_id):
         if g.user_id != self.get_organizer_id(workout_id):
-            raise ForbiddenError
+            raise ForbiddenError(f"User {g.user_id} is not {self.get_organizer_id(workout_id)}")
         try:
             self.session.query(Workout).filter(Workout.id==workout_id).delete()
             self.session.commit()

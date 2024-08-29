@@ -1,7 +1,8 @@
 import datetime as dt
-import enum
+import uuid
 from constants.error_constants import BadDataError
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, String, DateTime
+from sqlalchemy.types import UUID
 from sqlalchemy.orm import validates
 from db.db import db
 
@@ -9,7 +10,7 @@ from db.db import db
 class Workout(db.Model):
     __tablename__ = 'workout'
 
-    id: int = Column(Integer, primary_key=True)
+    id: UUID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title: str = Column(String)
     description: str = Column(String, nullable=True)
     workout_pic: str = Column(String, nullable=True)  # url

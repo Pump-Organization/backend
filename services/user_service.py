@@ -1,3 +1,4 @@
+import uuid
 from argon2 import PasswordHasher
 from flask import g
 from constants.error_constants import BadDataError, ConflictError, ForbiddenError, NotFoundError
@@ -38,7 +39,7 @@ class UserService(Service):
     
     def update_user(self, user_id, data):
         try:
-            if g.user_id != int(user_id):
+            if g.user_id != uuid.UUID(user_id):
                 raise ForbiddenError
             user = self.session.query(User).filter(User.id==user_id).first()
             if user:
@@ -53,7 +54,7 @@ class UserService(Service):
     
     def delete_user(self, user_id):
         try:
-            if g.user_id != int(user_id):
+            if g.user_id != uuid.UUID(user_id):
                 raise ForbiddenError
             self.session.query(User).filter(User.id==user_id).delete()
             self.session.commit()
@@ -68,7 +69,7 @@ class UserService(Service):
     
     def follow_user(self, user_id):
         try:
-            if g.user_id == int(user_id):
+            if g.user_id == uuid.UUID(user_id):
                 raise BadDataError("cannot follow self")
             if Follower.query.filter_by(follower_id=g.user_id, followed_id=user_id).first():
                 raise ConflictError("already following")
@@ -82,7 +83,7 @@ class UserService(Service):
         
     def unfollow_user(self, user_id):
         try:
-            if g.user_id == int(user_id):
+            if g.user_id == uuid.UUID(user_id):
                 raise BadDataError("cannot unfollow self")
             follower = Follower.query.filter_by(follower_id=g.user_id, followed_id=user_id).first()
             if follower:

@@ -27,7 +27,7 @@ class AuthService(Service):
         if not user or not self.check_password(user.data, data.get('password')):
             raise UnauthorizedError
         
-        token = self.generate_jwt_token(user.data.id)
+        token = self.generate_jwt_token(str(user.data.id))
         return self.ServiceResponse(status_code=200, data={'token': token})
 
 
