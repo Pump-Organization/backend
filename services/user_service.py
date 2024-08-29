@@ -1,12 +1,11 @@
 from argon2 import PasswordHasher
 from flask import g
-from constants.error_constants import ForbiddenError, NotFoundError, ConflictError
+from constants.error_constants import BadDataError, ConflictError, ForbiddenError, NotFoundError
 from constants import USERS_PER_PAGE
 from db.models.user import User
-from db.models.friendship import Friendship
+from db.models.follower import Follower
 from services.service import Service
-from sqlalchemy import String, case, and_, or_, func
-from sqlalchemy.orm import aliased
+from sqlalchemy import case, and_
 from logging import getLogger
 
 logger = getLogger(__name__)
@@ -67,26 +66,58 @@ class UserService(Service):
         hashed_password = ph.hash(password)
         return hashed_password
     
-    def search_users(self, query, page=1):
-        # Define the case statement for conditional status modification
-        status_case = case(
-            (and_(Friendship.status == 'requested', Friendship.recipient_id == g.user_id), 'pending'),
-            (and_(Friendship.status == 'requested', Friendship.sender_id == g.user_id), 'requested'),
-            (or_(Friendship.status == 'accepted'), 'accepted'),
-            else_=func.cast('none', String)
-        )
-
-        # Perform the user search query
-        users_query = self.session.query(User, Friendship.id.label('friendship_id'), status_case.label('friendship_status'))\
-            .outerjoin(Friendship, or_(
-                and_(Friendship.sender_id == User.id, Friendship.recipient_id == g.user_id),
-                and_(Friendship.recipient_id == User.id, Friendship.sender_id == g.user_id)
-            ))\
-            .filter(User.username.ilike(f'%{query}%')).distinct(User.id)
-
-        # Execute the query and paginate results
-        results = users_query.paginate(page=page, per_page=20).items
-        logger.info(f"####### Search results: {results}")
-
-        return self.ServiceResponse(status_code=200, data=results)
+    def follow_user(self, user_id):
+        try:
+            if g.user_id == int(user_id):
+                raise BadDataError("cannot follow self")
+            if Follower.query.filter_by(follower_id=g.user_id, followed_id=user_id).first():
+                raise ConflictError("already following")
+            new_follower = Follower(
+                follower_id = g.user_id,
+                followed_id = user_id
+            )
+            return self.add_data(new_follower)
+        except Exception as e:
+            return self.handle_error(e)
         
+    def unfollow_user(self, user_id):
+        try:
+            if g.user_id == int(user_id):
+                raise BadDataError("cannot unfollow self")
+            follower = Follower.query.filter_by(follower_id=g.user_id, followed_id=user_id).first()
+            if follower:
+                self.session.delete(follower)
+                self.session.commit()
+            return self.ServiceResponse(status_code=204)
+        except Exception as e:
+            return self.handle_error(e)
+        
+    def get_followers(self, user_id, page=1):
+        followers = self.session.query(User).join(Follower, Follower.follower_id == User.id).filter(Follower.followed_id == user_id).paginate(page=page, per_page=USERS_PER_PAGE).items
+        return self.ServiceResponse(status_code=200, data=followers)
+    
+    def get_followings(self, user_id, page=1):
+        followings = self.session.query(User).join(Follower, Follower.followed_id == User.id).filter(Follower.follower_id == user_id).paginate(page=page, per_page=USERS_PER_PAGE).items
+        return self.ServiceResponse(status_code=200, data=followings)
+
+    def search_users(self, query, page=1):
+        is_following = case(
+            (and_(Follower.followed_id == User.id, Follower.follower_id == g.user_id), True), 
+            else_=False)
+        users_query = self.session.query(User, is_following)\
+            .outerjoin(Follower, User.id == Follower.followed_id)\
+            .filter(User.username.ilike(f'%{query}%'))
+        results = users_query.paginate(page=page, per_page=USERS_PER_PAGE).items
+        return self.ServiceResponse(status_code=200, data=results)
+    
+    def is_following_user(self, follower_id):
+        return Follower.query.filter_by(follower_id=g.user_id, followed_id=follower_id).first() != None
+        
+
+    def get_num_followers(self, user_id):
+        num_followers = Follower.query.filter_by(followed_id=user_id).count()
+        return num_followers
+    
+    def get_num_followings(self, user_id):
+        num_followings = Follower.query.filter_by(follower_id=user_id).count()
+        return num_followings

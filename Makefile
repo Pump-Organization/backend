@@ -9,7 +9,7 @@ detached:
 	$(DOCKER_COMPOSE) up -d
 
 down:
-	$(DOCKER_COMPOSE) down
+	$(DOCKER_COMPOSE) down -v
 
 build:
 	$(DOCKER_COMPOSE) build

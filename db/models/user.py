@@ -21,6 +21,8 @@ class User(db.Model):
     created_at: str = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     
     attendances = db.relationship('Attendee', back_populates='user')
+    followers = db.relationship('Follower', foreign_keys='Follower.followed_id', back_populates='followed')
+    followings = db.relationship('Follower', foreign_keys='Follower.follower_id', back_populates='follower')
 
     @validates('username')
     def validate_username(self, key, username):

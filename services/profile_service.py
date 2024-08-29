@@ -2,11 +2,10 @@ from datetime import datetime
 from flask import g
 from sqlalchemy import and_
 from sqlalchemy.orm import joinedload
-from db.models import Attendee, AttendeeStatusEnum, AttendeeTypeEnum, Workout, Friendship
+from db.models import Attendee, AttendeeStatusEnum, AttendeeTypeEnum, Workout, Follower
 from services.user_service import UserService
 from services.friendship_service import FriendshipService
 from services.workout_service import WorkoutService
-from services.attendee_service import AttendeeService
 from services.service import Service
 import constants
 
@@ -16,6 +15,9 @@ class ProfileService(Service):
         if user_response.status_code != 200:
             return user_response
         is_friend = FriendshipService().is_friend(g.user_id, user_id)
+        is_following = UserService().is_following_user(user_id)
+        num_followers = UserService().get_num_followers(user_id)
+        num_followings = UserService().get_num_followings(user_id)
         friendship_response = FriendshipService().get_frienship_count(user_id)
         num_workouts_response = WorkoutService().get_num_workouts(user_id)
         response_data = {
@@ -26,10 +28,13 @@ class ProfileService(Service):
             'location': user_response.data.location,
             'email': user_response.data.email,
             'bio': user_response.data.bio,
+            'is_following': is_following,
             'is_friend': is_friend["status"],
             'friendship_id': is_friend["friendship_id"],
             'num_friends': friendship_response.data,
-            'num_workouts': num_workouts_response.data
+            'num_followers': num_followers,
+            'num_following': num_followings,
+            'num_workouts': num_workouts_response.data,
         }
 
         return self.ServiceResponse(status_code=200, data=response_data)
@@ -56,29 +61,17 @@ class ProfileService(Service):
             results.append(workout_json)
         
         return self.ServiceResponse(data=results, status_code=200)
-    
+
     def get_feed(self, page=1):
-        user_id = g.user_id
-        friend_ids_subquery = self.session.query(Friendship.sender_id.label('friend_id')).filter(
-            and_(
-                Friendship.recipient_id == user_id,
-                Friendship.status == 'accepted'
-            )
-        ).union(
-            self.session.query(Friendship.recipient_id.label('friend_id')).filter(
-                and_(
-                    Friendship.sender_id == user_id,
-                    Friendship.status == 'accepted'
-                )
-            )
-        ).subquery()
-        friend_ids = [row.friend_id for row in self.session.query(friend_ids_subquery).all()]
-    
+        following_ids_subquery = self.session.query(Follower.followed_id.label('followed_id'))\
+            .filter(Follower.follower_id == g.user_id).subquery()
+        following_ids = [row.followed_id for row in self.session.query(following_ids_subquery).all()]
+
         current_time = datetime.now()
 
         feed_query = self.session.query(Workout).join(Attendee).filter(
             and_(
-                Attendee.user_id.in_(friend_ids),
+                Attendee.user_id.in_(following_ids),
                 Workout.datetime < current_time
             )
         ).options(

@@ -44,22 +44,24 @@ Once the debugger is active, you're up and running. Hit `V` in the terminal to v
 
 ## Adminer
 
-To use Adminer (https://www.adminer.org/) for database management, Docker Compose then navigate to http://localhost:8080 in a browser.
+To use Adminer (https://www.adminer.org/) for database visualization, Docker Compose then navigate to http://localhost:8080 in a browser.
 
 ## Making Migrations
 
-After creating or updating models (or making a new db container), the db schema must be updated using Alembic (https://alembic.sqlalchemy.org/en/latest/index.html)
+After pulling model changes, the db must be upgraded to the new migrations using Alembic (https://alembic.sqlalchemy.org/en/latest/index.html). This is only necessary when the db schema is changed.
 
-1. **Detached Docker Compose**:
+For now, we can nuke our db then rebuild with the new migrations. After we deploy, we'll meet to apply migrations.
+
+1. **Delete local Pump containers and volumes**:
+
+```bash
+make down
+```
+
+2. **Detached Docker Compose**:
 
 ```bash
 make detached
-```
-
-2. **If required, create the migration version**:
-
-```bash
-make makemigration MESSAGE="<message>"
 ```
 
 3. **Apply migration**:
