@@ -8,5 +8,5 @@ class LoginView(FlaskView):
     @route('', methods=['POST'])
     def login(self):
         request_data = request.get_json()
-        service_response = AuthService().login(request_data)
-        return service_response.data, service_response.status_code
+        service_data = AuthService().login(request_data)
+        return service_data, 200

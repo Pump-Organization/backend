@@ -10,23 +10,23 @@ class AttendeesView(FlaskView):
     @token_required
     def create_attendee(self):
         request_data = request.get_json()
-        service_response = AttendeeService().create_attendee(request_data)
-        return service_response.data.to_json(), service_response.status_code
+        service_data = AttendeeService().create_attendee(request_data)
+        return service_data.to_json(), 200
     
     @route('/<attendee_id>', methods=['GET'])
     def get_attendee(self, attendee_id):
-        service_response = AttendeeService().get_attendee(attendee_id)
-        return service_response.data.to_json(), service_response.status_code
+        service_data = AttendeeService().get_attendee(attendee_id)
+        return service_data.to_json(), 200
 
     @route('/<attendee_id>', methods=['PATCH'])
     @token_required
     def update_attendee(self, attendee_id):
         request_data = request.get_json()
-        service_response = AttendeeService().update_attendee(attendee_id, data=request_data)
-        return service_response.data.to_json(), service_response.status_code
+        service_data = AttendeeService().update_attendee(attendee_id, data=request_data)
+        return service_data.to_json(), 200
 
     @route('/<attendee_id>', methods=['DELETE'])
     @token_required
     def delete_attendee(self, attendee_id):
-        service_response = AttendeeService().delete_attendee(attendee_id)
-        return service_response.data, service_response.status_code
+        AttendeeService().delete_attendee(attendee_id)
+        return 204

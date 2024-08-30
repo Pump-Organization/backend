@@ -9,12 +9,12 @@ class ProfilesView(FlaskView):
     @route('/<user_id>', methods=['GET'])
     @token_required
     def get_profile(self, user_id):
-        service_response = ProfileService().get_profile(user_id)
-        return service_response.data, service_response.status_code
+        service_data = ProfileService().get_profile(user_id)
+        return service_data, 200
     
     @route('/<user_id>/workouts', methods=['GET'])
     @token_required
     def get_profile_workouts(self, user_id):
         page = request.args.get('page', 1, int)
-        service_response = ProfileService().get_profile_workouts(user_id, page)
-        return service_response.data, service_response.status_code
+        service_data = ProfileService().get_profile_workouts(user_id, page)
+        return service_data, 200

@@ -54,32 +54,26 @@ class WorkoutService(Service):
     def update_workout(self, workout_id, data):
         if g.user_id != self.get_organizer_id(workout_id):
             raise ForbiddenError
-        try:
-            workout = self.model.query.get(workout_id)
-            if workout:
-                for key, value in data.items():
-                    setattr(workout, key, value)
-                self.session.commit()
-                return self.ServiceResponse(status_code=200, data=workout)
-            else:
-                raise NotFoundError
-        except Exception as e:
-            return self.handle_error(e)
+        workout = self.model.query.get(workout_id)
+        if workout:
+            for key, value in data.items():
+                setattr(workout, key, value)
+            self.session.commit()
+            return workout
+        else:
+            raise NotFoundError
     
     def delete_workout(self, workout_id):
         if g.user_id != self.get_organizer_id(workout_id):
             raise ForbiddenError
-        try:
-            self.session.query(Workout).filter(Workout.id==workout_id).delete()
-            self.session.commit()
-            return self.ServiceResponse(status_code=204)
-        except Exception as e:
-            return self.handle_error(e)
+        self.session.query(Workout).filter(Workout.id==workout_id).delete()
+        self.session.commit()
+        return
         
     def get_num_workouts(self, user_id):
         num_workouts = self.session.query(Attendee.workout_id).\
             filter(Attendee.user_id == user_id, Attendee.status == AttendeeStatusEnum.accepted).count()
-        return self.ServiceResponse(status_code=200, data=num_workouts)
+        return num_workouts
         
     def get_upcoming_workouts(self, user_id, date, status="accepted", page=1):
         workouts = self.session.query(Workout).join(Attendee, Attendee.workout_id == Workout.id
@@ -97,7 +91,7 @@ class WorkoutService(Service):
             workout_json['organizer_username'] = organizer.username if organizer else None
             workout_json['num_attendees'] = sum(1 for attendee in workout.attendees if attendee.status == AttendeeStatusEnum.accepted)
             results.append(workout_json)
-        return self.ServiceResponse(status_code=200, data=results)
+        return results
     
     def get_organizer_id(self, workout_id):
         organizer = self.session.query(Attendee).filter(

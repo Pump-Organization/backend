@@ -10,6 +10,6 @@ class FeedView(FlaskView):
     @token_required
     def get_feed(self):
         page = request.args.get('page', 1, type=int)
-        service_response = ProfileService().get_feed(page)
-        return service_response.data, service_response.status_code
+        service_data = ProfileService().get_feed(page)
+        return service_data, 200
     

@@ -5,11 +5,14 @@ DOCKER_COMPOSE = docker-compose
 SERVICE = pump_backend
 
 # Docker Compose commands
+up:
+	$(DOCKER_COMPOSE) up
+	
 detached:
 	$(DOCKER_COMPOSE) up -d
 
 down:
-	$(DOCKER_COMPOSE) down
+	$(DOCKER_COMPOSE) down -v
 
 build:
 	$(DOCKER_COMPOSE) build

@@ -15,6 +15,7 @@ from constants.custom_json_provider import CustomJSONProvider
 from constants.error_constants import CUSTOM_ERRORS, AppError, BadDataError
 from db.db import db
 from middleware.sanitize_input import sanitize_input
+from sqlalchemy.exc import IntegrityError, DataError
 
 
 logger = logging.getLogger()
@@ -49,7 +50,9 @@ PresignedUrlView.register(app)
 
 #################################### ERROR HANDLER ##########################################
 def handle_app_error(error):
-    if type(error) not in CUSTOM_ERRORS:
+    if type(error) in (IntegrityError, DataError, LookupError):
+        error = BadDataError
+    elif type(error) not in CUSTOM_ERRORS:
         error = AppError
     logger.critical(traceback.format_exc())
     return {'error': error.message}, error.status_code
