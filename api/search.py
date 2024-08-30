@@ -11,8 +11,8 @@ class SearchView(FlaskView):
     def search_users(self):
         search_query = request.args.get('q', "")
         page = request.args.get('page', 1, type=int)
-        service_response = UserService().search_users(search_query, page)
-        return [serialize_search_result(user, is_following) for user, is_following in service_response.data], service_response.status_code
+        service_data = UserService().search_users(search_query, page)
+        return [serialize_search_result(user, is_following) for user, is_following in service_data], 200
     
 
 
