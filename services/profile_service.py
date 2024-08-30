@@ -4,7 +4,6 @@ from sqlalchemy import and_
 from sqlalchemy.orm import joinedload
 from db.models import Attendee, AttendeeStatusEnum, AttendeeTypeEnum, Workout, Follower
 from services.user_service import UserService
-from services.friendship_service import FriendshipService
 from services.workout_service import WorkoutService
 from services.service import Service
 import constants
@@ -14,11 +13,9 @@ class ProfileService(Service):
         user_response = UserService().get_user(user_id)
         if user_response.status_code != 200:
             return user_response
-        is_friend = FriendshipService().is_friend(g.user_id, user_id)
         is_following = UserService().is_following_user(user_id)
         num_followers = UserService().get_num_followers(user_id)
         num_followings = UserService().get_num_followings(user_id)
-        friendship_response = FriendshipService().get_frienship_count(user_id)
         num_workouts_response = WorkoutService().get_num_workouts(user_id)
         response_data = {
             'id': user_response.data.id,
@@ -29,9 +26,6 @@ class ProfileService(Service):
             'email': user_response.data.email,
             'bio': user_response.data.bio,
             'is_following': is_following,
-            'is_friend': is_friend["status"],
-            'friendship_id': is_friend["friendship_id"],
-            'num_friends': friendship_response.data,
             'num_followers': num_followers,
             'num_following': num_followings,
             'num_workouts': num_workouts_response.data,
