@@ -1,3 +1,4 @@
+import uuid
 from datetime import time
 from flask.json.provider import DefaultJSONProvider
 
@@ -12,4 +13,6 @@ class CustomJSONProvider(DefaultJSONProvider):
     def default(self, obj):
         if isinstance(obj, time):
             return obj.isoformat()
+        elif isinstance(obj, uuid.UUID):
+            return obj.hex
         return super().default(obj)

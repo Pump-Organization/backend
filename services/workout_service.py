@@ -25,28 +25,25 @@ class WorkoutService(Service):
             city = data.get('city'),
             datetime = parsed_datetime
         )
-        workout_response = self.add_data(new_workout, False)
-        if workout_response.status_code == 200:
-            self.session.flush()
-            organizer = Attendee(
+        workout_data = self.add_data(new_workout, False)
+        self.session.flush()
+        organizer = Attendee(
+            workout_id = new_workout.id,
+            user_id = data.get('organizer_id'),
+            attendee_type = "organizer",
+            status = "accepted"
+        )
+        self.add_data(organizer)
+        for invitee_id in data.get('invitees', []):
+            guest = Attendee(
                 workout_id = new_workout.id,
-                user_id = data.get('organizer_id'),
-                attendee_type = "organizer",
-                status = "accepted"
+                user_id = invitee_id,
+                attendee_type = "guest",
+                status = "pending"
             )
-            attendee_response = self.add_data(organizer)
-            if attendee_response.status_code != 200:
-                return attendee_response
-            for invitee_id in data.get('invitees', []):
-                guest = Attendee(
-                    workout_id = new_workout.id,
-                    user_id = invitee_id,
-                    attendee_type = "guest",
-                    status = "pending"
-                )
-                attendee_response = self.add_data(guest)
+            self.add_data(guest)
 
-        return workout_response
+        return workout_data
     
     def get_workout(self, workout_id):
         return self.get_data(workout_id)
