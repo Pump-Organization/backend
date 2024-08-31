@@ -24,11 +24,10 @@ class AuthService(Service):
     def login(self, data):
         username = data.get('username')
         user = self.query_by_attribute(username=username)
-        if not user or not self.check_password(user.data, data.get('password')):
+        if not user or not self.check_password(user, data.get('password')):
             raise UnauthorizedError
-        
-        token = self.generate_jwt_token(str(user.data.id))
-        return self.ServiceResponse(status_code=200, data={'token': token})
+        token = self.generate_jwt_token(str(user.id))
+        return {'token': token}
 
 
     def check_password(self, user, password):
