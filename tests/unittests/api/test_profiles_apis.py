@@ -19,8 +19,6 @@ class TestProfileAPIs(APIUnitTest):
             "email": "john.doe@example.com",
             "username": "johndoe",
             "profile_pic": "https://example.com/johndoe.jpg",
-            "num_friends": 2,
-            "workout_counts": {"run": 2, "lift": 1, "bike": 1}
         }
 
     def test_get_profile_workouts(self, client):

@@ -12,13 +12,6 @@ class MockUser(MockModel):
         self.username = username
         self.profile_pic = profile_pic
 
-class MockFriendship(MockModel):
-    def __init__(self, friendship_id, sender_id, recipient_id, status):
-        self.friendship_id = friendship_id
-        self.sender_id = sender_id
-        self.recipient_id = recipient_id
-        self.status = status
-
 class MockWorkout(MockModel):
     def __init__(self, title, description):
         self.title = title
@@ -33,10 +26,9 @@ class MockAttendee(MockModel):
         self.status = status
 
 class MockProfile(MockModel):
-    def __init__(self, name, email, username, profile_pic, num_friends, workout_counts):
+    def __init__(self, name, email, username, profile_pic, workout_counts):
         self.name = name
         self.email = email
         self.username = username
         self.profile_pic = profile_pic
-        self.num_friends = num_friends
         self.workout_counts = workout_counts
