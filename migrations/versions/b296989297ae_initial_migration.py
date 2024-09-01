@@ -1,14 +1,8 @@
 """initial_migration
 
-<<<<<<<< HEAD:migrations/versions/c659e07a9004_initial_migration.py
-Revision ID: c659e07a9004
+Revision ID: b296989297ae
 Revises: 
-Create Date: 2024-08-29 01:24:45.307858
-========
-Revision ID: fa6da26932a0
-Revises: 
-Create Date: 2024-08-30 23:05:11.021149
->>>>>>>> remove-friendships:migrations/versions/fa6da26932a0_initial_migration.py
+Create Date: 2024-09-01 17:04:44.771218
 
 """
 from typing import Sequence, Union
@@ -18,11 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-<<<<<<<< HEAD:migrations/versions/c659e07a9004_initial_migration.py
-revision: str = 'c659e07a9004'
-========
-revision: str = 'fa6da26932a0'
->>>>>>>> remove-friendships:migrations/versions/fa6da26932a0_initial_migration.py
+revision: str = 'b296989297ae'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -75,20 +65,6 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['follower_id'], ['user.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('follower_id', 'followed_id', name='unique_follower')
     )
-<<<<<<<< HEAD:migrations/versions/c659e07a9004_initial_migration.py
-    op.create_table('friendship',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('sender_id', sa.UUID(), nullable=True),
-    sa.Column('recipient_id', sa.UUID(), nullable=True),
-    sa.Column('status', sa.Enum('requested', 'accepted', name='friendshipstatusenum'), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['recipient_id'], ['user.id'], ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['sender_id'], ['user.id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('sender_id', 'recipient_id', name='unique_friendship')
-    )
-========
->>>>>>>> remove-friendships:migrations/versions/fa6da26932a0_initial_migration.py
     # ### end Alembic commands ###
 
 
