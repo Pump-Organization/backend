@@ -51,7 +51,7 @@ class WorkoutService(Service):
     def update_workout(self, workout_id, data):
         if g.user_id != self.get_organizer_id(workout_id):
             raise ForbiddenError
-        workout = self.model.query.get(workout_id)
+        workout = self.session.get(self.model, workout_id)
         if workout:
             for key, value in data.items():
                 setattr(workout, key, value)

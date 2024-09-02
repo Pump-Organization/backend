@@ -29,4 +29,4 @@ class AttendeesView(FlaskView):
     @token_required
     def delete_attendee(self, attendee_id):
         AttendeeService().delete_attendee(attendee_id)
-        return 204
+        return '', 204

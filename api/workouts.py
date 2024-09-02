@@ -51,7 +51,7 @@ class WorkoutsView(FlaskView):
     @token_required
     def delete_workout(self, workout_id):
         WorkoutService().delete_workout(workout_id)
-        return 204
+        return '', 204
     
     @route('/<workout_id>/users', methods=['GET'])
     def list_workout_attendees(self, workout_id): # TODO: Add pagination
@@ -68,7 +68,7 @@ class WorkoutsView(FlaskView):
     @token_required
     def reject_workout(self, workout_id):
         AttendeeService().delete_attendee(workout_id, g.user_id)
-        return 204
+        return '', 204
     
 
     def serialize_attendee(self, attendee):

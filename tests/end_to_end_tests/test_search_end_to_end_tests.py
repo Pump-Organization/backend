@@ -1,0 +1,20 @@
+class TestSearchEndToEndTests:
+    def test_search_users(self, client, test_base_user):
+        search_users_response = client.get(f'/search?q={test_base_user["base_user"]["username"]}',
+                                           headers={'Authorization': f'Bearer {test_base_user["token"]}'})
+        assert search_users_response.status_code == 200
+        assert search_users_response.json == [{
+                'id': test_base_user['base_user']['id'],
+                'username': test_base_user['base_user']['username'],
+                'name': test_base_user['base_user']['name'],
+                'profile_pic': None,
+                'is_following': False,
+            },
+            {
+                'id': test_base_user['second_user']['id'],
+                'username': test_base_user['second_user']['username'],
+                'name': test_base_user['second_user']['name'],
+                'profile_pic': None,
+                'is_following': False,
+            }
+        ]

@@ -24,7 +24,7 @@ class AttendeeService(Service):
         return self.get_data(attendee_id)
     
     def update_attendee(self, attendee_id, data):
-        attendee = self.model.query.get(attendee_id)
+        attendee = self.session(self.model, attendee_id)
         if not attendee:
             raise NotFoundError
         if attendee.user_id != g.user_id:

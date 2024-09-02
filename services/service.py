@@ -15,7 +15,7 @@ class Service:
         return instance
         
     def get_data(self, id):
-        instance = self.model.query.get(id)
+        instance = self.session.get(self.model, id)
         if not instance:
             raise NotFoundError
         return instance
