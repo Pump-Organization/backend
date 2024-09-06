@@ -64,6 +64,12 @@ class WorkoutsView(FlaskView):
         service_data = AttendeeService().accept_workout(workout_id, g.user_id)
         return service_data.to_json(), 200
     
+    @route('/<workout_id>/publish', methods=['POST'])
+    @token_required
+    def publish_workout(self, workout_id):
+        service_data = WorkoutService().publish_workout(workout_id)
+        return service_data.to_json(), 200
+    
     @route('/<workout_id>/reject', methods=['POST'])
     @token_required
     def reject_workout(self, workout_id):

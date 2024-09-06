@@ -1,4 +1,5 @@
 from db.models.attendee import AttendeeStatusEnum, AttendeeTypeEnum
+from db.models.workout import WorkoutStatusEnum
 
 
 class TestWorkoutsEndToEndTests:
@@ -8,7 +9,8 @@ class TestWorkoutsEndToEndTests:
         "description": "I hope you like rowing...",
         "location": "Office Gym",
         "title": "Friday pull day",
-        "workout_pic": None
+        "workout_pic": None,
+        "status": WorkoutStatusEnum.pending.value,
     }
 
     def test_create_workout(self, client, test_base_user):
@@ -50,7 +52,8 @@ class TestWorkoutsEndToEndTests:
             "description": "I hope you like rowing...",
             "location": "Office Gym",
             "title": "Updated Friday pull day",
-            "workout_pic": None
+            "workout_pic": None,
+            "status": WorkoutStatusEnum.pending.value,
         }
 
         assert update_workout_response.status_code == 200
@@ -111,6 +114,21 @@ class TestWorkoutsEndToEndTests:
                 "profile_pic": None,
             }
         }]
+
+    def test_publish_workout(self, client, test_base_user):
+        publish_workout_response = client.post(f'/workouts/{self.expected_workout["id"]}/publish',
+                                               headers={'Authorization': f'Bearer {test_base_user["token"]}'})
+        assert publish_workout_response.status_code == 200
+        assert publish_workout_response.json == {
+            "id": self.expected_workout["id"],
+            "city": "San Francisco",
+            "datetime": "2024-08-30T08:30:00",
+            "description": "I hope you like rowing...",
+            "location": "Office Gym",
+            "title": "Updated Friday pull day",
+            "workout_pic": None,
+            "status": WorkoutStatusEnum.published.value,
+        }
 
     def test_delete_workout(self, client, test_base_user):
         delete_workout_response = client.delete(f'/workouts/{self.expected_workout["id"]}',
