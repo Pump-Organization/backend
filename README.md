@@ -22,7 +22,7 @@ If you do not already have Docker Desktop installed, go to the Docker website (h
 
 If you are trying to run Docker on Apple Silicon (M1), you may run into a CPU compatibility issue, in which case you should install from this updated DMG: https://docs.docker.com/docker-for-mac/apple-m1/.
 
-3.  **Docker Compose**:
+3.  **Docker Compose**
 
 Ensure the Docker Desktop application is running in the background. Sometimes you need to open it manually by clicking on the Application icon. The home UI should say “Your running containers show up here.”
 
@@ -30,14 +30,6 @@ From within the root directory `Pump-Backend`, aggregate the Docker service:
 
 ```bash
 docker compose up
-```
-
-If your docker is complaining that you need the Postgres credentials to complete this step, go into your `docker-compose.yml` file and replace the following env variables with whatever you want. The values don't matter because this is a local instance spun up in your own Docker container. For instance:
-
-```
-POSTGRES_USER: postgres_user
-POSTGRES_PASSWORD: postgres_password
-POSTGRES_DB: postgres_db
 ```
 
 Once the debugger is active, you're up and running. Hit `V` in the terminal to view your instance in Docker Desktop. You should see 3 packages running.
