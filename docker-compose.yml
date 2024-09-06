@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   pump_backend:
     build:
@@ -13,10 +11,10 @@ services:
       pump-db-host:
         condition: service_healthy
     volumes:
-      - .:/app   # Mount the current directory to /app in the container
-    restart: always   # Restart the container if it exits
+      - .:/app # Mount the current directory to /app in the container
+    restart: always # Restart the container if it exits
     stdin_open: true # docker run -i
-    tty: true        # docker run -t
+    tty: true # docker run -t
 
   pump-db-host:
     image: postgres
@@ -33,8 +31,8 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
-    
+
   adminer:
     image: adminer
     ports:
-      - "8080:8080"  
+      - "8080:8080"
