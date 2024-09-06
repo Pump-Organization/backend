@@ -28,7 +28,7 @@ class UsersView(FlaskView):
     @token_required
     def delete_user(self, user_id):
         UserService().delete_user(user_id)
-        return 204
+        return '', 204
     
     @route('/<user_id>/follow', methods=['POST'])
     @token_required
@@ -40,7 +40,7 @@ class UsersView(FlaskView):
     @token_required
     def unfollow_user(self, user_id):
         UserService().unfollow_user(user_id)
-        return 204
+        return '', 204
     
     @route('/<user_id>/followers', methods=['GET'])
     @token_required
