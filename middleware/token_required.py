@@ -1,5 +1,6 @@
 import jwt
 import os
+import uuid
 from dotenv import load_dotenv
 from flask import g, request
 from functools import wraps
@@ -24,7 +25,7 @@ def token_required(f):
             # Expecting 'Bearer <token>'
             token = token.split()[1]
             payload = jwt.decode(token, os.getenv('JWT_SECRET'), algorithms=['HS256'])
-            g.user_id = payload['user_id']
+            g.user_id = uuid.UUID(payload['user_id'])
         except jwt.ExpiredSignatureError:
             raise UnauthorizedError
         except jwt.InvalidTokenError:

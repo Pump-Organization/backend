@@ -1,8 +1,10 @@
 import datetime
 import re
+import uuid
 from constants.error_constants import BadDataError
 from email.utils import parseaddr
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, String, DateTime
+from sqlalchemy.types import UUID
 from sqlalchemy.orm import validates
 
 from db.db import db
@@ -10,7 +12,7 @@ from db.db import db
 class User(db.Model):
     __tablename__ = 'user'
 
-    id: int = Column(Integer, primary_key=True)
+    id: UUID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     username: str = Column(String, unique=True)
     name: str = Column(String, nullable=True)
     profile_pic: str = Column(String, nullable=True)  # url

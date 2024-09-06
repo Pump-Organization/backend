@@ -2,6 +2,7 @@ import datetime
 import enum
 from sqlalchemy import Column, Enum, Integer, ForeignKey, DateTime, UniqueConstraint
 from sqlalchemy.orm import relationship
+from sqlalchemy.types import UUID
 
 from db.db import db
 
@@ -17,8 +18,8 @@ class Attendee(db.Model):
     __tablename__ = 'attendee'
 
     id: int = Column(Integer, primary_key=True)
-    user_id: int = Column(Integer, ForeignKey("user.id", ondelete='CASCADE'))
-    workout_id: int = Column(Integer, ForeignKey("workout.id", ondelete='CASCADE'))
+    user_id: UUID = Column(UUID, ForeignKey("user.id", ondelete='CASCADE'))
+    workout_id: UUID = Column(UUID, ForeignKey("workout.id", ondelete='CASCADE'))
     attendee_type: str = Column(Enum(AttendeeTypeEnum))
     status: str = Column(Enum(AttendeeStatusEnum))
     created_at: str = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
