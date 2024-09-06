@@ -16,8 +16,7 @@ class MockProfileService(ProfileService):
             "name": "John Doe", 
             "email": "john.doe@example.com", 
             "username": "johndoe", 
-            "profile_pic": "https://example.com/johndoe.jpg", 
-            "num_friends": 2, 
+            "profile_pic": "https://example.com/johndoe.jpg",
             "num_workouts": 4
             })
     

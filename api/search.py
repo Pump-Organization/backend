@@ -19,8 +19,6 @@ class SearchView(FlaskView):
 def serialize_search_result(user, is_following):
     ret = user.to_quickview()
     ret['is_following'] = is_following
-    ret['friendship_status'] = "not_friends"
-    ret['friendship_id'] = None
 
     return ret
 

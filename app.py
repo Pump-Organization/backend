@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 from flask import Flask, request
 from api.users import UsersView
 from api.workouts import WorkoutsView
-from api.friendships import FriendshipsView
 from api.attendees import AttendeesView
 from api.feed import FeedView
 from api.profiles import ProfilesView
@@ -41,7 +40,6 @@ db.init_app(app)
 #################################### REGISTER VIEWS ##########################################
 UsersView.register(app)
 WorkoutsView.register(app)
-FriendshipsView.register(app)
 AttendeesView.register(app)
 ProfilesView.register(app)
 LoginView.register(app)
