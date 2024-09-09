@@ -1,8 +1,8 @@
 """initial_migration
 
-Revision ID: 8f39b3cd162b
+Revision ID: ae3608f3ef86
 Revises: 
-Create Date: 2024-09-06 22:12:29.820693
+Create Date: 2024-09-08 21:53:07.812549
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '8f39b3cd162b'
+revision: str = 'ae3608f3ef86'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -48,16 +48,14 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('attendee',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.UUID(), nullable=True),
-    sa.Column('workout_id', sa.UUID(), nullable=True),
+    sa.Column('user_id', sa.UUID(), nullable=False),
+    sa.Column('workout_id', sa.UUID(), nullable=False),
     sa.Column('attendee_type', sa.Enum('organizer', 'guest', name='attendeetypeenum'), nullable=True),
     sa.Column('status', sa.Enum('pending', 'accepted', name='attendeestatusenum'), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['workout_id'], ['workout.id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('user_id', 'workout_id', name='unique_attendee')
+    sa.PrimaryKeyConstraint('user_id', 'workout_id', name='unique_attendee')
     )
     op.create_table('follower',
     sa.Column('follower_id', sa.UUID(), nullable=False),

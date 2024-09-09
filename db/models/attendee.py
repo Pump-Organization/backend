@@ -1,6 +1,6 @@
 import datetime
 import enum
-from sqlalchemy import Column, Enum, Integer, ForeignKey, DateTime, UniqueConstraint
+from sqlalchemy import Column, Enum, ForeignKey, DateTime, PrimaryKeyConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import UUID
 
@@ -17,7 +17,6 @@ class AttendeeTypeEnum(str, enum.Enum):
 class Attendee(db.Model):
     __tablename__ = 'attendee'
 
-    id: int = Column(Integer, primary_key=True)
     user_id: UUID = Column(UUID, ForeignKey("user.id", ondelete='CASCADE'))
     workout_id: UUID = Column(UUID, ForeignKey("workout.id", ondelete='CASCADE'))
     attendee_type: str = Column(Enum(AttendeeTypeEnum))
@@ -28,12 +27,11 @@ class Attendee(db.Model):
     workout = relationship("Workout", foreign_keys=[workout_id])
 
     __table_args__ = (
-        UniqueConstraint('user_id', 'workout_id', name='unique_attendee'),
+        PrimaryKeyConstraint('user_id', 'workout_id', name='unique_attendee'),
     )
 
     def to_json(self):
         return {
-            'id': self.id,
             'user_id': self.user_id,
             'workout_id': self.workout_id,
             'attendee_type': self.attendee_type,

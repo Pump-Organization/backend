@@ -20,13 +20,15 @@ class AttendeeService(Service):
         )
         return self.add_data(attendee)
     
-    def get_attendee(self, attendee_id):
-        return self.get_data(attendee_id)
+    def get_attendee(self, workout_id, user_id):
+        attendee = self.session.query(Attendee).filter(
+            Attendee.workout_id == workout_id,
+            Attendee.user_id == user_id
+        ).one()
+        return attendee
     
-    def update_attendee(self, attendee_id, data):
-        attendee = self.session(self.model, attendee_id)
-        if not attendee:
-            raise NotFoundError
+    def update_attendee(self, user_id, workout_id, data):
+        attendee = self.get_attendee(workout_id, user_id)
         if attendee.user_id != g.user_id:
             raise ForbiddenError
         for key, value in data.items():

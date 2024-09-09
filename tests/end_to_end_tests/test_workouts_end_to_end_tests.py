@@ -89,7 +89,6 @@ class TestWorkoutsEndToEndTests:
 
         assert accept_workout_response.status_code == 200
         assert accept_workout_response.json == {
-            "id": accept_workout_response.json["id"],
             "attendee_type": AttendeeTypeEnum.guest.value,
             "status": AttendeeStatusEnum.accepted.value,
             "user_id": test_base_user["second_user"]["id"],
