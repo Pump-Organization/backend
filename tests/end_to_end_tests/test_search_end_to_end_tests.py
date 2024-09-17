@@ -3,7 +3,7 @@ class TestSearchEndToEndTests:
         search_users_response = client.get(f'/search?q={test_base_user["base_user"]["username"]}',
                                            headers={'Authorization': f'Bearer {test_base_user["token"]}'})
         assert search_users_response.status_code == 200
-        assert search_users_response.json == [{
+        assert sorted(search_users_response.json, key=lambda x: x['id']) == sorted([{
                 'id': test_base_user['base_user']['id'],
                 'username': test_base_user['base_user']['username'],
                 'name': test_base_user['base_user']['name'],
@@ -16,5 +16,5 @@ class TestSearchEndToEndTests:
                 'name': test_base_user['second_user']['name'],
                 'profile_pic': None,
                 'is_following': False,
-            }
-        ]
+            }], key=lambda x: x['id'])
+        

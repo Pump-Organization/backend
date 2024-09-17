@@ -1,10 +1,15 @@
 import datetime as dt
+import enum
 import uuid
 from constants.error_constants import BadDataError
 from sqlalchemy import Column, String, DateTime
 from sqlalchemy.types import UUID
 from sqlalchemy.orm import validates
 from db.db import db
+
+class WorkoutStatusEnum(str, enum.Enum):
+    pending = "pending"
+    published = "published"
 
 
 class Workout(db.Model):
@@ -17,6 +22,8 @@ class Workout(db.Model):
     location: str = Column(String, nullable=True)
     city: str = Column(String, nullable=True)
     datetime: dt.datetime = Column(DateTime)
+    status: str = Column(String, default=WorkoutStatusEnum.pending)
+    published_at: dt.datetime = Column(DateTime, nullable=True)
     created_at: str = Column(DateTime, default=dt.datetime.now(dt.timezone.utc))
 
     attendees = db.relationship('Attendee', back_populates='workout')
@@ -63,6 +70,7 @@ class Workout(db.Model):
             'workout_pic': self.workout_pic,
             'location': self.location,
             'city': self.city,
-            'datetime': self.datetime.isoformat()  # Serialize datetime to ISO format
+            'datetime': self.datetime.isoformat(),  # Serialize datetime to ISO format
+            'status': self.status,
         }
     

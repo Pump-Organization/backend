@@ -96,3 +96,6 @@ class WorkoutService(Service):
             Attendee.attendee_type == AttendeeTypeEnum.organizer
         ).first()
         return organizer.user_id if organizer else None
+    
+    def publish_workout(self, workout_id):
+        return self.update_workout(workout_id, {"status": "published", "published_at": datetime.now()})

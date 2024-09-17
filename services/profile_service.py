@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import g
 from sqlalchemy import and_
 from sqlalchemy.orm import joinedload
-from db.models import Attendee, AttendeeStatusEnum, AttendeeTypeEnum, Workout, Follower
+from db.models import Attendee, AttendeeStatusEnum, AttendeeTypeEnum, Workout, WorkoutStatusEnum, Follower
 from services.user_service import UserService
 from services.workout_service import WorkoutService
 from services.service import Service
@@ -64,7 +64,9 @@ class ProfileService(Service):
         feed_query = self.session.query(Workout).join(Attendee).filter(
             and_(
                 Attendee.user_id.in_(following_ids),
-                Workout.datetime < current_time
+                Attendee.status == AttendeeStatusEnum.accepted,
+                Workout.datetime < current_time,
+                Workout.status == WorkoutStatusEnum.published
             )
         ).options(
             joinedload(Workout.attendees).joinedload(Attendee.user)
