@@ -1,13 +1,13 @@
-from sqlalchemy import Column
+from sqlalchemy import Column, String, DateTime
 
 from db.db import db
 
 class RefreshToken(db.Model):
     __tablename__ = 'refresh_token'
 
-    token = Column(db.String, primary_key=True), 
-    user_id = Column(db.Integer, nullable=False)
-    expires_at = Column(db.DateTime, nullable=False)
+    token = Column(String, primary_key=True)
+    user_id = Column(String, nullable=False)
+    expires_at = Column(DateTime, nullable=False)
 
     def to_json(self):
         return {

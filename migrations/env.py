@@ -8,7 +8,7 @@ from sqlalchemy import pool
 from alembic import context
 
 from db.db import db
-from db.models import Workout, User, Follower, Attendee
+from db.models import Workout, User, Follower, Attendee, RefreshToken
 
 flask_env = os.getenv('FLASK_ENV', 'production')
 if flask_env == 'development':
