@@ -10,3 +10,9 @@ class LoginView(FlaskView):
         request_data = request.get_json()
         service_data = AuthService().login(request_data)
         return service_data, 200
+    
+    @route('refresh', methods=['POST'])
+    def refresh(self):
+        refresh_token = request.get_json().get('refresh_token')
+        service_data = AuthService().refresh_access_token(refresh_token)
+        return service_data, 200
