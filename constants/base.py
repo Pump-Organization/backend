@@ -1,4 +1,5 @@
 AWS_REGION = 'us-west-2'
+NO_REPLY_EMAIL = 'no-reply@siqpicks.com'
 PROFILE_PICS_BUCKET_NAME = 'pump-profilepics'
 POSTS_PER_PAGE = 5
 USERS_PER_PAGE = 8
