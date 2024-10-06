@@ -48,6 +48,12 @@ class UserService(Service):
             return user
         else:
             raise NotFoundError
+
+    def reset_password(self, new_password):
+        user = self.get_data(g.user_id)
+        user.hashed_password = self.set_password(new_password)
+        self.session.commit()
+        return
     
     def delete_user(self, user_id):
         if g.user_id != uuid.UUID(user_id):

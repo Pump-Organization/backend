@@ -1,13 +1,15 @@
-from argon2 import PasswordHasher
-from argon2.exceptions import VerificationError
 import jwt
 import os
+import constants
+from argon2 import PasswordHasher
+from argon2.exceptions import VerificationError
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 from constants.error_constants import UnauthorizedError
 from db.models.user import User
 from db.models.refresh_token import RefreshToken
 from services.service import Service
+from services.email_service import EmailService
 from services.user_service import UserService
 
 
@@ -48,12 +50,12 @@ class AuthService(Service):
             self.session.commit()
         return True
         
-    def generate_jwt_token(self, user_id):
+    def generate_jwt_token(self, user_id, expires_at=10, encode_key=os.getenv('JWT_SECRET')):
         payload = {
             'user_id': user_id,
-            'exp': datetime.now(timezone.utc) + timedelta(minutes=10)
+            'exp': datetime.now(timezone.utc) + timedelta(minutes=expires_at)
         }
-        return jwt.encode(payload, os.getenv('JWT_SECRET'), algorithm='HS256')
+        return jwt.encode(payload, encode_key, algorithm='HS256')
     
     def generate_refresh_token(self, user_id):
         expires_at = datetime.now(timezone.utc) + timedelta(days=30)
@@ -85,3 +87,20 @@ class AuthService(Service):
         return {
             'token': self.generate_jwt_token(user_id)
         }
+    
+    def generate_forgot_password_token(self, email):
+        user = self.query_by_attribute(email=email)
+        if not user:
+            raise UnauthorizedError
+        token = self.generate_jwt_token(user.id.hex, expires_at=15, encode_key=os.getenv('FORGOT_PASSWORD_SECRET'))
+        return {
+            'token': token
+        }
+    
+    def send_forgot_password_email(self, email):
+        token = self.generate_forgot_password_token(email).get('token')
+        url = f"{os.getenv('FRONTEND_URL')}/reset-password?token={token}"
+        body_text = constants.FORGOT_PASSWORD_BODY_TEXT(url)
+        body_html = constants.FORGOT_PASSWORD_BODY_HTML(url)
+        EmailService().send_email(email, constants.FORGOT_PASSWORD_SUBJECT, body_text, body_html)
+        return
