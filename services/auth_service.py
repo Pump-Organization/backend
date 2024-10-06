@@ -50,11 +50,13 @@ class AuthService(Service):
             self.session.commit()
         return True
         
-    def generate_jwt_token(self, user_id, expires_at=10, encode_key=os.getenv('JWT_SECRET')):
+    def generate_jwt_token(self, user_id, expires_at=10, encode_key=os.getenv('JWT_SECRET'), extra_payload={}):
         payload = {
             'user_id': user_id,
             'exp': datetime.now(timezone.utc) + timedelta(minutes=expires_at)
         }
+        for key, value in extra_payload.items():
+            payload[key] = value
         return jwt.encode(payload, encode_key, algorithm='HS256')
     
     def generate_refresh_token(self, user_id):
@@ -92,7 +94,7 @@ class AuthService(Service):
         user = self.query_by_attribute(email=email)
         if not user:
             raise UnauthorizedError
-        token = self.generate_jwt_token(user.id.hex, expires_at=15, encode_key=os.getenv('FORGOT_PASSWORD_SECRET'))
+        token = self.generate_jwt_token(user.id.hex, expires_at=15, encode_key=os.getenv('FORGOT_PASSWORD_SECRET'), extra_payload={'email': email})
         return {
             'token': token
         }
