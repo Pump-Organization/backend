@@ -14,7 +14,7 @@ class EmailService(Service):
                 aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
                 region_name=constants.AWS_REGION)
 
-    def send_email(self, destination, subject, body, source=constants.NO_REPLY_EMAIL):
+    def send_email(self, destination, subject, body_text, body_html=None, source=constants.NO_REPLY_EMAIL):
         response = self.ses_client.send_email(
             Source=source,
             Destination={
@@ -29,10 +29,14 @@ class EmailService(Service):
                 },
                 'Body': {
                     'Text': {
-                        'Data': body,
+                        'Data': body_text,
                         'Charset': 'utf-8'
                     },
-                }
+                    'Html': {
+                        'Data': body_html,
+                        'Charset': 'utf-8'
+                    },
+                },
             },
         )
         return response
