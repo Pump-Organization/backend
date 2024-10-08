@@ -1,8 +1,10 @@
+import constants
 import logging
 import os
 import traceback
 from dotenv import load_dotenv
 from flask import Flask, request
+from flask_cors import CORS
 from api.users import UsersView
 from api.workouts import WorkoutsView
 from api.attendees import AttendeesView
@@ -28,6 +30,7 @@ else:
 load_dotenv(dotenv_path=env_path)
 
 app = Flask(__name__)
+CORS(app, resources={"/login/reset-password": {"origins": constants.FRONTEND_URL}})
 
 #################################### SQLALCHEMY ##############################################
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://{}:{}@{}/{}".format(
