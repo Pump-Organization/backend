@@ -26,7 +26,7 @@ class LoginView(FlaskView):
         AuthService().send_forgot_password_email(email)
         return "", 204
     
-    @route('reset_password', methods=['POST'])
+    @route('reset-password', methods=['POST'])
     @reset_password_token_required
     def reset_password(self):
         request_data = request.get_json()

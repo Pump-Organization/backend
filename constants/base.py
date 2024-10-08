@@ -1,5 +1,5 @@
 AWS_REGION = 'us-west-2'
-FRONTEND_URL='http://localhost:8000'  # TODO
+FRONTEND_URL='http://localhost:3000'  # TODO
 FORGOT_PASSWORD_SUBJECT = 'Reset your Pump password'
 NO_REPLY_EMAIL = 'no-reply@siqpicks.com'
 PROFILE_PICS_BUCKET_NAME = 'pump-profilepics'
