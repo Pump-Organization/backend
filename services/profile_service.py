@@ -58,6 +58,7 @@ class ProfileService(Service):
         following_ids_subquery = self.session.query(Follower.followed_id.label('followed_id'))\
             .filter(Follower.follower_id == g.user_id).subquery()
         following_ids = [row.followed_id for row in self.session.query(following_ids_subquery).all()]
+        following_ids.append(g.user_id)  # include own posts in feed
 
         current_time = datetime.now()
 
