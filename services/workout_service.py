@@ -1,4 +1,4 @@
-from db.models.workout import Workout
+from db.models.workout import Workout, WorkoutStatusEnum
 from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
 from services.service import Service
 from constants.error_constants import ForbiddenError, NotFoundError
@@ -71,6 +71,20 @@ class WorkoutService(Service):
         num_workouts = self.session.query(Attendee.workout_id).\
             filter(Attendee.user_id == user_id, Attendee.status == AttendeeStatusEnum.accepted).count()
         return num_workouts
+    
+    def get_pending_workouts(self, page=1):
+        workouts = self.session.query(Workout).join(Attendee, Attendee.workout_id == Workout.id
+        ).filter(Attendee.user_id == g.user_id
+        ).filter(Attendee.attendee_type == AttendeeTypeEnum.organizer
+        ).filter(Workout.status == WorkoutStatusEnum.pending   
+        ).options(
+            joinedload(Workout.attendees).joinedload(Attendee.user)
+        ).limit(WORKOUTS_PER_PAGE).offset((page - 1) * WORKOUTS_PER_PAGE)
+
+        results = []
+        for workout in workouts:
+            results.append(workout.to_json())
+        return results
         
     def get_upcoming_workouts(self, user_id, date, status="accepted", page=1):
         workouts = self.session.query(Workout).join(Attendee, Attendee.workout_id == Workout.id

@@ -9,6 +9,13 @@ from services.workout_service import WorkoutService
 class WorkoutsView(FlaskView):
     route_base = 'workouts'
 
+    @route('pending', methods=['GET'])
+    @token_required
+    def get_pending(self):
+        page = request.args.get('page', 1, int)
+        service_data = WorkoutService().get_pending_workouts(page)
+        return service_data, 200
+
     @route('upcoming', methods=['GET'])
     @token_required
     def get_upcoming(self):
