@@ -66,8 +66,7 @@ class ProfileService(Service):
             and_(
                 Attendee.user_id.in_(following_ids),
                 Attendee.status == AttendeeStatusEnum.accepted,
-                Workout.datetime < current_time,
-                Workout.status == WorkoutStatusEnum.published
+                Workout.endtime < current_time
             )
         ).options(
             joinedload(Workout.attendees).joinedload(Attendee.user)
