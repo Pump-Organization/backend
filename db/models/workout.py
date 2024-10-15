@@ -22,6 +22,7 @@ class Workout(db.Model):
     location: str = Column(String, nullable=True)
     city: str = Column(String, nullable=True)
     datetime: dt.datetime = Column(DateTime)
+    endtime: dt.datetime = Column(DateTime)
     status: str = Column(String, default=WorkoutStatusEnum.pending)
     published_at: dt.datetime = Column(DateTime, nullable=True)
     created_at: str = Column(DateTime, default=dt.datetime.now(dt.timezone.utc))
@@ -70,7 +71,8 @@ class Workout(db.Model):
             'workout_pic': self.workout_pic,
             'location': self.location,
             'city': self.city,
-            'datetime': self.datetime.isoformat(),  # Serialize datetime to ISO format
+            'datetime': self.datetime.isoformat(),  # serialize datetime to ISO format
+            'endtime': self.endtime.isoformat(),
             'status': self.status,
         }
     

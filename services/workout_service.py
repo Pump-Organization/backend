@@ -16,6 +16,7 @@ class WorkoutService(Service):
 
     def create_workout(self, data):
         parsed_datetime = datetime.strptime(data['datetime'], constants.DATETIME_REPRESENTATION)
+        parsed_endtime = datetime.strptime(data['endtime'], constants.DATETIME_REPRESENTATION)
         
         new_workout = Workout(
             title = data.get('title'),
@@ -23,7 +24,8 @@ class WorkoutService(Service):
             workout_pic = data.get('workout_pic'),
             location = data.get('location'),
             city = data.get('city'),
-            datetime = parsed_datetime
+            datetime = parsed_datetime,
+            endtime = parsed_endtime,
         )
         workout_data = self.add_data(new_workout, False)
         self.session.flush()
@@ -54,6 +56,8 @@ class WorkoutService(Service):
         workout = self.session.get(self.model, workout_id)
         if workout:
             for key, value in data.items():
+                if key == "datetime" or key == "endtime":
+                    value = datetime.strptime(value, constants.DATETIME_REPRESENTATION)
                 setattr(workout, key, value)
             self.session.commit()
             return workout
