@@ -22,7 +22,7 @@ upgrade:
 	$(DOCKER_COMPOSE) exec $(SERVICE) alembic upgrade head
 
 migration:
-	$(DOCKER_COMPOSE) exec $(SERVICE) alembic revision --autogenerate -m "$(MESSAGE)"
+	$(DOCKER_COMPOSE) exec $(SERVICE) alembic revision --autogenerate -m "$(filter-out $@,$(MAKECMDGOALS))"
 
 downgrade:
 	$(DOCKER_COMPOSE) exec $(SERVICE) alembic downgrade $(REVISION)
@@ -38,7 +38,7 @@ help:
 	@echo "  make build             Build the Docker images"
 	@echo "  make test      	 Run unit tests and print coverage report"
 	@echo "  make upgrade           Apply the latest Alembic migrations"
-	@echo "  make migration MESSAGE=\"msg\"   Create a new Alembic migration with a message"
+	@echo "  make migration \"msg\"   Create a new Alembic migration with a message"
 	@echo "  make downgrade REVISION=\"rev\"      Downgrade the database to a specific revision"
 
 .PHONY: detached down build restart logs migrate makemigration downgrade test help

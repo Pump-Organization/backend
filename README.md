@@ -59,7 +59,7 @@ make detached
 3. **Apply migration**:
 
 ```bash
-make migrate
+make upgrade
 ```
 
 You should see your local DB spun up in `migrations/versions/`. If you are having trouble, run `docker compose down` to kill the running Docker instance, remove all files inside `migrations/versions/`, before recomposing `docker compose up` and trying the migration again.
