@@ -5,7 +5,8 @@ sanitizer = Sanitizer({
     'tags': ['fake_nonexistent_tag'],  # No allowed tags
     'attributes': {},  # No allowed attributes
     'empty': set(),
-    'separate': set()
+    'separate': set(),
+    'keep_typographic_whitespace': True,
 })
 
 def sanitize_input(data):
