@@ -24,7 +24,7 @@ class WorkoutsView(FlaskView):
         user_id = g.user_id
         service_data = WorkoutService().get_upcoming_workouts(user_id, date, "accepted", page)
         return service_data, 200
-    
+
     @route('invites', methods=['GET'])
     @token_required
     def get_invites(self):
@@ -41,7 +41,7 @@ class WorkoutsView(FlaskView):
         request_data['organizer_id'] = g.user_id
         service_data = WorkoutService().create_workout(request_data)
         return service_data.to_json(), 200
-    
+
     @route('/<workout_id>', methods=['GET'])
     def get_workout(self, workout_id):
         service_data = WorkoutService().get_workout(workout_id)
@@ -51,7 +51,7 @@ class WorkoutsView(FlaskView):
     @token_required
     def update_workout(self, workout_id):
         request_data = request.get_json()
-        service_data= WorkoutService().update_workout(workout_id, data=request_data)
+        service_data = WorkoutService().update_workout(workout_id, data=request_data)
         return service_data.to_json(), 200
 
     @route('/<workout_id>', methods=['DELETE'])
@@ -59,30 +59,29 @@ class WorkoutsView(FlaskView):
     def delete_workout(self, workout_id):
         WorkoutService().delete_workout(workout_id)
         return '', 204
-    
+
     @route('/<workout_id>/users', methods=['GET'])
-    def list_workout_attendees(self, workout_id): # TODO: Add pagination
+    def list_workout_attendees(self, workout_id):  # TODO: Add pagination
         service_data = AttendeeService().list_workout_attendees(workout_id)
         return [attendee for attendee in service_data], 200
-    
+
     @route('/<workout_id>/accept', methods=['POST'])
     @token_required
     def accept_workout(self, workout_id):
         service_data = AttendeeService().accept_workout(workout_id, g.user_id)
         return service_data.to_json(), 200
-    
+
     @route('/<workout_id>/publish', methods=['POST'])
     @token_required
     def publish_workout(self, workout_id):
         service_data = WorkoutService().publish_workout(workout_id)
         return service_data.to_json(), 200
-    
+
     @route('/<workout_id>/reject', methods=['POST'])
     @token_required
     def reject_workout(self, workout_id):
         AttendeeService().delete_attendee(workout_id, g.user_id)
         return '', 204
-    
 
     def serialize_attendee(self, attendee):
         return {

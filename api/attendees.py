@@ -3,6 +3,7 @@ from flask import request
 from middleware.token_required import token_required
 from services.attendee_service import AttendeeService
 
+
 class AttendeesView(FlaskView):
     route_base = 'attendees'
 
