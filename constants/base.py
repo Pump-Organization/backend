@@ -1,5 +1,5 @@
 AWS_REGION = 'us-west-2'
-FRONTEND_URL='http://localhost:3000'  # TODO
+FRONTEND_URL = 'http://localhost:3000'  # TODO
 FORGOT_PASSWORD_SUBJECT = 'Reset your Pump password'
 NO_REPLY_EMAIL = 'no-reply@siqpicks.com'
 PROFILE_PICS_BUCKET_NAME = 'pump-profilepics'
@@ -8,13 +8,14 @@ USERS_PER_PAGE = 8
 WORKOUTS_PER_PAGE = 5
 DATETIME_REPRESENTATION = '%m/%d/%y %H:%M'
 
+
 def FORGOT_PASSWORD_BODY_TEXT(reset_password_url):
     return ("""Hello,
 
-    We received a request to reset the password for your account associated with this email address. 
+    We received a request to reset the password for your account associated with this email address.
 
     If you did not request a password reset, please ignore this email.
-        
+
     To reset your password, please click the link below:
 
     {}
@@ -23,6 +24,7 @@ def FORGOT_PASSWORD_BODY_TEXT(reset_password_url):
 
     Thank you,
     The Pump Team""".format(reset_password_url))
+
 
 def FORGOT_PASSWORD_BODY_HTML(reset_password_url):
     return f"""
