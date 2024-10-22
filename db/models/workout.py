@@ -7,6 +7,7 @@ from sqlalchemy.types import UUID
 from sqlalchemy.orm import validates
 from db.db import db
 
+
 class WorkoutStatusEnum(str, enum.Enum):
     pending = "pending"
     published = "published"
@@ -34,19 +35,19 @@ class Workout(db.Model):
         if len(title) > 50:
             raise BadDataError
         return title
-    
+
     @validates('city')
     def validate_workout_city(self, key, city):
         if len(city) > 50:
             raise BadDataError
         return city
-    
+
     @validates('location')
     def validate_workout_location(self, key, location):
         if len(location) > 50:
             raise BadDataError
         return location
-    
+
     @validates('description')
     def validate_workout_description(self, key, description):
         if not description:
@@ -54,7 +55,7 @@ class Workout(db.Model):
         if len(description) > 2200:
             raise BadDataError
         return description
-    
+
     @validates('workout_pic')
     def validate_workout_pic_url(self, key, url):
         if not url:
@@ -62,7 +63,7 @@ class Workout(db.Model):
         if len(url) > 2083:
             raise BadDataError
         return url
-    
+
     def to_json(self):
         return {
             'id': self.id,
@@ -75,4 +76,3 @@ class Workout(db.Model):
             'endtime': self.endtime.isoformat(),
             'status': self.status,
         }
-    

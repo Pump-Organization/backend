@@ -1,5 +1,5 @@
-from .attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
-from .follower import Follower
-from .refresh_token import RefreshToken
-from .user import User
-from .workout import Workout, WorkoutStatusEnum
+from .attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum  # noqa: F401
+from .follower import Follower  # noqa: F401
+from .refresh_token import RefreshToken  # noqa: F401
+from .user import User  # noqa: F401
+from .workout import Workout, WorkoutStatusEnum  # noqa: F401

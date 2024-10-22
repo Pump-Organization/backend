@@ -2,6 +2,7 @@ from sqlalchemy import Column, String, DateTime
 
 from db.db import db
 
+
 class RefreshToken(db.Model):
     __tablename__ = 'refresh_token'
 
@@ -15,4 +16,3 @@ class RefreshToken(db.Model):
             'user_id': self.user_id,
             'expires_at': self.expires_at
         }
-
