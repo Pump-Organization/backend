@@ -9,6 +9,7 @@ sanitizer = Sanitizer({
     'keep_typographic_whitespace': True,
 })
 
+
 def sanitize_input(data):
     if isinstance(data, dict):
         return {key: sanitize_input(value) for key, value in data.items()}
@@ -18,4 +19,3 @@ def sanitize_input(data):
         return sanitizer.sanitize(data)
     else:
         return data
-    
