@@ -1,8 +1,9 @@
 import datetime
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, PrimaryKeyConstraint
+from sqlalchemy import Column, ForeignKey, DateTime, PrimaryKeyConstraint
 from sqlalchemy.types import UUID
 
 from db.db import db
+
 
 class Follower(db.Model):
     __tablename__ = 'follower'

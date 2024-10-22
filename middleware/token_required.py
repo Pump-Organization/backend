@@ -4,7 +4,7 @@ import uuid
 from dotenv import load_dotenv
 from flask import g, request
 from functools import wraps
-from constants.error_constants import  UnauthorizedError
+from constants.error_constants import UnauthorizedError
 
 
 flask_env = os.getenv('FLASK_ENV', 'production')
@@ -13,6 +13,7 @@ if flask_env == 'development':
 else:
     env_path = '.env'
 load_dotenv(dotenv_path=env_path)
+
 
 def token_required(f):
     @wraps(f)
@@ -35,6 +36,7 @@ def token_required(f):
 
     return decorated_function
 
+
 def reset_password_token_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -51,5 +53,5 @@ def reset_password_token_required(f):
         except jwt.InvalidTokenError:
             raise UnauthorizedError
         return f(*args, **kwargs)
-    
+
     return decorated_function

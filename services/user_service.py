@@ -24,23 +24,23 @@ class UserService(Service):
 
         password = self.set_password(data.get('password'))
         new_user = User(
-            username = data.get('username'),
-            name = data.get('name'),
-            profile_pic = data.get('profile_pic'),
-            location = data.get('location'),
-            email = data.get('email'),
-            bio = data.get('bio'),
-            hashed_password = password
+            username=data.get('username'),
+            name=data.get('name'),
+            profile_pic=data.get('profile_pic'),
+            location=data.get('location'),
+            email=data.get('email'),
+            bio=data.get('bio'),
+            hashed_password=password
         )
         return self.add_data(new_user)
-    
+
     def get_user(self, user_id):
         return self.get_data(user_id)
-    
+
     def update_user(self, user_id, data):
         if g.user_id != uuid.UUID(user_id):
             raise ForbiddenError
-        user = self.session.query(User).filter(User.id==user_id).first()
+        user = self.session.query(User).filter(User.id == user_id).first()
         if user:
             for key, value in data.items():
                 setattr(user, key, value)
@@ -54,30 +54,30 @@ class UserService(Service):
         user.hashed_password = self.set_password(new_password)
         self.session.commit()
         return
-    
+
     def delete_user(self, user_id):
         if g.user_id != uuid.UUID(user_id):
             raise ForbiddenError
-        self.session.query(User).filter(User.id==user_id).delete()
+        self.session.query(User).filter(User.id == user_id).delete()
         self.session.commit()
         return
-    
+
     def set_password(self, password):
         ph = PasswordHasher()
         hashed_password = ph.hash(password)
         return hashed_password
-    
+
     def follow_user(self, user_id):
         if g.user_id == uuid.UUID(user_id):
             raise BadDataError("cannot follow self")
         if Follower.query.filter_by(follower_id=g.user_id, followed_id=user_id).first():
             raise ConflictError("already following")
         new_follower = Follower(
-            follower_id = g.user_id,
-            followed_id = user_id
+            follower_id=g.user_id,
+            followed_id=user_id
         )
         return self.add_data(new_follower)
-        
+
     def unfollow_user(self, user_id):
         if g.user_id == uuid.UUID(user_id):
             raise BadDataError("cannot unfollow self")
@@ -86,14 +86,14 @@ class UserService(Service):
             self.session.delete(follower)
             self.session.commit()
         return
-        
+
     def get_followers(self, user_id, page=1):
         followers = self.session.query(User)\
             .join(Follower, Follower.follower_id == User.id)\
             .filter(Follower.followed_id == user_id)\
             .paginate(page=page, per_page=USERS_PER_PAGE).items
         return followers
-    
+
     def get_followings(self, user_id, page=1):
         followings = self.session.query(User)\
             .join(Follower, Follower.followed_id == User.id)\
@@ -103,22 +103,22 @@ class UserService(Service):
 
     def search_users(self, query, page=1):
         is_following = case(
-            (and_(Follower.followed_id == User.id, Follower.follower_id == g.user_id), True), 
+            (and_(Follower.followed_id == User.id, Follower.follower_id == g.user_id), True),
             else_=False)
         users_query = self.session.query(User, is_following)\
             .outerjoin(Follower, User.id == Follower.followed_id)\
             .filter(User.username.ilike(f'%{query}%'))
         results = users_query.paginate(page=page, per_page=USERS_PER_PAGE).items
         return results
-    
+
     def is_following_user(self, follower_id):
-        return Follower.query.filter_by(follower_id=g.user_id, followed_id=follower_id).first() != None
-        
+        return Follower.query.filter_by(follower_id=g.user_id,
+                                        followed_id=follower_id).first() is not None
 
     def get_num_followers(self, user_id):
         num_followers = Follower.query.filter_by(followed_id=user_id).count()
         return num_followers
-    
+
     def get_num_followings(self, user_id):
         num_followings = Follower.query.filter_by(follower_id=user_id).count()
         return num_followings

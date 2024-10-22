@@ -34,7 +34,8 @@ CORS(app, resources={"/login/reset-password": {"origins": constants.FRONTEND_URL
 
 #################################### SQLALCHEMY ##############################################
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://{}:{}@{}/{}".format(
-    os.getenv("POSTGRES_USER"), os.getenv("POSTGRES_PASSWORD"), os.getenv("POSTGRES_HOST"), os.getenv("POSTGRES_DB"))
+    os.getenv("POSTGRES_USER"), os.getenv("POSTGRES_PASSWORD"),
+    os.getenv("POSTGRES_HOST"), os.getenv("POSTGRES_DB"))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -60,6 +61,7 @@ def handle_app_error(error):
     logger.critical(traceback.format_exc())
     return {'error': error.message}, error.status_code
 
+
 app.register_error_handler(Exception, handle_app_error)
 
 
@@ -80,6 +82,7 @@ def sanitize_request_data():
 
 #################################### CUSTOM CONFIGS ##########################################
 app.json = CustomJSONProvider(app)
+
 
 @app.route("/")
 def healthcheck():

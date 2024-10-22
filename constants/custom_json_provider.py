@@ -6,6 +6,7 @@ import logging
 
 logger = logging.getLogger()
 
+
 class CustomJSONProvider(DefaultJSONProvider):
     def __init__(self, app):
         super().__init__(app)

@@ -9,6 +9,7 @@ from sqlalchemy.orm import validates
 
 from db.db import db
 
+
 class User(db.Model):
     __tablename__ = 'user'
 
@@ -21,23 +22,25 @@ class User(db.Model):
     bio: str = Column(String, nullable=True)
     hashed_password: str = Column(String)
     created_at: str = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
-    
+
     attendances = db.relationship('Attendee', back_populates='user')
-    followers = db.relationship('Follower', foreign_keys='Follower.followed_id', back_populates='followed')
-    followings = db.relationship('Follower', foreign_keys='Follower.follower_id', back_populates='follower')
+    followers = db.relationship('Follower', foreign_keys='Follower.followed_id',
+                                back_populates='followed')
+    followings = db.relationship('Follower', foreign_keys='Follower.follower_id',
+                                 back_populates='follower')
 
     @validates('username')
     def validate_username(self, key, username):
         if not re.match("^(?=.*[a-z])[a-z0-9_]{3,30}$", username):
             raise BadDataError
         return username
-    
+
     @validates('email')
     def validate_email(self, key, address):
         if '@' not in parseaddr(address)[1]:
             raise BadDataError
         return parseaddr(address)[1]
-    
+
     @validates('name')
     def validate_name(self, key, name):
         if not name:
@@ -45,7 +48,7 @@ class User(db.Model):
         if len(name) > 50:
             raise BadDataError
         return name
-    
+
     @validates('profile_pic')
     def validate_profile_pic_url(self, key, url):
         if not url:
@@ -53,7 +56,7 @@ class User(db.Model):
         if len(url) > 2083:
             raise BadDataError
         return url
-    
+
     @validates('location')
     def validate_location(self, key, location):
         if not location:
@@ -61,7 +64,7 @@ class User(db.Model):
         if len(location) > 100:
             raise BadDataError
         return location
-    
+
     @validates('bio')
     def validate_bio(self, key, bio):
         if not bio:
@@ -80,7 +83,7 @@ class User(db.Model):
             'email': self.email,
             'bio': self.bio
         }
- 
+
     def to_quickview(self):
         return {
             'id': self.id,
