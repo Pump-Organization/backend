@@ -20,10 +20,11 @@ else:
     env_path = '.env'
 load_dotenv(dotenv_path=env_path)
 
+
 class AuthService(Service):
     def __init__(self) -> None:
         super().__init__(User)
-    
+
     def login(self, data):
         username = data.get('username')
         user = self.query_by_attribute(username=username)
@@ -37,20 +38,19 @@ class AuthService(Service):
             'refresh_token': refresh_token,
         }
 
-
     def check_password(self, user, password):
         ph = PasswordHasher()
         try:
             ph.verify(user.hashed_password, password)
         except VerificationError:
             return False
-        
+
         if ph.check_needs_rehash(user.hashed_password):
             user.hashed_password = UserService().set_password(password)
             self.session.commit()
         return True
-        
-    def generate_jwt_token(self, user_id, expires_at=10, encode_key=os.getenv('JWT_SECRET'), extra_payload={}):
+
+    def generate_jwt_token(self, user_id, expires_at=10, encode_key=os.getenv('JWT_SECRET'), extra_payload={}):  # noqa E501
         payload = {
             'user_id': user_id,
             'exp': datetime.now(timezone.utc) + timedelta(minutes=expires_at)
@@ -58,7 +58,7 @@ class AuthService(Service):
         for key, value in extra_payload.items():
             payload[key] = value
         return jwt.encode(payload, encode_key, algorithm='HS256')
-    
+
     def generate_refresh_token(self, user_id):
         expires_at = datetime.now(timezone.utc) + timedelta(days=30)
         payload = {
@@ -67,9 +67,10 @@ class AuthService(Service):
         }
         refresh_token = jwt.encode(payload, os.getenv('JWT_SECRET'), algorithm='HS256')
         return refresh_token, expires_at
-    
+
     def store_refresh_token(self, refresh_token, user_id, expires_at):
-        old_refresh_token = self.session.query(RefreshToken).filter_by(user_id=user_id).one_or_none()
+        old_refresh_token = self.session.query(RefreshToken)\
+            .filter_by(user_id=user_id).one_or_none()
         if old_refresh_token:
             self.session.delete(old_refresh_token)
         refresh_token = RefreshToken(token=refresh_token, user_id=user_id, expires_at=expires_at)
@@ -80,7 +81,7 @@ class AuthService(Service):
         # decode the refresh token and check if it is valid
         if self.session.query(RefreshToken).filter_by(token=refresh_token).count() == 0:
             raise UnauthorizedError
-        
+
         payload = jwt.decode(refresh_token, os.getenv('JWT_SECRET'), algorithms=['HS256'])
         user_id = payload['user_id']
         user = self.session.query(User).filter(User.id == user_id)
@@ -89,16 +90,19 @@ class AuthService(Service):
         return {
             'token': self.generate_jwt_token(user_id)
         }
-    
+
     def generate_forgot_password_token(self, email):
         user = self.query_by_attribute(email=email)
         if not user:
             raise UnauthorizedError
-        token = self.generate_jwt_token(user.id.hex, expires_at=15, encode_key=os.getenv('FORGOT_PASSWORD_SECRET'), extra_payload={'email': email})
+        token = self.generate_jwt_token(user.id.hex,
+                                        expires_at=15,
+                                        encode_key=os.getenv('FORGOT_PASSWORD_SECRET'),
+                                        extra_payload={'email': email})
         return {
             'token': token
         }
-    
+
     def send_forgot_password_email(self, email):
         token = self.generate_forgot_password_token(email).get('token')
         url = f"{constants.FRONTEND_URL}/reset-password?token={token}"
