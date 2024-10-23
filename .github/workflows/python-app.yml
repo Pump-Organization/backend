@@ -58,10 +58,9 @@ jobs:
     - name: Start application
       run: |
         python -m flask run > flask.log 2>&1 &
-    - name: Display Flask logs
-      run: |
-        sleep 3  # Ensure the application has time to start
-        tail -f flask.log &
     - name: Test with pytest
       run: |
         pytest
+    - name: Display Flask logs
+      run: |
+        tail -f flask.log &
