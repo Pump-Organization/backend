@@ -62,5 +62,6 @@ jobs:
       run: |
         pytest
     - name: Display Flask logs
+      if: failure()
       run: |
         tail -f flask.log &
