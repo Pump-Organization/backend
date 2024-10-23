@@ -54,7 +54,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Start application
       run: |
-        python -m flask run
+        python -m flask run &
     - name: Test with pytest
       run: |
         pytest
