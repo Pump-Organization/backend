@@ -6,7 +6,7 @@ from db.models import Attendee, AttendeeStatusEnum, AttendeeTypeEnum, Workout, F
 from services.user_service import UserService
 from services.workout_service import WorkoutService
 from services.service import Service
-import constants
+import settings
 
 
 class ProfileService(Service):
@@ -33,7 +33,7 @@ class ProfileService(Service):
         return response_data
 
     def get_profile_workouts(self, user_id, page):
-        per_page = constants.POSTS_PER_PAGE
+        per_page = settings.POSTS_PER_PAGE
         now = datetime.now()
         offset = (page - 1) * per_page
 
@@ -75,8 +75,8 @@ class ProfileService(Service):
             )
         ).options(
             joinedload(Workout.attendees).joinedload(Attendee.user)
-        ).distinct().order_by(Workout.datetime.desc()).limit(constants.POSTS_PER_PAGE)\
-            .offset((page - 1) * constants.POSTS_PER_PAGE)
+        ).distinct().order_by(Workout.datetime.desc()).limit(settings.POSTS_PER_PAGE)\
+            .offset((page - 1) * settings.POSTS_PER_PAGE)
 
         results = []
         for workout in feed_query.all():

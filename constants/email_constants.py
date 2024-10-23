@@ -1,12 +1,5 @@
-AWS_REGION = 'us-west-2'
-FRONTEND_URL = 'http://localhost:3000'  # TODO
 FORGOT_PASSWORD_SUBJECT = 'Reset your Pump password'
 NO_REPLY_EMAIL = 'no-reply@siqpicks.com'
-PROFILE_PICS_BUCKET_NAME = 'pump-profilepics'
-POSTS_PER_PAGE = 5
-USERS_PER_PAGE = 8
-WORKOUTS_PER_PAGE = 5
-DATETIME_REPRESENTATION = '%m/%d/%y %H:%M'
 
 
 def FORGOT_PASSWORD_BODY_TEXT(reset_password_url):

@@ -1,24 +1,15 @@
 import jwt
-import os
-import constants
+import settings
 from argon2 import PasswordHasher
 from argon2.exceptions import VerificationError
+from constants.email_constants import FORGOT_PASSWORD_BODY_HTML, FORGOT_PASSWORD_BODY_TEXT, FORGOT_PASSWORD_SUBJECT  # noqa E501
 from datetime import datetime, timedelta, timezone
-from dotenv import load_dotenv
 from constants.error_constants import UnauthorizedError
 from db.models.user import User
 from db.models.refresh_token import RefreshToken
 from services.service import Service
 from services.email_service import EmailService
 from services.user_service import UserService
-
-
-flask_env = os.getenv('FLASK_ENV', 'production')
-if flask_env == 'development':
-    env_path = '.env.development'
-else:
-    env_path = '.env'
-load_dotenv(dotenv_path=env_path)
 
 
 class AuthService(Service):
@@ -50,7 +41,7 @@ class AuthService(Service):
             self.session.commit()
         return True
 
-    def generate_jwt_token(self, user_id, expires_at=10, encode_key=os.getenv('JWT_SECRET'), extra_payload={}):  # noqa E501
+    def generate_jwt_token(self, user_id, expires_at=10, encode_key=settings.JWT_SECRET, extra_payload={}):  # noqa E501
         payload = {
             'user_id': user_id,
             'exp': datetime.now(timezone.utc) + timedelta(minutes=expires_at)
@@ -65,7 +56,7 @@ class AuthService(Service):
             'user_id': user_id,
             'exp': expires_at
         }
-        refresh_token = jwt.encode(payload, os.getenv('JWT_SECRET'), algorithm='HS256')
+        refresh_token = jwt.encode(payload, settings.JWT_SECRET, algorithm='HS256')
         return refresh_token, expires_at
 
     def store_refresh_token(self, refresh_token, user_id, expires_at):
@@ -82,7 +73,7 @@ class AuthService(Service):
         if self.session.query(RefreshToken).filter_by(token=refresh_token).count() == 0:
             raise UnauthorizedError
 
-        payload = jwt.decode(refresh_token, os.getenv('JWT_SECRET'), algorithms=['HS256'])
+        payload = jwt.decode(refresh_token, settings.JWT_SECRET, algorithms=['HS256'])
         user_id = payload['user_id']
         user = self.session.query(User).filter(User.id == user_id)
         if not user:
@@ -97,7 +88,7 @@ class AuthService(Service):
             raise UnauthorizedError
         token = self.generate_jwt_token(user.id.hex,
                                         expires_at=15,
-                                        encode_key=os.getenv('FORGOT_PASSWORD_SECRET'),
+                                        encode_key=settings.FORGOT_PASSWORD_SECRET,
                                         extra_payload={'email': email})
         return {
             'token': token
@@ -105,8 +96,8 @@ class AuthService(Service):
 
     def send_forgot_password_email(self, email):
         token = self.generate_forgot_password_token(email).get('token')
-        url = f"{constants.FRONTEND_URL}/reset-password?token={token}"
-        body_text = constants.FORGOT_PASSWORD_BODY_TEXT(url)
-        body_html = constants.FORGOT_PASSWORD_BODY_HTML(url)
-        EmailService().send_email(email, constants.FORGOT_PASSWORD_SUBJECT, body_text, body_html)
+        url = f"{settings.FRONTEND_URL}/reset-password?token={token}"
+        body_text = FORGOT_PASSWORD_BODY_TEXT(url)
+        body_html = FORGOT_PASSWORD_BODY_HTML(url)
+        EmailService().send_email(email, FORGOT_PASSWORD_SUBJECT, body_text, body_html)
         return

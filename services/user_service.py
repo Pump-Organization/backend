@@ -2,7 +2,7 @@ import uuid
 from argon2 import PasswordHasher
 from flask import g
 from constants.error_constants import BadDataError, ConflictError, ForbiddenError, NotFoundError
-from constants import USERS_PER_PAGE
+from settings import USERS_PER_PAGE
 from db.models.user import User
 from db.models.follower import Follower
 from services.service import Service
