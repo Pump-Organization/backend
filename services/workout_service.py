@@ -1,12 +1,11 @@
+import settings
 from db.models.workout import Workout, WorkoutStatusEnum
 from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
 from services.service import Service
 from constants.error_constants import ForbiddenError, NotFoundError
-from constants import WORKOUTS_PER_PAGE
 from datetime import datetime
 from flask import g
 from sqlalchemy.orm import joinedload
-import constants
 
 
 class WorkoutService(Service):
@@ -14,8 +13,8 @@ class WorkoutService(Service):
         super().__init__(Workout)
 
     def create_workout(self, data):
-        parsed_datetime = datetime.strptime(data['datetime'], constants.DATETIME_REPRESENTATION)
-        parsed_endtime = datetime.strptime(data['endtime'], constants.DATETIME_REPRESENTATION)
+        parsed_datetime = datetime.strptime(data['datetime'], settings.DATETIME_REPRESENTATION)
+        parsed_endtime = datetime.strptime(data['endtime'], settings.DATETIME_REPRESENTATION)
 
         new_workout = Workout(
             title=data.get('title'),
@@ -56,7 +55,7 @@ class WorkoutService(Service):
         if workout:
             for key, value in data.items():
                 if key == "datetime" or key == "endtime":
-                    value = datetime.strptime(value, constants.DATETIME_REPRESENTATION)
+                    value = datetime.strptime(value, settings.DATETIME_REPRESENTATION)
                 setattr(workout, key, value)
             self.session.commit()
             return workout
@@ -82,7 +81,7 @@ class WorkoutService(Service):
             .filter(Attendee.attendee_type == AttendeeTypeEnum.organizer)\
             .filter(Workout.status == WorkoutStatusEnum.pending)\
             .options(joinedload(Workout.attendees).joinedload(Attendee.user))\
-            .limit(WORKOUTS_PER_PAGE).offset((page - 1) * WORKOUTS_PER_PAGE)
+            .limit(settings.WORKOUTS_PER_PAGE).offset((page - 1) * settings.WORKOUTS_PER_PAGE)
 
         results = []
         for workout in workouts:
@@ -95,7 +94,7 @@ class WorkoutService(Service):
             .filter(Attendee.status == status)\
             .filter(Workout.datetime >= date)\
             .options(joinedload(Workout.attendees).joinedload(Attendee.user))\
-            .limit(WORKOUTS_PER_PAGE).offset((page - 1) * WORKOUTS_PER_PAGE)
+            .limit(settings.WORKOUTS_PER_PAGE).offset((page - 1) * settings.WORKOUTS_PER_PAGE)
 
         results = []
         for workout in workouts:

@@ -1,8 +1,7 @@
-import constants
+import settings
 import logging
 import os
 import traceback
-from dotenv import load_dotenv
 from flask import Flask, request
 from flask_cors import CORS
 from api.users import UsersView
@@ -22,20 +21,13 @@ from sqlalchemy.exc import IntegrityError, DataError
 
 logger = logging.getLogger()
 
-flask_env = os.getenv('FLASK_ENV', 'production')
-if flask_env == 'development':
-    env_path = '.env.development'
-else:
-    env_path = '.env'
-load_dotenv(dotenv_path=env_path)
-
 app = Flask(__name__)
-CORS(app, resources={"/login/reset-password": {"origins": constants.FRONTEND_URL}})
+CORS(app, resources={"/login/reset-password": {"origins": settings.FRONTEND_URL}})
 
 #################################### SQLALCHEMY ##############################################
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://{}:{}@{}/{}".format(
-    os.getenv("POSTGRES_USER"), os.getenv("POSTGRES_PASSWORD"),
-    os.getenv("POSTGRES_HOST"), os.getenv("POSTGRES_DB"))
+    settings.POSTGRES_USER, settings.POSTGRES_PASSWORD,
+    settings.POSTGRES_HOST, settings.POSTGRES_DB)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -82,6 +74,9 @@ def sanitize_request_data():
 
 #################################### CUSTOM CONFIGS ##########################################
 app.json = CustomJSONProvider(app)
+
+
+flask_env = os.getenv('FLASK_ENV', 'production')
 
 
 @app.route("/")

@@ -1,5 +1,4 @@
-import os
-from dotenv import load_dotenv
+import settings
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -10,13 +9,6 @@ from alembic import context
 from db.db import db
 from db.models import Workout, User, Follower, Attendee, RefreshToken
 
-flask_env = os.getenv('FLASK_ENV', 'production')
-if flask_env == 'development':
-    env_path = '.env.development'
-else:
-    env_path = '.env'
-load_dotenv(dotenv_path=env_path)
-
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -26,8 +18,8 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-db_uri = "postgresql://{}:{}@{}/{}".format(os.getenv("POSTGRES_USER"), 
-    os.getenv("POSTGRES_PASSWORD"), os.getenv("POSTGRES_HOST"), os.getenv("POSTGRES_DB"))
+db_uri = "postgresql://{}:{}@{}/{}".format(settings.POSTGRES_USER, 
+    settings.POSTGRES_PASSWORD, settings.POSTGRES_HOST, settings.POSTGRES_DB)
 config.set_main_option('sqlalchemy.url', db_uri)
 
 # add your model's MetaData object here
