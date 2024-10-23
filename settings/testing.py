@@ -1,4 +1,4 @@
-from settings.base import *
+from settings.base import *  # noqa
 
 
 POSTGRES_DB = 'test_db'

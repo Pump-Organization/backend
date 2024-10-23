@@ -79,6 +79,7 @@ app.json = CustomJSONProvider(app)
 flask_env = os.getenv('FLASK_ENV', 'production')
 debug = flask_env != 'production'
 
+
 @app.route("/")
 def healthcheck():
     return flask_env
