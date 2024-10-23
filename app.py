@@ -77,12 +77,12 @@ app.json = CustomJSONProvider(app)
 
 
 flask_env = os.getenv('FLASK_ENV', 'production')
-
+debug = flask_env != 'production'
 
 @app.route("/")
 def healthcheck():
     return flask_env
 
 
-if flask_env == 'local' and __name__ == '__main__':
-    app.run(debug=True, port=8000, host='0.0.0.0')
+if __name__ == '__main__':
+    app.run(debug=debug, port=8000, host='0.0.0.0')
