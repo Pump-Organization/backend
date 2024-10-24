@@ -1,6 +1,6 @@
 class TestSearchEndToEndTests:
     def test_search_users(self, client, test_base_user):
-        search_users_response = client.get(f'/search?q={test_base_user["base_user"]["username"]}',
+        search_users_response = client.get(f'/search?q={test_base_user["base_user"]["username"][:-1]}',
                                            headers={'Authorization': f'Bearer {test_base_user["token"]}'})
         assert search_users_response.status_code == 200
         assert sorted(search_users_response.json, key=lambda x: x['id']) == sorted([{

@@ -21,15 +21,15 @@ def runner(app):
 def test_base_user(client):
     test_uuid = uuid.uuid4().hex[:6]
     test_base_user = {
-        'email': f'{test_uuid}@test.com',
-        'username': test_uuid,
+        'email': f'{test_uuid}a@test.com',
+        'username': f'{test_uuid}a',
         'password': 'password',
         'name': 'E2E BASE USER'
     }
 
     test_second_user = {
-        'email': f'{test_uuid}2@test.com',
-        'username': f'{test_uuid}2',
+        'email': f'{test_uuid}b@test.com',
+        'username': f'{test_uuid}b',
         'password': 'password',
         'name': 'E2E SECOND USER'
     }

@@ -2,7 +2,7 @@ import uuid
 
 
 class TestUsersEndToEndTests:
-    test_uuid = uuid.uuid4().hex[:6] # only six chars bc field char limits
+    test_uuid = uuid.uuid4().hex[:6] + 'a' # only six chars bc field char limits
 
     expected_user = {
         'email': f'{test_uuid}@test.com',

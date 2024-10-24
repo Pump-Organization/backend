@@ -72,6 +72,11 @@ def sanitize_request_data():
             raise BadDataError
 
 
+@app.before_request
+def log_request():
+    logger.debug(f"##### REQUEST: {request.method} {request.path} {request.data}")
+
+
 #################################### CUSTOM CONFIGS ##########################################
 app.json = CustomJSONProvider(app)
 
