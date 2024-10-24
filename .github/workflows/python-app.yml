@@ -55,13 +55,6 @@ jobs:
     - name: Upgrade database
       run: |
         alembic upgrade head
-    - name: Start application
-      run: |
-        python -m flask run > flask.log 2>&1 &
     - name: Test with pytest
       run: |
         pytest
-    - name: Display Flask logs
-      if: failure()
-      run: |
-        tail -f flask.log &
