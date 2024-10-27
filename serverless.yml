@@ -18,13 +18,13 @@ provider:
   runtime: python3.11
   region: us-west-1
   environment:
-    POSTGRES_HOST: ${env:POSTGRES_HOST_${opt:stage}}
-    POSTGRES_USER: ${env:POSTGRES_USER_${opt:stage}}
-    POSTGRES_PASSWORD: ${env:POSTGRES_PASSWORD_${opt:stage}}
-    POSTGRES_DB: ${env:POSTGRES_DB_${opt:stage}}
-    JWT_SECRET: ${env:JWT_SECRET_${opt:stage}}
-    FORGOT_PASSWORD_SECRET: ${env:FORGOT_PASSWORD_SECRET_${opt:stage}}
-    FLASK_ENV: ${env:ENVIRONEMNT_${opt:stage}}
+    POSTGRES_HOST: ${env:POSTGRES_HOST}
+    POSTGRES_USER: ${env:POSTGRES_USER}
+    POSTGRES_PASSWORD: ${env:POSTGRES_PASSWORD}
+    POSTGRES_DB: ${env:POSTGRES_DB}
+    JWT_SECRET: ${env:JWT_SECRET}
+    FORGOT_PASSWORD_SECRET: ${env:FORGOT_PASSWORD_SECRET}
+    FLASK_ENV: ${env:ENVIRONEMNT}
 
 
 functions:
