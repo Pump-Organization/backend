@@ -24,7 +24,7 @@ provider:
     POSTGRES_DB: ${env:POSTGRES_DB_${opt:stage}}
     JWT_SECRET: ${env:JWT_SECRET_${opt:stage}}
     FORGOT_PASSWORD_SECRET: ${env:FORGOT_PASSWORD_SECRET_${opt:stage}}
-    FLASK_ENV: ${opt:stage} == 'DEV' ? 'development' : 'production'
+    FLASK_ENV: ${env:ENVIRONEMNT_${opt:stage}}
 
 
 functions:
