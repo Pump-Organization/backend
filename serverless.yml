@@ -2,7 +2,7 @@
 org: maxsicherman
 service: aws-python-flask-api
 
-frameworkVersion: '3'
+frameworkVersion: '4'
 
 custom:
   wsgi:
