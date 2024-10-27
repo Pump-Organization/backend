@@ -47,4 +47,4 @@ jobs:
         POSTGRES_DB: ${{ secrets.POSTGRES_DB_DEV }}
         JWT_SECRET: ${{ secrets.JWT_SECRET_DEV }}
         FORGOT_PASSWORD_SECRET: ${{ secrets.FORGOT_PASSWORD_SECRET_DEV }}
-        ENVIRONMENT: development
+        FLASK_ENV: development
