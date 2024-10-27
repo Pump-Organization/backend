@@ -25,6 +25,11 @@ jobs:
         node-version: '21.7.2'
         cache: 'npm'
         cache-dependency-path: './package-lock.json'
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.11"
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
