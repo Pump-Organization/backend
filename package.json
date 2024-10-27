@@ -1,7 +1,6 @@
 {
   "devDependencies": {
     "serverless-api-gateway-throttling": "^2.0.3",
-    "serverless-dotenv-plugin": "^6.0.0",
     "serverless-python-requirements": "^6.1.0",
     "serverless-wsgi": "^3.0.4"
   }
