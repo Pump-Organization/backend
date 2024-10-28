@@ -7,7 +7,6 @@ frameworkVersion: '3'
 custom:
   wsgi:
     app: app.app
-    packRequirements: false
   pythonRequirements:
     pythonBin: python3
   apiGatewayThrottling:
