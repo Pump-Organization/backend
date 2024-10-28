@@ -37,12 +37,12 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Add Python to PATH
       run: echo "/opt/hostedtoolcache/Python/3.11.10/x64/bin" >> $GITHUB_PATH
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
-        aws-region: us-west-1
+    # - name: Configure AWS credentials
+    #   uses: aws-actions/configure-aws-credentials@v1
+    #   with:
+    #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+    #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+    #     aws-region: us-west-1
     # - name: Install serverless and dependencies
     #   run: |
     #     npm install
@@ -50,7 +50,7 @@ jobs:
     - name: Serverless Deploy
       uses: dhollerbach/actions.serverless-with-python-requirements@v2
       env:
-        SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+        # SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
         STAGE: DEV
         POSTGRES_HOST: ${{ secrets.POSTGRES_HOST_DEV }}
         POSTGRES_USER: ${{ secrets.POSTGRES_USER_DEV }}
@@ -59,5 +59,5 @@ jobs:
         JWT_SECRET: ${{ secrets.JWT_SECRET_DEV }}
         FORGOT_PASSWORD_SECRET: ${{ secrets.FORGOT_PASSWORD_SECRET_DEV }}
         FLASK_ENV: development
-        # AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-        # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
