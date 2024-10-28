@@ -7,7 +7,8 @@ frameworkVersion: '3'
 custom:
   wsgi:
     app: app.app
-  # pythonRequirements:
+  pythonRequirements:
+    pythonBin: python3
   #   dockerizePip: true
   #   useDownloadCache: false
   apiGatewayThrottling:
