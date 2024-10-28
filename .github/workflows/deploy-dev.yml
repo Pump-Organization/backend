@@ -43,15 +43,16 @@ jobs:
     #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
     #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
     #     aws-region: us-west-1
-    # - name: Install serverless and dependencies
-    #   run: |
-    #     npm install
-    #     npm install -g serverless
-    - name: Serverless Deploy
-      uses: dhollerbach/actions.serverless-with-python-requirements@v2
+    - name: Install serverless and dependencies
+      run: |
+        npm install
+        npm install -g serverless
+    - name: serverless deploy
+      uses: serverless/github-action@v3.2
+      with:
+        args: deploy --stage DEV
       env:
-        # SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
-        STAGE: DEV
+        SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
         POSTGRES_HOST: ${{ secrets.POSTGRES_HOST_DEV }}
         POSTGRES_USER: ${{ secrets.POSTGRES_USER_DEV }}
         POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD_DEV }}
