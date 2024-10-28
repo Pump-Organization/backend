@@ -6,7 +6,7 @@ flask_env = os.getenv('FLASK_ENV', 'production')
 if flask_env == 'development':
     env_path = '.env.development'
 else:
-    env_path = '.env'
+    env_path = '.env.local'
 load_dotenv(dotenv_path=env_path)
 
 FRONTEND_URL = 'http://localhost:3000'  # TODO
