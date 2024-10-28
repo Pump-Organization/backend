@@ -47,6 +47,8 @@ jobs:
       run: |
         npm install
         npm install -g serverless
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v2
     - name: serverless deploy
       uses: serverless/github-action@v3.2
       with:
