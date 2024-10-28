@@ -7,9 +7,9 @@ frameworkVersion: '3'
 custom:
   wsgi:
     app: app.app
-  pythonRequirements:
-    dockerizePip: true
-    useDownloadCache: false
+  # pythonRequirements:
+  #   dockerizePip: true
+  #   useDownloadCache: false
   apiGatewayThrottling:
     maxRequestsPerSecond: 50
     maxConcurrentRequests: 25
