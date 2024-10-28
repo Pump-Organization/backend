@@ -39,7 +39,7 @@ jobs:
       run: echo "/opt/hostedtoolcache/Python/3.11.10/x64/bin" >> $GITHUB_PATH
     - name: Install serverless and dependencies
       run: |
-        npm install -g serverless
+        npm install -g serverless@3.38.0
         npm install
     - name: Set up Docker
       uses: docker/setup-buildx-action@v2
