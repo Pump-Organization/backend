@@ -9,6 +9,7 @@ custom:
     app: app.app
   pythonRequirements:
     dockerizePip: true
+    useDownloadCache: true
   apiGatewayThrottling:
     maxRequestsPerSecond: 50
     maxConcurrentRequests: 25
