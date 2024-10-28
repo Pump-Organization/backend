@@ -52,7 +52,7 @@ jobs:
         POSTGRES_HOST: ${{ secrets.POSTGRES_HOST_DEV }}
         POSTGRES_USER: ${{ secrets.POSTGRES_USER_DEV }}
         POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD_DEV }}
-        POSTGRES_DB: ${{ secrets.POSTGRES_DB_DEV }}
+        POSTGRES_DB: ${{ vars.POSTGRES_DB_DEV }}
         JWT_SECRET: ${{ secrets.JWT_SECRET_DEV }}
         FORGOT_PASSWORD_SECRET: ${{ secrets.FORGOT_PASSWORD_SECRET_DEV }}
         FLASK_ENV: development
