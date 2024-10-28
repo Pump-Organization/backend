@@ -18,8 +18,8 @@ provider:
   name: aws
   runtime: python3.11
   region: us-west-1
-  iam:
-    role: arn:aws:iam::283024098818:role/aws-python-flask-api-DEV-us-west-1-lambdaRole
+  # iam:
+  #   role: arn:aws:iam::283024098818:role/aws-python-flask-api-DEV-us-west-1-lambdaRole
   environment:
     POSTGRES_HOST: ${env:POSTGRES_HOST}
     POSTGRES_USER: ${env:POSTGRES_USER}
