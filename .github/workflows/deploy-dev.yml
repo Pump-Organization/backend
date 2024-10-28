@@ -44,7 +44,7 @@ jobs:
     - name: Set up Docker
       uses: docker/setup-buildx-action@v2
     - name: serverless deploy
-      run: serverless deploy --stage dev
+      run: serverless remove --stage development && serverless deploy --stage dev
       env:
         SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
         POSTGRES_HOST: ${{ secrets.POSTGRES_HOST_DEV }}
@@ -53,6 +53,6 @@ jobs:
         POSTGRES_DB: ${{ vars.POSTGRES_DB_DEV }}
         JWT_SECRET: ${{ secrets.JWT_SECRET_DEV }}
         FORGOT_PASSWORD_SECRET: ${{ secrets.FORGOT_PASSWORD_SECRET_DEV }}
-        FLASK_ENV: development
+        ENVIRONMENT: development
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
