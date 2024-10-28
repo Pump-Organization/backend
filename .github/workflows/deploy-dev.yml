@@ -37,12 +37,6 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Add Python to PATH
       run: echo "/opt/hostedtoolcache/Python/3.11.10/x64/bin" >> $GITHUB_PATH
-    # - name: Configure AWS credentials
-    #   uses: aws-actions/configure-aws-credentials@v1
-    #   with:
-    #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-    #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
-    #     aws-region: us-west-1
     - name: Install serverless and dependencies
       run: |
         npm install
