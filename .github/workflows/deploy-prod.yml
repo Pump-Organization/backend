@@ -1,11 +1,11 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: Deploy to dev
+name: Deploy to production
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 permissions:
   contents: read
@@ -42,15 +42,15 @@ jobs:
     - name: Set up Docker
       uses: docker/setup-buildx-action@v2
     - name: serverless deploy
-      run: serverless deploy --stage dev
+      run: serverless deploy --stage production
       env:
-        SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY_DEV }}
-        POSTGRES_HOST: ${{ secrets.POSTGRES_HOST_DEV }}
-        POSTGRES_USER: ${{ secrets.POSTGRES_USER_DEV }}
-        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD_DEV }}
-        POSTGRES_DB: ${{ vars.POSTGRES_DB_DEV }}
-        JWT_SECRET: ${{ secrets.JWT_SECRET_DEV }}
-        FORGOT_PASSWORD_SECRET: ${{ secrets.FORGOT_PASSWORD_SECRET_DEV }}
-        ENVIRONMENT: development
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+        SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY_PROD }}
+        POSTGRES_HOST: ${{ secrets.POSTGRES_HOST_PROD }}
+        POSTGRES_USER: ${{ secrets.POSTGRES_USER_PROD }}
+        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD_PROD }}
+        POSTGRES_DB: ${{ vars.POSTGRES_DB_PROD }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET_PROD }}
+        FORGOT_PASSWORD_SECRET: ${{ secrets.FORGOT_PASSWORD_SECRET_PROD }}
+        ENVIRONMENT: production
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}

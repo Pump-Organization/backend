@@ -10,7 +10,7 @@ else:
 load_dotenv(dotenv_path=env_path)
 
 FRONTEND_URL = 'http://localhost:3000'  # TODO
-AWS_REGION = 'us-west-2'
+AWS_REGION = 'us-west-1'
 PROFILE_PICS_BUCKET_NAME = 'pump-profilepics'
 POSTS_PER_PAGE = 5
 USERS_PER_PAGE = 8
