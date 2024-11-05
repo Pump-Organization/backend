@@ -40,7 +40,7 @@ class ProfileService(Service):
         past_workouts = self.session.query(Workout).join(Attendee).filter(
             Attendee.user_id == user_id,
             Attendee.status == AttendeeStatusEnum.accepted,
-            Workout.datetime < now
+            Workout.endtime < now
         ).options(
             joinedload(Workout.attendees).joinedload(Attendee.user)
         ).order_by(Workout.datetime.desc()).offset(offset).limit(per_page)
