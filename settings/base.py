@@ -1,13 +1,10 @@
 import os
 from dotenv import load_dotenv
 
+load_dotenv()
+
 
 flask_env = os.getenv('FLASK_ENV', 'production')
-if flask_env == 'development':
-    env_path = '.env.development'
-else:
-    env_path = '.env.local'
-load_dotenv(dotenv_path=env_path)
 
 FRONTEND_URL = 'http://localhost:3000'  # TODO
 AWS_REGION = 'us-west-1'
