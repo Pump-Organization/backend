@@ -17,6 +17,9 @@ down:
 build:
 	$(DOCKER_COMPOSE) build
 
+shell:
+	$(DOCKER_COMPOSE) exec -it $(SERVICE) sh
+
 # Alembic migration commands
 upgrade:
 	$(DOCKER_COMPOSE) exec $(SERVICE) alembic upgrade head
