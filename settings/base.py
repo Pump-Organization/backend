@@ -6,7 +6,7 @@ load_dotenv()
 
 flask_env = os.getenv('FLASK_ENV', 'production')
 
-FRONTEND_URL = 'http://localhost:3000'  # TODO
+FRONTEND_DOMAIN = 'getpumprightnow.com'
 AWS_REGION = 'us-west-1'
 PROFILE_PICS_BUCKET_NAME = 'pump-profilepics'
 POSTS_PER_PAGE = 5
