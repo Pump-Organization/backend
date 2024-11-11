@@ -1,6 +1,7 @@
 import datetime
 import re
 import uuid
+from better_profanity import profanity
 from constants.error_constants import BadDataError
 from email.utils import parseaddr
 from sqlalchemy import Column, String, DateTime
@@ -32,6 +33,10 @@ class User(db.Model):
     @validates('username')
     def validate_username(self, key, username):
         if not re.match("^(?=.*[a-z])[a-z0-9_]{3,30}$", username):
+            raise BadDataError
+        if profanity.contains_profanity(username):
+            raise BadDataError
+        if username in {'null', 'undefined', 'none'}:
             raise BadDataError
         return username
 
