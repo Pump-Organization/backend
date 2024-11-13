@@ -13,6 +13,6 @@ provider "aws" {
   region = "us-west-1"
 }
 
-resource "aws_s3_bucket" "pump-media" {
-  bucket = "pump-media"
+resource "aws_s3_bucket" "pump-media-development" {
+  bucket = "pump-media-development"
 }
