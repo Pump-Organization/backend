@@ -8,7 +8,7 @@ flask_env = os.getenv('FLASK_ENV', 'production')
 
 FRONTEND_DOMAIN = 'getpumprightnow.com'
 AWS_REGION = 'us-west-1'
-PROFILE_PICS_BUCKET_NAME = 'pump-profilepics'
+PROFILE_PICS_BUCKET_NAME = 'pump-media'
 POSTS_PER_PAGE = 5
 USERS_PER_PAGE = 8
 WORKOUTS_PER_PAGE = 5
