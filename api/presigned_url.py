@@ -1,6 +1,6 @@
 import boto3
 import settings
-from settings import AWS_REGION, PROFILE_PICS_BUCKET_NAME
+from settings import AWS_REGION, MEDIA_BUCKET_NAME
 from dotenv import load_dotenv
 from flask import g, jsonify
 from flask_classful import FlaskView, route
@@ -22,7 +22,7 @@ class PresignedUrlView(FlaskView):
     @route('profile_pic', methods=['GET'])
     @token_required
     def get_profile_pic_presigned_url(self):
-        bucket_name = PROFILE_PICS_BUCKET_NAME
+        bucket_name = MEDIA_BUCKET_NAME
         key = f"images/profile_pics/{g.user_id}.jpg"
         return self.get_presigned_url(bucket_name, key)
 
