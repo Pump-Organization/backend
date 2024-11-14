@@ -1,9 +1,10 @@
 import boto3
 import settings
-from settings import AWS_REGION, PROFILE_PICS_BUCKET_NAME
+from settings import AWS_REGION, MEDIA_BUCKET_NAME
 from dotenv import load_dotenv
-from flask import request, jsonify
+from flask import g, jsonify
 from flask_classful import FlaskView, route
+from middleware.token_required import token_required
 
 load_dotenv()
 
@@ -18,11 +19,14 @@ s3 = boto3.client(
 class PresignedUrlView(FlaskView):
     route_base = 'presigned_url'
 
-    @route('', methods=['GET'])
-    def get_presigned_url(self):
-        key = request.args.get('key')
-        bucket_name = PROFILE_PICS_BUCKET_NAME
+    @route('profile_pic', methods=['GET'])
+    @token_required
+    def get_profile_pic_presigned_url(self):
+        bucket_name = MEDIA_BUCKET_NAME
+        key = f"images/profile_pics/{g.user_id}.jpg"
+        return self.get_presigned_url(bucket_name, key)
 
+    def get_presigned_url(self, bucket_name, key):
         try:
             presigned_url = s3.generate_presigned_url(
                 ClientMethod='put_object',

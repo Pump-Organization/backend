@@ -22,7 +22,12 @@ from sqlalchemy.exc import IntegrityError, DataError
 logger = logging.getLogger()
 
 app = Flask(__name__)
-CORS(app, resources={"/login/reset-password": {"origins": settings.FRONTEND_URL}})
+cors_resources = {
+    "/login/reset-password": {
+        "origins": f"https://www.{settings.FRONTEND_DOMAIN}"
+    }
+}
+CORS(app, resources=cors_resources)
 
 #################################### SQLALCHEMY ##############################################
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://{}:{}@{}/{}".format(

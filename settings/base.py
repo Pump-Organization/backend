@@ -2,16 +2,13 @@ import os
 from dotenv import load_dotenv
 
 
-flask_env = os.getenv('FLASK_ENV', 'production')
-if flask_env == 'development':
-    env_path = '.env.development'
-else:
-    env_path = '.env.local'
-load_dotenv(dotenv_path=env_path)
+env = os.getenv('FLASK_ENV', 'production')
+load_dotenv(f'.env.{env}')
 
-FRONTEND_URL = 'http://localhost:3000'  # TODO
+
+FRONTEND_DOMAIN = 'getpumprightnow.com'
 AWS_REGION = 'us-west-1'
-PROFILE_PICS_BUCKET_NAME = 'pump-profilepics'
+MEDIA_BUCKET_NAME = f'pump-media-{env}'
 POSTS_PER_PAGE = 5
 USERS_PER_PAGE = 8
 WORKOUTS_PER_PAGE = 5
