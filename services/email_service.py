@@ -13,8 +13,8 @@ class EmailService(Service):
         super().__init__(model)
         if os.getenv('environment') == 'local':
             self.ses_client = boto3.client('ses', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                                       aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-                                       region_name=settings.AWS_REGION)
+                                           aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                                           region_name=settings.AWS_REGION)
         else:
             self.ses_client = boto3.client('ses', region_name=settings.AWS_REGION)
 
