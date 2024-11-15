@@ -19,7 +19,7 @@ s3 = boto3.client(
 class PresignedUrlView(FlaskView):
     route_base = 'presigned_url'
 
-    @route('profile_pic', methods=['GET'])
+    @route('/profile_pic', methods=['GET'])
     @token_required
     def get_profile_pic_presigned_url(self):
         bucket_name = MEDIA_BUCKET_NAME
