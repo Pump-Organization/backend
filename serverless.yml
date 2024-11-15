@@ -31,7 +31,7 @@ provider:
     - Effect: Allow
       Action:
         - ses:SendEmail
-      Resource: arn:aws:ses:${aws:region}:${aws:accountId}:identity/getpumprightnow.com
+      Resource: arn:aws:ses:${aws:region}:${aws:accountId}:*
 
 functions:
   pump-api:
