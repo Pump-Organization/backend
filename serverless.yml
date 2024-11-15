@@ -27,7 +27,11 @@ provider:
     FORGOT_PASSWORD_SECRET: ${env:FORGOT_PASSWORD_SECRET}
     FLASK_ENV: ${env:ENVIRONMENT}
     ENVIRONMENT: ${env:ENVIRONMENT}
-
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - ses:SendEmail
+      Resource: arn:aws:ses:${aws:region}:${aws:accountId}:identity/getpumprightnow.com
 
 functions:
   pump-api:

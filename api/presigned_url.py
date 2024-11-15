@@ -1,5 +1,6 @@
 import boto3
 import settings
+import os
 from settings import AWS_REGION, MEDIA_BUCKET_NAME
 from dotenv import load_dotenv
 from flask import g, jsonify
@@ -8,12 +9,15 @@ from middleware.token_required import token_required
 
 load_dotenv()
 
-s3 = boto3.client(
-    's3',
-    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-    region_name=AWS_REGION
-)
+if os.getenv('environment') == 'local':
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        region_name=AWS_REGION
+    )
+else:
+    s3 = boto3.client('s3', region_name=AWS_REGION)
 
 
 class PresignedUrlView(FlaskView):
