@@ -27,7 +27,14 @@ class PresignedUrlView(FlaskView):
     @token_required
     def get_profile_pic_presigned_url(self):
         bucket_name = MEDIA_BUCKET_NAME
-        key = f"images/profile_pics/{g.user_id}.jpg"
+        key = f"images/profile_pics/{g.user_id.hex}.jpg"
+        return self.get_presigned_url(bucket_name, key)
+    
+    @route('/workout_pic', methods=['GET'])
+    @token_required
+    def get_workout_pic_presigned_url(self, workout_id):
+        bucket_name = MEDIA_BUCKET_NAME
+        key = f"images/workout_pics/{workout_id.hex}.jpg"
         return self.get_presigned_url(bucket_name, key)
 
     def get_presigned_url(self, bucket_name, key):
