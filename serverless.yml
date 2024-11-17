@@ -32,6 +32,11 @@ provider:
       Action:
         - ses:SendEmail
       Resource: arn:aws:ses:${aws:region}:${aws:accountId}:*
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:GetObject
+      Resource: arn:aws:s3:::pump-media-${env:ENVIRONMENT}/*
 
 functions:
   pump-api:
