@@ -1,9 +1,10 @@
 import boto3
 import settings
 import os
+from constants.error_constants import BadDataError
 from settings import AWS_REGION, MEDIA_BUCKET_NAME
 from dotenv import load_dotenv
-from flask import g, jsonify
+from flask import g, jsonify, request
 from flask_classful import FlaskView, route
 from middleware.token_required import token_required
 
@@ -32,7 +33,10 @@ class PresignedUrlView(FlaskView):
     
     @route('/workout_pic', methods=['GET'])
     @token_required
-    def get_workout_pic_presigned_url(self, workout_id):
+    def get_workout_pic_presigned_url(self):
+        workout_id = request.args.get('workout_id')
+        if workout_id is None:
+            raise BadDataError
         bucket_name = MEDIA_BUCKET_NAME
         key = f"images/workout_pics/{workout_id.hex}.jpg"
         return self.get_presigned_url(bucket_name, key)
