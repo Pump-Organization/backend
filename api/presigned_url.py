@@ -38,7 +38,7 @@ class PresignedUrlView(FlaskView):
         if workout_id is None:
             raise BadDataError
         bucket_name = MEDIA_BUCKET_NAME
-        key = f"images/workout_pics/{workout_id.hex}.jpg"
+        key = f"images/workout_pics/{workout_id}.jpg"
         return self.get_presigned_url(bucket_name, key)
 
     def get_presigned_url(self, bucket_name, key):
