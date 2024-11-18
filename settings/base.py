@@ -3,7 +3,8 @@ from dotenv import load_dotenv
 
 
 env = os.getenv('FLASK_ENV', 'production')
-load_dotenv(f'.env.{env}')
+if env == 'local':
+    load_dotenv()
 
 
 FRONTEND_DOMAIN = 'getpumprightnow.com'

@@ -51,6 +51,7 @@ class ProfileService(Service):
                              if attendee.attendee_type == AttendeeTypeEnum.organizer)
             workout_json = workout.to_json()
             workout_json['organizer_username'] = organizer.username if organizer else None
+            workout_json['organizer_pic'] = organizer.profile_pic if organizer else None
             workout_json['num_attendees'] = sum(1 for attendee in workout.attendees
                                                 if attendee.status == AttendeeStatusEnum.accepted)
             results.append(workout_json)
@@ -84,6 +85,7 @@ class ProfileService(Service):
                              if attendee.attendee_type == AttendeeTypeEnum.organizer)
             workout_json = workout.to_json()
             workout_json['organizer_username'] = organizer.username if organizer else None
+            workout_json['organizer_pic'] = organizer.profile_pic if organizer else None
             workout_json['num_attendees'] = sum(1 for attendee in workout.attendees
                                                 if attendee.status == AttendeeStatusEnum.accepted)
             results.append(workout_json)

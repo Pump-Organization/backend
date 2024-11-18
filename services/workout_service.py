@@ -77,6 +77,7 @@ class WorkoutService(Service):
 
     def get_pending_workouts(self, page=1):
         workouts = self.session.query(Workout).join(Attendee, Attendee.workout_id == Workout.id)\
+            .filter(Workout.endtime < datetime.now())\
             .filter(Attendee.user_id == g.user_id)\
             .filter(Attendee.attendee_type == AttendeeTypeEnum.organizer)\
             .filter(Workout.status == WorkoutStatusEnum.pending)\
@@ -102,6 +103,7 @@ class WorkoutService(Service):
                              if attendee.attendee_type == AttendeeTypeEnum.organizer)
             workout_json = workout.to_json()
             workout_json['organizer_username'] = organizer.username if organizer else None
+            workout_json['organizer_pic'] = organizer.profile_pic if organizer else None
             workout_json['num_attendees'] = sum(1 for attendee in workout.attendees
                                                 if attendee.status == AttendeeStatusEnum.accepted)
             results.append(workout_json)
