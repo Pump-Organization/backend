@@ -30,7 +30,7 @@ class PresignedUrlView(FlaskView):
         bucket_name = MEDIA_BUCKET_NAME
         key = f"images/profile_pics/{g.user_id.hex}.jpg"
         return self.get_presigned_url(bucket_name, key)
-    
+
     @route('/workout_pic', methods=['GET'])
     @token_required
     def get_workout_pic_presigned_url(self):

@@ -77,6 +77,7 @@ class WorkoutService(Service):
 
     def get_pending_workouts(self, page=1):
         workouts = self.session.query(Workout).join(Attendee, Attendee.workout_id == Workout.id)\
+            .filter(Workout.endtime < datetime.now())\
             .filter(Attendee.user_id == g.user_id)\
             .filter(Attendee.attendee_type == AttendeeTypeEnum.organizer)\
             .filter(Workout.status == WorkoutStatusEnum.pending)\
