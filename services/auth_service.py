@@ -96,7 +96,7 @@ class AuthService(Service):
 
     def send_forgot_password_email(self, email):
         token = self.generate_forgot_password_token(email).get('token')
-        url = f"https://www.{settings.FRONTEND_DOMAIN}/reset-password?token={token}"
+        url = f"https://{settings.FRONTEND_SUBDOMAIN}.{settings.FRONTEND_DOMAIN}/reset-password?token={token}"
         body_text = FORGOT_PASSWORD_BODY_TEXT(url)
         body_html = FORGOT_PASSWORD_BODY_HTML(url)
         EmailService().send_email(email, FORGOT_PASSWORD_SUBJECT, body_text, body_html)
