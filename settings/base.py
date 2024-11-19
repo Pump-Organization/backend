@@ -6,7 +6,7 @@ env = os.getenv('FLASK_ENV', 'production')
 if env == 'local':
     load_dotenv()
 
-
+FRONTEND_SUBDOMAIN = 'non-prod'
 FRONTEND_DOMAIN = 'getpumprightnow.com'
 AWS_REGION = 'us-west-1'
 MEDIA_BUCKET_NAME = f'pump-media-{env}'
