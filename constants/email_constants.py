@@ -1,7 +1,7 @@
 import settings
 
 FORGOT_PASSWORD_SUBJECT = 'Reset your Pump password'
-NO_REPLY_EMAIL = f'no-reply@{settings.FRONTEND_DOMAIN}'
+NO_REPLY_EMAIL = settings.NO_REPLY_EMAIL
 
 
 def FORGOT_PASSWORD_BODY_TEXT(reset_password_url):
