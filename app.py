@@ -24,7 +24,7 @@ logger = logging.getLogger()
 app = Flask(__name__)
 cors_resources = {
     "/login/reset-password": {
-        "origins": f"https://{settings.FRONTEND_SUBDOMAIN}.{settings.FRONTEND_DOMAIN}"
+        "origins": settings.FRONTEND_URL,
     }
 }
 CORS(app, resources=cors_resources)
