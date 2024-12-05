@@ -6,8 +6,8 @@ env = os.getenv('FLASK_ENV', 'production')
 if env == 'local':
     load_dotenv()
 
-
-FRONTEND_DOMAIN = 'getpumprightnow.com'
+FRONTEND_URL = 'https://develop.d2xo9p5soqfkmt.amplifyapp.com'
+NO_REPLY_EMAIL = 'maxsich6@gmail.com'
 AWS_REGION = 'us-west-1'
 MEDIA_BUCKET_NAME = f'pump-media-{env}'
 POSTS_PER_PAGE = 5
