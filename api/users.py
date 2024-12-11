@@ -31,7 +31,7 @@ class UsersView(FlaskView):
         UserService().delete_user(user_id)
         return '', 204
 
-    @route('/<user_id>/follow', methods=['POST'])
+    @route('/<user_id>/follow', methods=['POST'])  # TODO: emit notification event to followed user
     @token_required
     def follow_user(self, user_id):
         service_data = UserService().follow_user(user_id)
