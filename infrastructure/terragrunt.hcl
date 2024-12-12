@@ -12,6 +12,9 @@ remote_state {
 }
 
 inputs = {
+    # dynamodb.tf
+    notification_dynamodb_table_name = "pump-notification-table-${local.env}"
+
     # eventing.tf
     event_bus_name = "pump-event-bus-${local.env}"
     notification_dlq_name = "pump-notification-dlq-${local.env}"
