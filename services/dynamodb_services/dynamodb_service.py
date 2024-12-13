@@ -1,6 +1,7 @@
 import boto3
 import settings
 
+
 class DynamoDbService:
     def __init__(self, table_name):
         self.table_name = table_name
