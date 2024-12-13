@@ -7,9 +7,6 @@ from db.models.user import User
 from db.models.follower import Follower
 from services.service import Service
 from sqlalchemy import case, and_
-from logging import getLogger
-
-logger = getLogger(__name__)
 
 
 class UserService(Service):

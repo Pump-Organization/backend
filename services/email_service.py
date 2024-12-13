@@ -3,9 +3,6 @@ import settings
 import os
 from constants.email_constants import NO_REPLY_EMAIL
 from services.service import Service
-from logging import Logger
-
-logger = Logger(__name__)
 
 
 class EmailService(Service):

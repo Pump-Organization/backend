@@ -2,10 +2,6 @@ import uuid
 from datetime import time
 from flask.json.provider import DefaultJSONProvider
 
-import logging
-
-logger = logging.getLogger()
-
 
 class CustomJSONProvider(DefaultJSONProvider):
     def __init__(self, app):
