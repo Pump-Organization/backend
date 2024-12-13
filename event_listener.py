@@ -1,5 +1,8 @@
 import json
+import logging
 from utils.event_handler_factory import EventHandlerFactory
+
+logger = logging.getLogger()
 
 
 def event_listener(data, context):

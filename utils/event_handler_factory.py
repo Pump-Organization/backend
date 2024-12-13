@@ -2,8 +2,6 @@ import logging
 from event_handlers.follow_created_event_handler import FollowCreatedEventHandler
 from event_handlers.invite_created_event_handler import InviteCreatedEventHandler
 
-logger = logging.getLogger()
-
 
 class EventNotRegisteredError(Exception):
     pass
@@ -17,7 +15,7 @@ class EventHandlerFactory:
         self.__event_handlers["INVITE-CREATED"] = InviteCreatedEventHandler
 
     def get_event_handler(self, event):
-        logger.debug(f"{self.__class__.__name__}.get_event_handler")
+        logging.debug(f"{self.__class__.__name__}.get_event_handler")
         try:
             event_handler = self.__event_handlers[event["name"]]
             return event_handler(event)
