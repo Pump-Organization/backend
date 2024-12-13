@@ -1,9 +1,10 @@
 import json
+from utils.event_handler_factory import EventHandlerFactory
+
 
 def event_listener(data, context):
     event = serialize_event(data)
-    print(f"Received event: {event}")
-    return True
+    EventHandlerFactory().get_event_handler(event).process()
 
 
 def serialize_event(event_data):
