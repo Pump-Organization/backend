@@ -2,7 +2,12 @@ import json
 import logging
 from utils.event_handler_factory import EventHandlerFactory
 
-logger = logging.getLogger()
+
+root = logging.getLogger()
+if root.handlers:
+    for handler in root.handlers:
+        root.removeHandler(handler)
+logging.basicConfig(format='%(asctime)s %(message)s',level=logging.DEBUG)
 
 
 def event_listener(data, context):
