@@ -12,6 +12,7 @@ logging.basicConfig(format='%(asctime)s %(message)s',level=logging.DEBUG)
 
 def event_listener(data, context):
     event = serialize_event(data)
+    logging.debug(f"Received event: {event}")
     EventHandlerFactory().get_event_handler(event).process()
 
 

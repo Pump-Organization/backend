@@ -5,7 +5,7 @@ import settings
 class DynamoDbService:
     def __init__(self, table_name):
         self.table_name = table_name
-        self.dynamodb = boto3.client('dynamodb', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        self.dynamodb = boto3.resource('dynamodb', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                                      aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
                                      region_name=settings.AWS_REGION)
         self.table = self.dynamodb.Table(table_name)

@@ -6,7 +6,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - FLASK_ENV=local
+      - FLASK_ENV=development
     depends_on:
       pump-db-host:
         condition: service_healthy
