@@ -7,18 +7,18 @@ root = logging.getLogger()
 if root.handlers:
     for handler in root.handlers:
         root.removeHandler(handler)
-logging.basicConfig(format='%(asctime)s %(message)s',level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 
 
-def event_listener(data, context):
-    event = serialize_event(data)
+def event_listener(event, context):
     logging.debug(f"Received event: {event}")
-    EventHandlerFactory().get_event_handler(event).process()
+    serialized_event = serialize_event(event)
+    EventHandlerFactory().get_event_handler(serialized_event).process()
 
 
 def serialize_event(event_data):
     message = json.loads(event_data["Records"][0]["body"])
     return {
-        "name": message["name"],
-        "data": message["data"]
+        "name": message["detail-type"],
+        "data": message["detail"]
     }
