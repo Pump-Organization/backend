@@ -73,7 +73,7 @@ class UserService(Service):
         
         # add follower to db
         new_follower = Follower(
-            follower_id=g.user_id,
+            follower_id=g.user_id.hex,
             followed_id=user_id
         )
         response = self.add_data(new_follower)
