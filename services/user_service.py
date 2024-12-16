@@ -73,7 +73,7 @@ class UserService(Service):
         
         # add follower to db
         new_follower = Follower(
-            follower_id=g.user_id.hex,
+            follower_id=g.user_id,
             followed_id=user_id
         )
         response = self.add_data(new_follower)
@@ -82,7 +82,7 @@ class UserService(Service):
         EventEmitterService().emit_event({
             "name": "FOLLOW-CREATED",
             "data": {
-                "follower_id": g.user_id,
+                "follower_id": g.user_id.hex,
                 "followee_id": user_id
             }
         })
