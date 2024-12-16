@@ -36,6 +36,7 @@ provider:
       Action:
         - s3:PutObject
         - s3:GetObject
+        - dynamodb:PutItem
       Resource: arn:aws:s3:::pump-media-${env:ENVIRONMENT}/*
 
 functions:
