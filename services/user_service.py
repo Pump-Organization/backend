@@ -5,6 +5,7 @@ from constants.error_constants import BadDataError, ConflictError, ForbiddenErro
 from settings import USERS_PER_PAGE
 from db.models.user import User
 from db.models.follower import Follower
+from services.event_emitter_service import EventEmitterService
 from services.service import Service
 from sqlalchemy import case, and_
 
@@ -69,11 +70,24 @@ class UserService(Service):
             raise BadDataError("cannot follow self")
         if Follower.query.filter_by(follower_id=g.user_id, followed_id=user_id).first():
             raise ConflictError("already following")
+        
+        # add follower to db
         new_follower = Follower(
             follower_id=g.user_id,
             followed_id=user_id
         )
-        return self.add_data(new_follower)
+        response = self.add_data(new_follower)
+
+        # emit event on successful transaction
+        EventEmitterService().emit_event({
+            "name": "FOLLOW-CREATED",
+            "data": {
+                "follower_id": g.user_id,
+                "followee_id": user_id
+            }
+        })
+
+        return response
 
     def unfollow_user(self, user_id):
         if g.user_id == uuid.UUID(user_id):
