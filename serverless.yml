@@ -36,8 +36,15 @@ provider:
       Action:
         - s3:PutObject
         - s3:GetObject
-        - dynamodb:PutItem
       Resource: arn:aws:s3:::pump-media-${env:ENVIRONMENT}/*
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/pump-notification-table-${env:ENVIRONMENT}
 
 functions:
   pump-api:
