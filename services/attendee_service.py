@@ -1,4 +1,5 @@
 import logging
+import traceback
 from flask import g
 from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
 from db.models.user import User
@@ -31,11 +32,12 @@ class AttendeeService(Service):
                 "name": "INVITE-CREATED",
                 "data": {
                     "workout_id": data.get('workout_id'),
-                    "organizer_id": organizer_id,
+                    "organizer_id": organizer_id.hex,
                     "invitee_id": data.get('user_id')
                 }
             })
         except Exception as e:
+            logging.critical(traceback.format_exc())
             logging.critical(f"### Error emitting event: {e}")
 
         return response
