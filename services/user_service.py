@@ -1,3 +1,4 @@
+import logging
 import uuid
 from argon2 import PasswordHasher
 from flask import g
@@ -78,14 +79,17 @@ class UserService(Service):
         )
         response = self.add_data(new_follower)
 
-        # emit event on successful transaction
-        EventEmitterService().emit_event({
-            "name": "FOLLOW-CREATED",
-            "data": {
-                "follower_id": g.user_id.hex,
-                "followee_id": user_id
-            }
-        })
+        try:
+            # emit event on successful transaction
+            EventEmitterService().emit_event({
+                "name": "FOLLOW-CREATED",
+                "data": {
+                    "follower_id": g.user_id.hex,
+                    "followee_id": user_id
+                }
+            })
+        except Exception as e:
+            logging.critical(f"### Error emitting event: {e}")
 
         return response
 

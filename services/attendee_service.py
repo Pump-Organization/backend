@@ -1,3 +1,4 @@
+import logging
 from flask import g
 from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
 from db.models.user import User
@@ -25,15 +26,17 @@ class AttendeeService(Service):
         )
         response = self.add_data(attendee)
 
-
-        EventEmitterService().emit_event({
-            "name": "INVITE-CREATED",
-            "data": {
-                "workout_id": data.get('workout_id'),
-                "organizer_id": organizer_id,
-                "invitee_id": data.get('user_id')
-            }
-        })
+        try:
+            EventEmitterService().emit_event({
+                "name": "INVITE-CREATED",
+                "data": {
+                    "workout_id": data.get('workout_id'),
+                    "organizer_id": organizer_id,
+                    "invitee_id": data.get('user_id')
+                }
+            })
+        except Exception as e:
+            logging.critical(f"### Error emitting event: {e}")
 
         return response
 
