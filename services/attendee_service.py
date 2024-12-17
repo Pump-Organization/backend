@@ -3,6 +3,7 @@ from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
 from db.models.user import User
 from constants.error_constants import ForbiddenError
 from services.service import Service
+from services.event_emitter_service import EventEmitterService
 
 
 class AttendeeService(Service):
@@ -22,7 +23,19 @@ class AttendeeService(Service):
             attendee_type=data.get('attendee_type', AttendeeTypeEnum.guest),
             status=status
         )
-        return self.add_data(attendee)
+        response = self.add_data(attendee)
+
+
+        EventEmitterService().emit_event({
+            "name": "INVITE-CREATED",
+            "data": {
+                "workout_id": data.get('workout_id'),
+                "organizer_id": organizer_id,
+                "invitee_id": data.get('user_id')
+            }
+        })
+
+        return response
 
     def get_attendee(self, workout_id, user_id):
         attendee = self.session.query(Attendee).filter(
