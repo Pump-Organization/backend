@@ -9,14 +9,18 @@ class AttendeeService(Service):
     def __init__(self) -> None:
         super().__init__(Attendee)
 
-    def create_attendee(self, data):
-        if g.user_id != self.get_workout_organizer(data.get('workout_id')):
+    def create_attendee(self, data, status=AttendeeStatusEnum.pending, organizer_id=None):
+        if organizer_id is None:
+            organizer_id = self.get_workout_organizer(data.get('workout_id'))
+
+        if g.user_id != organizer_id:
             raise ForbiddenError
+        
         attendee = Attendee(
             user_id=data.get('user_id'),
             workout_id=data.get('workout_id'),
-            attendee_type=data.get('attendee_type', 'guest'),
-            status="pending"
+            attendee_type=data.get('attendee_type', AttendeeTypeEnum.guest),
+            status=status
         )
         return self.add_data(attendee)
 
