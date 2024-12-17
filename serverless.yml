@@ -48,7 +48,7 @@ provider:
     - Effect: Allow
       Action:
         - events:PutEvents
-      Resource: arn:aws:sqs:${aws:region}:${aws:accountId}:pump-event-bus-${env:ENVIRONMENT}
+      Resource: arn:aws:events:${aws:region}:${aws:accountId}:pump-event-bus-${env:ENVIRONMENT}
 
 functions:
   pump-api:
