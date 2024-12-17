@@ -38,7 +38,7 @@ class WorkoutService(Service):
         for invitee_id in data.get('invitees', []):
             guest_data = {
                 "workout_id": new_workout.id.hex,
-                "user_id": invitee_id.hex,
+                "user_id": invitee_id,
                 "attendee_type": AttendeeTypeEnum.guest,
             }
             AttendeeService().create_attendee(data=guest_data, status=AttendeeStatusEnum.pending, organizer_id=data.get('organizer_id'))
