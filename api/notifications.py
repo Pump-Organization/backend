@@ -13,6 +13,10 @@ class NotificationsView(FlaskView):
         limit = request.args.get('limit', 10, int)
         last_evaluated_key = request.args.get('last_evaluated_key', None)
         notifications, last_evaluated_key = NotificationService().list_notifications(g.user_id.hex, limit, last_evaluated_key)
+        if notifications:
+            # mark the latest notification as viewed
+            NotificationService().mark_notification_viewed(g.user_id.hex, notifications[0]['SK'])
+
         return {
             "notifications": notifications,
             "last_evaluated_key": last_evaluated_key,
