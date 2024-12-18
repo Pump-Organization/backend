@@ -1,0 +1,20 @@
+from flask_classful import FlaskView, route
+from flask import g, request
+from middleware.token_required import token_required
+from services.dynamodb_services.notification_service import NotificationService
+
+
+class NotificationsView(FlaskView):
+    route_base = 'notifications'
+
+    @route('', methods=['GET'])
+    @token_required
+    def list_notifications(self):
+        limit = request.args.get('limit', 10, int)
+        last_evaluated_key = request.args.get('last_evaluated_key', None)
+        notifications, last_evaluated_key = NotificationService().list_notifications(g.user_id.hex, limit, last_evaluated_key)
+        return {
+            "notifications": notifications,
+            "last_evaluated_key": last_evaluated_key,
+            "user_hex": g.user_id.hex
+        }, 200

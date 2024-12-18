@@ -18,7 +18,7 @@ class AttendeeService(Service):
 
         if g.user_id != organizer_id:
             raise ForbiddenError
-        
+
         attendee = Attendee(
             user_id=data.get('user_id'),
             workout_id=data.get('workout_id'),

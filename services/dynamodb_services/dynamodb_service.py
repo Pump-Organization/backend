@@ -7,8 +7,8 @@ class DynamoDbService:
         self.table_name = table_name
         if settings.env == 'local':
             self.dynamodb = boto3.resource('dynamodb', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                                     aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-                                     region_name=settings.AWS_REGION)
+                                           aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                                           region_name=settings.AWS_REGION)
         else:
             self.dynamodb = boto3.resource('dynamodb', region_name=settings.AWS_REGION)
         self.table = self.dynamodb.Table(table_name)
@@ -34,9 +34,7 @@ class DynamoDbService:
         response = self.table.scan()
         return response.get('Items')
 
-    def query(self, key_condition_expression, expression_attribute_values):
-        response = self.table.query(
-            KeyConditionExpression=key_condition_expression,
-            ExpressionAttributeValues=expression_attribute_values
-        )
-        return response.get('Items')
+    def query(self, **query_params):
+        """Generic query method for DynamoDB."""
+        response = self.table.query(**query_params)
+        return response
