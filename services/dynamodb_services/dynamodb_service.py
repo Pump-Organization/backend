@@ -23,10 +23,11 @@ class DynamoDbService:
     def delete_item(self, key):
         self.table.delete_item(Key=key)
 
-    def update_item(self, key, update_expression, expression_attribute_values):
+    def update_item(self, key, update_expression, expression_attribute_names, expression_attribute_values):
         self.table.update_item(
             Key=key,
             UpdateExpression=update_expression,
+            ExpressionAttributeNames=expression_attribute_names,
             ExpressionAttributeValues=expression_attribute_values
         )
 

@@ -24,11 +24,10 @@ class NotificationService:
         }
 
         response = self._dynamodb_service.update_item(
-            Key=key,
-            UpdateExpression=update_expression,
-            ExpressionAttributeNames=expression_attribute_names,
-            ExpressionAttributeValues=expression_attribute_values,
-            ReturnValues="ALL_NEW"
+            key=key,
+            updateExpression=update_expression,
+            expressionAttributeNames=expression_attribute_names,
+            expressionAttributeValues=expression_attribute_values
         )
 
         return response.get('Attributes')
