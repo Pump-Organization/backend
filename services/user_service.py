@@ -71,7 +71,7 @@ class UserService(Service):
             raise BadDataError("cannot follow self")
         if Follower.query.filter_by(follower_id=g.user_id, followed_id=user_id).first():
             raise ConflictError("already following")
-        
+
         # add follower to db
         new_follower = Follower(
             follower_id=g.user_id,

@@ -1,5 +1,6 @@
 import datetime
 
+
 class NotificationFactory:
     """Factory for creating structured notification dictionaries."""
 
@@ -7,7 +8,7 @@ class NotificationFactory:
     def create_follow_notification(follower_id: str, followee_id: str) -> dict:
         """Creates a structured 'FOLLOW' notification."""
         return {
-            "PK": f"USER#{followee_id}", 
+            "PK": f"USER#{followee_id}",
             "SK": datetime.datetime.now().isoformat(),  # sort key based on timestamp
             "type": "FOLLOW",
             "follower_id": follower_id,
