@@ -25,12 +25,12 @@ class NotificationService:
 
         response = self._dynamodb_service.update_item(
             key=key,
-            updateExpression=update_expression,
-            expressionAttributeNames=expression_attribute_names,
-            expressionAttributeValues=expression_attribute_values
+            update_expression=update_expression,
+            expression_attribute_names=expression_attribute_names,
+            expression_attribute_values=expression_attribute_values
         )
 
-        return response.get('Attributes')
+        return response
 
     def list_notifications(self, user_id, limit=10, last_evaluated_key=None):
         key_condition_expression = "PK = :pk"
