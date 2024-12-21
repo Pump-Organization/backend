@@ -12,7 +12,7 @@ sanitizer = Sanitizer({
 
 def sanitize_input(data):
     if isinstance(data, dict):
-        return {key: sanitize_input(value) for key, value in data.items()}
+        return {key: (sanitize_input(value) if key != 'password' else value) for key, value in data.items()}
     elif isinstance(data, list):
         return [sanitize_input(item) for item in data]
     elif isinstance(data, str):
