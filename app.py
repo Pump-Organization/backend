@@ -10,6 +10,7 @@ from api.attendees import AttendeesView
 from api.feed import FeedView
 from api.profiles import ProfilesView
 from api.login import LoginView
+from api.notifications import NotificationsView
 from api.presigned_url import PresignedUrlView
 from api.search import SearchView
 from constants.custom_json_provider import CustomJSONProvider
@@ -45,6 +46,7 @@ AttendeesView.register(app)
 ProfilesView.register(app)
 LoginView.register(app)
 FeedView.register(app)
+NotificationsView.register(app)
 SearchView.register(app)
 PresignedUrlView.register(app)
 

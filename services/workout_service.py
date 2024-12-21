@@ -2,6 +2,7 @@ import settings
 from db.models.workout import Workout, WorkoutStatusEnum
 from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
 from services.service import Service
+from services.attendee_service import AttendeeService
 from constants.error_constants import ForbiddenError, NotFoundError
 from datetime import datetime
 from flask import g
@@ -27,21 +28,20 @@ class WorkoutService(Service):
         )
         workout_data = self.add_data(new_workout, False)
         self.session.flush()
-        organizer = Attendee(
-            workout_id=new_workout.id,
-            user_id=data.get('organizer_id'),
-            attendee_type="organizer",
-            status="accepted"
-        )
-        self.add_data(organizer)
+        organizer_data = {
+            "workout_id": new_workout.id.hex,
+            "user_id": data.get('organizer_id').hex,
+            "attendee_type": AttendeeTypeEnum.organizer,
+        }
+
+        AttendeeService().create_attendee(data=organizer_data, status=AttendeeStatusEnum.accepted, organizer_id=data.get('organizer_id'))
         for invitee_id in data.get('invitees', []):
-            guest = Attendee(
-                workout_id=new_workout.id,
-                user_id=invitee_id,
-                attendee_type="guest",
-                status="pending"
-            )
-            self.add_data(guest)
+            guest_data = {
+                "workout_id": new_workout.id.hex,
+                "user_id": invitee_id,
+                "attendee_type": AttendeeTypeEnum.guest,
+            }
+            AttendeeService().create_attendee(data=guest_data, status=AttendeeStatusEnum.pending, organizer_id=data.get('organizer_id'))
 
         return workout_data
 

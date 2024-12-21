@@ -1,24 +1,46 @@
+import logging
+import traceback
 from flask import g
 from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
 from db.models.user import User
 from constants.error_constants import ForbiddenError
 from services.service import Service
+from services.event_emitter_service import EventEmitterService
 
 
 class AttendeeService(Service):
     def __init__(self) -> None:
         super().__init__(Attendee)
 
-    def create_attendee(self, data):
-        if g.user_id != self.get_workout_organizer(data.get('workout_id')):
+    def create_attendee(self, data, status=AttendeeStatusEnum.pending, organizer_id=None):
+        if organizer_id is None:
+            organizer_id = self.get_workout_organizer(data.get('workout_id'))
+
+        if g.user_id != organizer_id:
             raise ForbiddenError
+
         attendee = Attendee(
             user_id=data.get('user_id'),
             workout_id=data.get('workout_id'),
-            attendee_type=data.get('attendee_type', 'guest'),
-            status="pending"
+            attendee_type=data.get('attendee_type', AttendeeTypeEnum.guest),
+            status=status
         )
-        return self.add_data(attendee)
+        response = self.add_data(attendee)
+
+        try:
+            EventEmitterService().emit_event({
+                "name": "INVITE-CREATED",
+                "data": {
+                    "workout_id": data.get('workout_id'),
+                    "organizer_id": organizer_id.hex,
+                    "invitee_id": data.get('user_id')
+                }
+            })
+        except Exception as e:
+            logging.critical(traceback.format_exc())
+            logging.critical(f"### Error emitting event: {e}")
+
+        return response
 
     def get_attendee(self, workout_id, user_id):
         attendee = self.session.query(Attendee).filter(
