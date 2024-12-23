@@ -16,11 +16,17 @@ from api.search import SearchView
 from constants.custom_json_provider import CustomJSONProvider
 from constants.error_constants import CUSTOM_ERRORS, AppError, BadDataError
 from db.db import db
-from middleware.sanitize_input import sanitize_input
+from middleware.sanitize_request_data import sanitize_request_data
+from middleware.log_request import log_request
 from sqlalchemy.exc import IntegrityError, DataError
 
 
 logger = logging.getLogger()
+if logger.handlers:
+    for handler in logger.handlers:
+        logger.removeHandler(handler)
+logging.basicConfig(level=logging.DEBUG)
+
 
 app = Flask(__name__)
 cors_resources = {
@@ -65,23 +71,8 @@ app.register_error_handler(Exception, handle_app_error)
 
 
 #################################### CUSTOM MIDDLEWARE #######################################
-@app.before_request
-def sanitize_request_data():
-    if request.method in ['POST', 'PUT', 'PATCH']:
-        if request.get_json(silent=True):
-            if request.json != sanitize_input(request.json):
-                raise BadDataError
-        if request.form:
-            if request.form != sanitize_input(request.form):
-                raise BadDataError
-    if request.args:
-        if request.args.to_dict() != sanitize_input(request.args.to_dict()):
-            raise BadDataError
-
-
-@app.before_request
-def log_request():
-    logger.debug(f"##### REQUEST: {request.method} {request.path} {request.data}")
+app.before_request(sanitize_request_data)
+app.before_request(log_request)
 
 
 #################################### CUSTOM CONFIGS ##########################################
