@@ -8,5 +8,5 @@ class InviteCreatedEventHandler(AbstractEventHandler):
     def process(self):
         logging.debug(f"{self.__class__.__name__}.process")
         event_data = self._event["data"]
-        notification = NotificationFactory().create_invite_notification(event_data['organizer_id'], event_data['workout_id'], event_data['invitee_id'])
+        notification = NotificationFactory().create_invite_notification(event_data['organizer_id'], event_data['organizer_username'], event_data['workout_id'], event_data['invitee_id'])
         NotificationService().create_notification(notification)

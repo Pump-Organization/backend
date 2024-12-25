@@ -85,6 +85,7 @@ class UserService(Service):
                 "name": "FOLLOW-CREATED",
                 "data": {
                     "follower_id": g.user_id.hex,
+                    "follower_username": self.get_user(g.user_id).username,
                     "followee_id": user_id
                 }
             })
