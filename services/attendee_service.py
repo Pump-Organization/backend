@@ -5,6 +5,7 @@ from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
 from db.models.user import User
 from constants.error_constants import ForbiddenError
 from services.service import Service
+from services.user_service import UserService
 from services.event_emitter_service import EventEmitterService
 
 
@@ -33,6 +34,7 @@ class AttendeeService(Service):
                 "data": {
                     "workout_id": data.get('workout_id'),
                     "organizer_id": organizer_id.hex,
+                    "organizer_username": UserService().get_user(organizer_id).username,
                     "invitee_id": data.get('user_id')
                 }
             })
