@@ -2,7 +2,8 @@ from flask import request
 from constants.error_constants import BadDataError
 from html_sanitizer import Sanitizer
 
-# Create a sanitizer instance
+
+# create a sanitizer instance
 sanitizer = Sanitizer({
     'tags': ['fake_nonexistent_tag'],  # No allowed tags
     'attributes': {},  # No allowed attributes
@@ -21,7 +22,8 @@ def sanitize_input(data):
         return sanitizer.sanitize(data)
     else:
         return data
-    
+
+
 def sanitize_request_data():
     if request.method in ['POST', 'PUT', 'PATCH']:
         if request.get_json(silent=True):

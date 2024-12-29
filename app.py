@@ -2,7 +2,7 @@ import settings
 import logging
 import os
 import traceback
-from flask import Flask, request
+from flask import Flask
 from flask_cors import CORS
 from api.users import UsersView
 from api.workouts import WorkoutsView
