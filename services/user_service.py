@@ -86,10 +86,10 @@ class UserService(Service):
             EventEmitterService().emit_event({
                 "name": "FOLLOW-CREATED",
                 "data": {
-                    "follower_id": follower.id.hex,
-                    "follower_username": follower.username,
-                    "follower_pic": follower.profile_pic,
-                    "followee_id": user_id
+                    "subject_id": follower.id.hex,
+                    "subject_username": follower.username,
+                    "subject_pic": follower.profile_pic,
+                    "target_id": user_id
                 }
             })
         except Exception as e:
