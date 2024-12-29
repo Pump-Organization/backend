@@ -5,6 +5,7 @@ from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
 from db.models.user import User
 from constants.error_constants import ForbiddenError
 from services.service import Service
+from services.user_service import UserService
 from services.event_emitter_service import EventEmitterService
 
 
@@ -25,15 +26,23 @@ class AttendeeService(Service):
             attendee_type=data.get('attendee_type', AttendeeTypeEnum.guest),
             status=status
         )
-        response = self.add_data(attendee)
+        response: Attendee = self.add_data(attendee)
 
         try:
+            organizer = UserService().get_user(organizer_id)
             EventEmitterService().emit_event({
                 "name": "INVITE-CREATED",
                 "data": {
-                    "workout_id": data.get('workout_id'),
-                    "organizer_id": organizer_id.hex,
-                    "invitee_id": data.get('user_id')
+                    "target_id": data.get('user_id'),
+                    "subject_id": organizer_id.hex,
+                    "subject_username": organizer.username,
+                    "subject_pic": organizer.profile_pic,
+                    "related_objects": [
+                        {
+                            "type": "workout",
+                            "id": data.get('workout_id')
+                        }
+                    ]
                 }
             })
         except Exception as e:

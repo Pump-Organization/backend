@@ -33,7 +33,7 @@ class UserService(Service):
         )
         return self.add_data(new_user)
 
-    def get_user(self, user_id):
+    def get_user(self, user_id) -> User:
         return self.get_data(user_id)
 
     def update_user(self, user_id, data):
@@ -80,12 +80,16 @@ class UserService(Service):
         response = self.add_data(new_follower)
 
         try:
+            follower = self.get_user(g.user_id)
+
             # emit event on successful transaction
             EventEmitterService().emit_event({
                 "name": "FOLLOW-CREATED",
                 "data": {
-                    "follower_id": g.user_id.hex,
-                    "followee_id": user_id
+                    "subject_id": follower.id.hex,
+                    "subject_username": follower.username,
+                    "subject_pic": follower.profile_pic,
+                    "target_id": user_id
                 }
             })
         except Exception as e:

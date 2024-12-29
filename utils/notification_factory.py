@@ -5,24 +5,28 @@ class NotificationFactory:
     """Factory for creating structured notification dictionaries."""
 
     @staticmethod
-    def create_follow_notification(follower_id: str, followee_id: str) -> dict:
+    def create_follow_notification(event_data: dict) -> dict:
         """Creates a structured 'FOLLOW' notification."""
         return {
-            "PK": f"USER#{followee_id}",
+            "PK": f"USER#{event_data['target_id']}",
             "SK": datetime.datetime.now().isoformat(),  # sort key based on timestamp
             "type": "FOLLOW",
-            "follower_id": follower_id,
+            "subject_id": event_data["subject_id"],
+            "subject_username": event_data["subject_username"],
+            "subject_pic": event_data["subject_pic"],
             "viewed": 0,  # 0 = not viewed, 1 = viewed
         }
 
     @staticmethod
-    def create_invite_notification(organizer_id: str, workout_id: str, invitee_id: str) -> dict:
+    def create_invite_notification(event_data: dict) -> dict:
         """Creates a structured 'INVITE' notification."""
         return {
-            "PK": f"USER#{invitee_id}",
+            "PK": f"USER#{event_data['target_id']}",
             "SK": datetime.datetime.now().isoformat(),  # sort key based on timestamp
             "type": "INVITE",
-            "organizer_id": organizer_id,
-            "workout_id": workout_id,
+            "subject_id": event_data["subject_id"],
+            "subject_username": event_data["subject_username"],
+            "subject_pic": event_data["subject_pic"],
+            "related_objects": event_data["related_objects"],
             "viewed": 0,  # 0 = not viewed, 1 = viewed
         }
