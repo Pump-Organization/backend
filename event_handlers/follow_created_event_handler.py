@@ -8,5 +8,5 @@ class FollowCreatedEventHandler(AbstractEventHandler):
     def process(self):
         logging.debug(f"{self.__class__.__name__}.process")
         event_data = self._event["data"]
-        notification = NotificationFactory().create_follow_notification(event_data['follower_id'], event_data['follower_username'], event_data['followee_id'])
+        notification = NotificationFactory().create_follow_notification(event_data)
         NotificationService().create_notification(notification)
