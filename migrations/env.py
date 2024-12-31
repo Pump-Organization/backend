@@ -7,7 +7,7 @@ from sqlalchemy import pool
 from alembic import context
 
 from db.db import db
-from db.models import Workout, User, Follower, Attendee, RefreshToken
+from db.models import Workout, User, Follower, Attendee, RefreshToken, Like
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
