@@ -16,17 +16,17 @@ class CommentService(Service):
             content=data.get('content')
         )
         return self.add_data(comment)
-    
+
     def get_comments(self, workout_id, page=1):
         per_page = settings.COMMENTS_PER_PAGE
         offset = (page - 1) * per_page
         return self.session.query(Comment).filter(
             Comment.workout_id == workout_id
         ).offset(offset).limit(per_page).all()
-    
+
     def get_num_comments(self, workout_id):
         return self.session.query(Comment).filter(Comment.workout_id == workout_id).count()
-    
+
     def delete_comment(self, comment_id):
         comment = self.get_data(comment_id)
         if comment.user_id != g.user_id:
