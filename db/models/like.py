@@ -19,3 +19,9 @@ class Like(db.Model):
     __table_args__ = (
         PrimaryKeyConstraint('user_id', 'workout_id', name='unique_like'),
     )
+
+    def to_json(self):
+        return {
+            'user_id': self.user_id,
+            'workout_id': self.workout_id,
+        }
