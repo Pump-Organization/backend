@@ -81,7 +81,7 @@ class AttendeeService(Service):
         self.session.commit()
         return
 
-    def list_workout_attendees(self, workout_id):
+    def list_workout_attendees(self, workout_id):  # TODO: add pagination
         attendees_info = (
             self.session.query(User, Attendee.status)
             .join(Attendee, Attendee.user_id == User.id)
