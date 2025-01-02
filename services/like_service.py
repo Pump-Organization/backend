@@ -1,4 +1,5 @@
 from flask import g
+from uuid import UUID
 from db.models.like import Like
 from services.service import Service
 import settings
@@ -11,7 +12,7 @@ class LikeService(Service):
     def create_like(self, data):
         like = Like(
             user_id=g.user_id,
-            workout_id=data.get('workout_id'),
+            workout_id=UUID(data.get('workout_id')),
         )
         return self.add_data(like)
 
