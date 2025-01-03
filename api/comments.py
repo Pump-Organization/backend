@@ -1,0 +1,34 @@
+from flask_classful import FlaskView, route
+from flask import request
+from middleware.token_required import token_required
+from services.comment_service import CommentService
+
+
+class CommentsView(FlaskView):
+    route_base = 'comments'
+
+    @route('', methods=['POST'])
+    @token_required
+    def create_comment(self):
+        request_data = request.get_json()
+        service_data = CommentService().create_comment(request_data)
+        return service_data.to_json(), 200
+
+    @route('/<workout_id>', methods=['GET'])
+    @token_required
+    def get_comments(self, workout_id):
+        page = request.args.get('page', 1, int)
+        service_data = CommentService().get_comments(workout_id, page)
+        return [comment.to_json() for comment in service_data], 200
+
+    @route('/<comment_id>', methods=['DELETE'])
+    @token_required
+    def delete_comment(self, comment_id):
+        CommentService().delete_comment(comment_id)
+        return '', 204
+
+    @route('/<workout_id>/num_comments', methods=['GET'])
+    @token_required
+    def get_num_comments(self, workout_id):
+        service_data = CommentService().get_num_comments(workout_id)
+        return {"num_comments": service_data}, 200
