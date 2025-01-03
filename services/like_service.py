@@ -37,7 +37,7 @@ class LikeService(Service):
                     ]
                 }
             })
-        except Exception as e:
+        except Exception:
             logging.critical(traceback.format_exc())
 
         return self.add_data(like)
