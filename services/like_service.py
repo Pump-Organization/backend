@@ -52,5 +52,11 @@ class LikeService(Service):
     def get_num_likes(self, workout_id):
         return self.session.query(Like).filter(Like.workout_id == workout_id).count()
 
-    def delete_like(self, like_id):
-        pass  # TODO
+    def delete_like(self, workout_id):
+        like = self.session.query(Like).filter(
+            Like.user_id == g.user_id,
+            Like.workout_id == workout_id
+        ).first()
+        self.session.delete(like)
+        self.session.commit()
+        return
