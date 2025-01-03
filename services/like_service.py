@@ -1,8 +1,13 @@
+import logging
+import settings
+import traceback
 from flask import g
 from uuid import UUID
 from db.models.like import Like
 from services.service import Service
-import settings
+from services.user_service import UserService
+from services.workout_service import WorkoutService
+from services.event_emitter_service import EventEmitterService
 
 
 class LikeService(Service):
@@ -14,6 +19,27 @@ class LikeService(Service):
             user_id=g.user_id,
             workout_id=UUID(data.get('workout_id')),
         )
+        try:
+            organizer_id = WorkoutService.get_organizer_id(data.get('workout_id'))
+            subject = UserService.get_user(g.user_id)
+            EventEmitterService().emit_event({
+                "name": "LIKE-CREATED",
+                "data": {
+                    "target_id": organizer_id,
+                    "subject_id": g.user_id,
+                    "subject_username": subject.username,
+                    "subject_pic": subject.profile_pic,
+                    "related_objects": [
+                        {
+                            "type": "workout",
+                            "id": data.get('workout_id')
+                        }
+                    ]
+                }
+            })
+        except Exception as e:
+            logging.critical(traceback.format_exc())
+
         return self.add_data(like)
 
     def get_likes(self, workout_id, page=1):
