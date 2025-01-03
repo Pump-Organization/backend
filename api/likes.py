@@ -21,6 +21,12 @@ class LikesView(FlaskView):
         service_data = LikeService().get_likes(workout_id, page)
         return [like.to_json() for like in service_data], 200
 
+    @route('/<workout_id>', methods=['DELETE'])
+    @token_required
+    def delete_like(self, workout_id):
+        LikeService().delete_like(workout_id)
+        return '', 204
+
     @route('/<workout_id>/num_likes', methods=['GET'])
     @token_required
     def get_num_likes(self, workout_id):
