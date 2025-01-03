@@ -30,3 +30,17 @@ class NotificationFactory:
             "related_objects": event_data["related_objects"],
             "viewed": 0,  # 0 = not viewed, 1 = viewed
         }
+
+    @staticmethod
+    def create_like_notification(event_data: dict) -> dict:
+        """Creates a structured 'LIKE' notification."""
+        return {
+            "PK": f"USER#{event_data['target_id']}",
+            "SK": datetime.datetime.now().isoformat(),  # sort key based on timestamp
+            "type": "LIKE",
+            "subject_id": event_data["subject_id"],
+            "subject_username": event_data["subject_username"],
+            "subject_pic": event_data["subject_pic"],
+            "related_objects": event_data["related_objects"],
+            "viewed": 0,  # 0 = not viewed, 1 = viewed
+        }

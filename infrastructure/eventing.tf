@@ -13,6 +13,7 @@ resource "aws_cloudwatch_event_rule" "notification_event_rule" {
         detail-type = [
             "FOLLOW-CREATED",
             "INVITE-CREATED",
+            "LIKE-CREATED",
         ]
     })
 }
