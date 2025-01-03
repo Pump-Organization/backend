@@ -25,8 +25,8 @@ class LikeService(Service):
             EventEmitterService().emit_event({
                 "name": "LIKE-CREATED",
                 "data": {
-                    "target_id": organizer_id,
-                    "subject_id": g.user_id,
+                    "target_id": organizer_id.hex,
+                    "subject_id": g.user_id.hex,
                     "subject_username": subject.username,
                     "subject_pic": subject.profile_pic,
                     "related_objects": [
