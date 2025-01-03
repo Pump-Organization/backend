@@ -21,7 +21,7 @@ class LikeService(Service):
         )
         try:
             organizer_id = WorkoutService().get_organizer_id(data.get('workout_id'))
-            subject = UserService.get_user(g.user_id)
+            subject = UserService().get_user(g.user_id)
             EventEmitterService().emit_event({
                 "name": "LIKE-CREATED",
                 "data": {
