@@ -2,6 +2,7 @@ import logging
 from event_handlers.follow_created_event_handler import FollowCreatedEventHandler
 from event_handlers.invite_created_event_handler import InviteCreatedEventHandler
 from event_handlers.like_created_event_handler import LikeCreatedEventHandler
+from event_handlers.comment_created_event_handler import CommentCreatedEventHandler
 
 
 class EventNotRegisteredError(Exception):
@@ -15,6 +16,7 @@ class EventHandlerFactory:
         self.__event_handlers["FOLLOW-CREATED"] = FollowCreatedEventHandler
         self.__event_handlers["INVITE-CREATED"] = InviteCreatedEventHandler
         self.__event_handlers["LIKE-CREATED"] = LikeCreatedEventHandler
+        self.__event_handlers["COMMENT-CREATED"] = CommentCreatedEventHandler
 
     def get_event_handler(self, event):
         logging.debug(f"{self.__class__.__name__}.get_event_handler")

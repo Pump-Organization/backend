@@ -19,6 +19,8 @@ class LikeService(Service):
             user_id=g.user_id,
             workout_id=UUID(data.get('workout_id')),
         )
+        response = self.add_data(like)
+
         try:
             organizer_id = WorkoutService().get_organizer_id(data.get('workout_id'))
             subject = UserService().get_user(g.user_id)
@@ -40,7 +42,7 @@ class LikeService(Service):
         except Exception:
             logging.critical(traceback.format_exc())
 
-        return self.add_data(like)
+        return response
 
     def get_likes(self, workout_id, page=1):
         per_page = settings.LIKES_PER_PAGE
