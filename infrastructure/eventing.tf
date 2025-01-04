@@ -14,6 +14,7 @@ resource "aws_cloudwatch_event_rule" "notification_event_rule" {
             "FOLLOW-CREATED",
             "INVITE-CREATED",
             "LIKE-CREATED",
+            "COMMENT-CREATED",
         ]
     })
 }
