@@ -81,13 +81,18 @@ class AttendeeService(Service):
         self.session.delete(attendee)
         self.session.commit()
 
-        EventEmitterService().emit_event({
-            "name": "INVITE-DELETED",
-            "data": {
-                "target_id": user_id,
-                "created_at": attendee.created_at,
-            }
-        })
+        try:
+            EventEmitterService().emit_event({
+                "name": "INVITE-DELETED",
+                "data": {
+                    "target_id": user_id.hex,
+                    "created_at": attendee.created_at,
+                }
+            })
+        except Exception as e:
+            logging.critical(traceback.format_exc())
+            logging.critical(f"### Error emitting event: {e}")
+
         return
 
     def list_workout_attendees(self, workout_id):  # TODO: add pagination
