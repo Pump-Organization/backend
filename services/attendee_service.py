@@ -46,9 +46,9 @@ class AttendeeService(Service):
                     ]
                 }
             })
-        except Exception as e:
+        except Exception:
+            logging.critical("### Error emitting event")
             logging.critical(traceback.format_exc())
-            logging.critical(f"### Error emitting event: {e}")
 
         return response
 
@@ -89,9 +89,9 @@ class AttendeeService(Service):
                     "created_at": attendee.created_at,
                 }
             })
-        except Exception as e:
+        except Exception:
+            logging.critical("### Error emitting event")
             logging.critical(traceback.format_exc())
-            logging.critical(f"### Error emitting event: {e}")
 
         return
 
