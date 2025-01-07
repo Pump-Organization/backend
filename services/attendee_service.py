@@ -80,6 +80,14 @@ class AttendeeService(Service):
             raise ForbiddenError
         self.session.delete(attendee)
         self.session.commit()
+
+        EventEmitterService().emit_event({
+            "name": "INVITE-DELETED",
+            "data": {
+                "target_id": user_id,
+                "created_at": attendee.created_at,
+            }
+        })
         return
 
     def list_workout_attendees(self, workout_id):  # TODO: add pagination
