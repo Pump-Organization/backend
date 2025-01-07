@@ -1,6 +1,3 @@
-import datetime
-
-
 class NotificationFactory:
     """Factory for creating structured notification dictionaries."""
 
@@ -9,7 +6,7 @@ class NotificationFactory:
         """Creates a structured 'FOLLOW' notification."""
         return {
             "PK": f"USER#{event_data['target_id']}",
-            "SK": datetime.datetime.now().isoformat(),  # sort key based on timestamp
+            "SK": event_data["created_at"],  # sort key based on timestamp
             "type": "FOLLOW",
             "subject_id": event_data["subject_id"],
             "subject_username": event_data["subject_username"],
@@ -22,7 +19,7 @@ class NotificationFactory:
         """Creates a structured 'INVITE' notification."""
         return {
             "PK": f"USER#{event_data['target_id']}",
-            "SK": datetime.datetime.now().isoformat(),  # sort key based on timestamp
+            "SK": event_data["created_at"],  # sort key based on timestamp
             "type": "INVITE",
             "subject_id": event_data["subject_id"],
             "subject_username": event_data["subject_username"],
@@ -36,7 +33,7 @@ class NotificationFactory:
         """Creates a structured 'LIKE' notification."""
         return {
             "PK": f"USER#{event_data['target_id']}",
-            "SK": datetime.datetime.now().isoformat(),  # sort key based on timestamp
+            "SK": event_data["created_at"],  # sort key based on timestamp
             "type": "LIKE",
             "subject_id": event_data["subject_id"],
             "subject_username": event_data["subject_username"],
@@ -50,7 +47,7 @@ class NotificationFactory:
         """Creates a structured 'COMMENT' notification."""
         return {
             "PK": f"USER#{event_data['target_id']}",
-            "SK": datetime.datetime.now().isoformat(),  # sort key based on timestamp
+            "SK": event_data["created_at"],  # sort key based on timestamp
             "type": "COMMENT",
             "subject_id": event_data["subject_id"],
             "subject_username": event_data["subject_username"],
