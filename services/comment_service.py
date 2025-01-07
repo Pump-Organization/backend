@@ -42,6 +42,7 @@ class CommentService(Service):
                 }
             })
         except Exception:
+            logging.critical("### Error emitting event")
             logging.critical(traceback.format_exc())
 
         return response
@@ -62,4 +63,18 @@ class CommentService(Service):
             raise ForbiddenError
         self.session.delete(comment)
         self.session.commit()
+
+        try:
+            organizer_id = WorkoutService().get_organizer_id(comment.workout_id)
+            EventEmitterService().emit_event({
+                "name": "COMMENT-DELETED",
+                "data": {
+                    "target_id": organizer_id.hex,
+                    "created_at": comment.created_at,
+                }
+            })
+        except Exception:
+            logging.critical("### Error emitting event")
+            logging.critical(traceback.format_exc())
+
         return

@@ -41,6 +41,7 @@ class LikeService(Service):
                 }
             })
         except Exception:
+            logging.critical("### Error emitting event")
             logging.critical(traceback.format_exc())
 
         return response
@@ -62,4 +63,18 @@ class LikeService(Service):
         ).first()
         self.session.delete(like)
         self.session.commit()
+
+        try:
+            organizer_id = WorkoutService().get_organizer_id(workout_id)
+            EventEmitterService().emit_event({
+                "name": "LIKE-DELETED",
+                "data": {
+                    "target_id": organizer_id.hex,
+                    "created_at": like.created_at,
+                }
+            })
+        except Exception:
+            logging.critical("### Error emitting event")
+            logging.critical(traceback.format_exc())
+
         return

@@ -1,4 +1,5 @@
 import logging
+import traceback
 import uuid
 from argon2 import PasswordHasher
 from flask import g
@@ -93,8 +94,9 @@ class UserService(Service):
                     "target_id": user_id
                 }
             })
-        except Exception as e:
-            logging.critical(f"### Error emitting event: {e}")
+        except Exception:
+            logging.critical("### Error emitting event")
+            logging.critical(traceback.format_exc())
 
         return response
 
@@ -105,6 +107,20 @@ class UserService(Service):
         if follower:
             self.session.delete(follower)
             self.session.commit()
+
+            try:
+                follower = self.get_user(g.user_id)
+                EventEmitterService().emit_event({
+                    "name": "FOLLOW-DELETED",
+                    "data": {
+                        "target_id": user_id,
+                        "created_at": follower.created_at
+                    }
+                })
+            except Exception:
+                logging.critical("### Error emitting event")
+                logging.critical(traceback.format_exc())
+
         return
 
     def get_followers(self, user_id, page=1):
