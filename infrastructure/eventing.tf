@@ -12,9 +12,13 @@ resource "aws_cloudwatch_event_rule" "notification_event_rule" {
     event_pattern = jsonencode({
         detail-type = [
             "FOLLOW-CREATED",
+            "FOLLOW-DELETED",
             "INVITE-CREATED",
+            "INVITE-DELETED",
             "LIKE-CREATED",
+            "LIKE-DELETED",
             "COMMENT-CREATED",
+            "COMMENT-DELETED",
         ]
     })
 }
