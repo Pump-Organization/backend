@@ -29,6 +29,8 @@ class Workout(db.Model):
     created_at: str = Column(DateTime, default=dt.datetime.now(dt.timezone.utc))
 
     attendees = db.relationship('Attendee', back_populates='workout')
+    likes = db.relationship('Like', back_populates='workout')
+    comments = db.relationship('Comment', back_populates='workout')
 
     @validates('title')
     def validate_workout_title(self, key, title):

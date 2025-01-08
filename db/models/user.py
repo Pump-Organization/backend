@@ -29,6 +29,8 @@ class User(db.Model):
                                 back_populates='followed')
     followings = db.relationship('Follower', foreign_keys='Follower.follower_id',
                                  back_populates='follower')
+    likes = db.relationship('Like', back_populates='user')
+    comments = db.relationship('Comment', back_populates='user')
 
     @validates('username')
     def validate_username(self, key, username):

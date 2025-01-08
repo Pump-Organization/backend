@@ -33,6 +33,7 @@ class AttendeeService(Service):
             EventEmitterService().emit_event({
                 "name": "INVITE-CREATED",
                 "data": {
+                    "created_at": response.created_at,
                     "target_id": data.get('user_id'),
                     "subject_id": organizer_id.hex,
                     "subject_username": organizer.username,
@@ -45,9 +46,9 @@ class AttendeeService(Service):
                     ]
                 }
             })
-        except Exception as e:
+        except Exception:
+            logging.critical("### Error emitting event")
             logging.critical(traceback.format_exc())
-            logging.critical(f"### Error emitting event: {e}")
 
         return response
 
@@ -79,9 +80,22 @@ class AttendeeService(Service):
             raise ForbiddenError
         self.session.delete(attendee)
         self.session.commit()
+
+        try:
+            EventEmitterService().emit_event({
+                "name": "INVITE-DELETED",
+                "data": {
+                    "target_id": user_id.hex,
+                    "created_at": attendee.created_at,
+                }
+            })
+        except Exception:
+            logging.critical("### Error emitting event")
+            logging.critical(traceback.format_exc())
+
         return
 
-    def list_workout_attendees(self, workout_id):
+    def list_workout_attendees(self, workout_id):  # TODO: add pagination
         attendees_info = (
             self.session.query(User, Attendee.status)
             .join(Attendee, Attendee.user_id == User.id)

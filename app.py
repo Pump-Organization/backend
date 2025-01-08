@@ -7,6 +7,8 @@ from flask_cors import CORS
 from api.users import UsersView
 from api.workouts import WorkoutsView
 from api.attendees import AttendeesView
+from api.comments import CommentsView
+from api.likes import LikesView
 from api.feed import FeedView
 from api.profiles import ProfilesView
 from api.login import LoginView
@@ -50,6 +52,8 @@ UsersView.register(app)
 WorkoutsView.register(app)
 AttendeesView.register(app)
 ProfilesView.register(app)
+LikesView.register(app)
+CommentsView.register(app)
 LoginView.register(app)
 FeedView.register(app)
 NotificationsView.register(app)

@@ -61,3 +61,20 @@ def test_base_user(client):
         'token': jwt_token,
         'second_token': second_jwt_token
     }
+
+@pytest.fixture(scope='class')
+def test_base_workout(client, test_base_user):
+    test_workout = {
+            "city": "San Francisco",
+            "datetime": "08/30/24 08:00",
+            "endtime": "08/30/24 09:00",
+            "description": "Test",
+            "location": "Test",
+            "title": "Base Test",
+    }
+
+    create_workout_response = client.post('/workouts', headers={'Authorization': f'Bearer {test_base_user["token"]}'}, json=test_workout)
+    assert create_workout_response.status_code == 200
+    test_workout['id'] = create_workout_response.json['id']
+
+    return test_workout
