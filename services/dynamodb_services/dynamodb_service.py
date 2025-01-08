@@ -5,12 +5,10 @@ import settings
 class DynamoDbService:
     def __init__(self, table_name):
         self.table_name = table_name
-        if settings.env == 'local':
-            self.dynamodb = boto3.resource('dynamodb', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                                           aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-                                           region_name=settings.AWS_REGION)
-        else:
-            self.dynamodb = boto3.resource('dynamodb', region_name=settings.AWS_REGION)
+
+        # export AWS credentials before running locally
+        self.dynamodb = boto3.resource('dynamodb', region_name=settings.AWS_REGION)
+
         self.table = self.dynamodb.Table(table_name)
 
     def get_item(self, key):

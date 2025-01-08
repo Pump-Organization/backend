@@ -1,6 +1,4 @@
 import boto3
-import settings
-import os
 from constants.error_constants import BadDataError, ForbiddenError
 from services.workout_service import WorkoutService
 from settings import AWS_REGION, MEDIA_BUCKET_NAME
@@ -11,15 +9,7 @@ from middleware.token_required import token_required
 
 load_dotenv()
 
-if os.getenv('environment') == 'local':
-    s3 = boto3.client(
-        's3',
-        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-        region_name=AWS_REGION
-    )
-else:
-    s3 = boto3.client('s3', region_name=AWS_REGION)
+s3 = boto3.client('s3', region_name=AWS_REGION)
 
 
 class PresignedUrlView(FlaskView):
