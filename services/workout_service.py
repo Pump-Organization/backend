@@ -47,7 +47,10 @@ class WorkoutService(Service):
         return workout_data
 
     def get_workout(self, workout_id):
-        workout_dict = self.session.query(Workout).filter(Workout.id == workout_id).first().to_json()
+        workout = self.session.query(Workout).filter(Workout.id == workout_id).first()
+        if not workout:
+            raise NotFoundError
+        workout_dict = workout.to_json()
         workout_dict["is_liked"] = self.session.query(Like).filter(
             Like.user_id == g.user_id,
             Like.workout_id == workout_id

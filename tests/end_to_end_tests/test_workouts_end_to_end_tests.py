@@ -30,11 +30,13 @@ class TestWorkoutsEndToEndTests:
         assert create_workout_response.status_code == 200
         assert create_workout_response.json == self.expected_workout
 
-    def test_get_workout(self, client):
-        get_workout_response = client.get(f'/workouts/{self.expected_workout["id"]}')
-
+    def test_get_workout(self, client, test_base_user):
+        get_workout_response = client.get(f'/workouts/{self.expected_workout["id"]}', 
+                                          headers={'Authorization': f'Bearer {test_base_user["token"]}'})
+        get_expected_workout = self.expected_workout.copy()
+        get_expected_workout['is_liked'] = False
         assert get_workout_response.status_code == 200
-        assert get_workout_response.json == self.expected_workout
+        assert get_workout_response.json == get_expected_workout
 
     def test_update_workout(self, client, test_base_user):
         updated_workout = {
@@ -140,6 +142,7 @@ class TestWorkoutsEndToEndTests:
         assert delete_workout_response.status_code == 204
 
         # check that the workout is no longer in the list of workouts
-        get_workout_response = client.get(f'/workouts/{self.expected_workout["id"]}')
+        get_workout_response = client.get(f'/workouts/{self.expected_workout["id"]}',
+                                          headers={'Authorization': f'Bearer {test_base_user["token"]}'})
         assert get_workout_response.status_code == 404
     
