@@ -36,20 +36,21 @@ class WorkoutsView(FlaskView):
 
     @route('', methods=['POST'])
     @token_required
-    def create_workout(self):  # TODO: emit notification event to attendees
+    def create_workout(self):
         request_data = request.get_json()
         request_data['organizer_id'] = g.user_id
         service_data = WorkoutService().create_workout(request_data)
         return service_data.to_json(), 200
 
     @route('/<workout_id>', methods=['GET'])
+    @token_required
     def get_workout(self, workout_id):
         service_data = WorkoutService().get_workout(workout_id)
-        return service_data.to_json(), 200
+        return service_data, 200
 
     @route('/<workout_id>', methods=['PATCH'])
     @token_required
-    def update_workout(self, workout_id):  # TODO: emit notification event to any new attendees
+    def update_workout(self, workout_id):
         request_data = request.get_json()
         service_data = WorkoutService().update_workout(workout_id, data=request_data)
         return service_data.to_json(), 200
