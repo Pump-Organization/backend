@@ -3,6 +3,7 @@ from flask import g
 from sqlalchemy import and_
 from sqlalchemy.orm import joinedload
 from db.models import Attendee, AttendeeStatusEnum, AttendeeTypeEnum, Workout, Follower
+from db.models.like import Like
 from services.user_service import UserService
 from services.workout_service import WorkoutService
 from services.service import Service
@@ -54,6 +55,11 @@ class ProfileService(Service):
             workout_json['organizer_pic'] = organizer.profile_pic if organizer else None
             workout_json['num_attendees'] = sum(1 for attendee in workout.attendees
                                                 if attendee.status == AttendeeStatusEnum.accepted)
+            workout_json['is_liked'] = self.session.query(Like).filter(
+                Like.user_id == g.user_id,
+                Like.workout_id == workout.id
+            ).first() is not None
+
             results.append(workout_json)
 
         return results
@@ -88,6 +94,11 @@ class ProfileService(Service):
             workout_json['organizer_pic'] = organizer.profile_pic if organizer else None
             workout_json['num_attendees'] = sum(1 for attendee in workout.attendees
                                                 if attendee.status == AttendeeStatusEnum.accepted)
+            workout_json['is_liked'] = self.session.query(Like).filter(
+                Like.user_id == g.user_id,
+                Like.workout_id == workout.id
+            ).first() is not None
+
             results.append(workout_json)
 
         return results

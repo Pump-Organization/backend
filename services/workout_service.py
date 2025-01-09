@@ -1,6 +1,7 @@
 import settings
-from db.models.workout import Workout, WorkoutStatusEnum
 from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
+from db.models.like import Like
+from db.models.workout import Workout, WorkoutStatusEnum
 from services.service import Service
 from services.attendee_service import AttendeeService
 from constants.error_constants import ForbiddenError, NotFoundError
@@ -46,7 +47,13 @@ class WorkoutService(Service):
         return workout_data
 
     def get_workout(self, workout_id):
-        return self.get_data(workout_id)
+        workout_dict = self.session.query(Workout).filter(Workout.id == workout_id).first().to_json()
+        workout_dict["is_liked"] = self.session.query(Like).filter(
+            Like.user_id == g.user_id,
+            Like.workout_id == workout_id
+        ).first() is not None
+
+        return workout_dict
 
     def update_workout(self, workout_id, data):
         if g.user_id != self.get_organizer_id(workout_id):
