@@ -5,6 +5,7 @@ from db.models.workout import Workout, WorkoutStatusEnum
 from services.service import Service
 from services.attendee_service import AttendeeService
 from constants.error_constants import ForbiddenError, NotFoundError
+from utils.like_utils import get_num_likes
 from datetime import datetime
 from flask import g
 from sqlalchemy.orm import joinedload
@@ -55,6 +56,7 @@ class WorkoutService(Service):
             Like.user_id == g.user_id,
             Like.workout_id == workout_id
         ).first() is not None
+        workout_dict["num_likes"] = get_num_likes(workout_id)
 
         return workout_dict
 
