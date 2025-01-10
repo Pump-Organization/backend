@@ -33,7 +33,7 @@ class AttendeeService(Service):
             EventEmitterService().emit_event({
                 "name": "INVITE-CREATED",
                 "data": {
-                    "created_at": response.created_at,
+                    "created_at": str(response.created_at),
                     "target_id": data.get('user_id'),
                     "subject_id": organizer_id.hex,
                     "subject_username": organizer.username,
