@@ -36,6 +36,7 @@ class TestWorkoutsEndToEndTests:
         get_expected_workout = self.expected_workout.copy()
         get_expected_workout['is_liked'] = False
         get_expected_workout['num_likes'] = 0
+        get_expected_workout['num_comments'] = 0
         assert get_workout_response.status_code == 200
         assert get_workout_response.json == get_expected_workout
 

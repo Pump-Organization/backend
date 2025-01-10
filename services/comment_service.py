@@ -54,9 +54,6 @@ class CommentService(Service):
             Comment.workout_id == workout_id
         ).offset(offset).limit(per_page).all()
 
-    def get_num_comments(self, workout_id):
-        return self.session.query(Comment).filter(Comment.workout_id == workout_id).count()
-
     def delete_comment(self, comment_id):
         comment = self.get_data(comment_id)
         if comment.user_id != g.user_id:
