@@ -1,3 +1,4 @@
+import bootstrap  # noqa
 import settings
 import logging
 import os

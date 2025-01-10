@@ -1,3 +1,4 @@
+import bootstrap  # noqa
 import json
 import logging
 from utils.event_handler_factory import EventHandlerFactory
