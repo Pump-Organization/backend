@@ -53,9 +53,6 @@ class LikeService(Service):
             Like.workout_id == workout_id
         ).offset(offset).limit(per_page).all()
 
-    def get_num_likes(self, workout_id):
-        return self.session.query(Like).filter(Like.workout_id == workout_id).count()
-
     def delete_like(self, workout_id):
         like = self.session.query(Like).filter(
             Like.user_id == g.user_id,
