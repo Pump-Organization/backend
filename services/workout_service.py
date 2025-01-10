@@ -5,6 +5,7 @@ from db.models.workout import Workout, WorkoutStatusEnum
 from services.service import Service
 from services.attendee_service import AttendeeService
 from constants.error_constants import ForbiddenError, NotFoundError
+from utils.comment_utils import get_num_comments
 from utils.like_utils import get_num_likes
 from datetime import datetime
 from flask import g
@@ -57,6 +58,7 @@ class WorkoutService(Service):
             Like.workout_id == workout_id
         ).first() is not None
         workout_dict["num_likes"] = get_num_likes(workout_id)
+        workout_dict["num_comments"] = get_num_comments(workout_id)
 
         return workout_dict
 

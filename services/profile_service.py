@@ -7,6 +7,7 @@ from db.models.like import Like
 from services.user_service import UserService
 from services.workout_service import WorkoutService
 from services.service import Service
+from utils.comment_utils import get_num_comments
 from utils.like_utils import get_num_likes
 import settings
 
@@ -61,6 +62,7 @@ class ProfileService(Service):
                 Like.workout_id == workout.id
             ).first() is not None
             workout_json['num_likes'] = get_num_likes(workout.id)
+            workout_json['num_comments'] = get_num_comments(workout.id)
 
             results.append(workout_json)
 
@@ -101,6 +103,7 @@ class ProfileService(Service):
                 Like.workout_id == workout.id
             ).first() is not None
             workout_json['num_likes'] = get_num_likes(workout.id)
+            workout_json['num_comments'] = get_num_comments(workout.id)
 
             results.append(workout_json)
 
