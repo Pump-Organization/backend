@@ -27,7 +27,7 @@ class LikeService(Service):
             EventEmitterService().emit_event({
                 "name": "LIKE-CREATED",
                 "data": {
-                    "created_at": response.created_at,
+                    "created_at": str(response.created_at),
                     "target_id": organizer_id.hex,
                     "subject_id": g.user_id.hex,
                     "subject_username": subject.username,
@@ -52,9 +52,6 @@ class LikeService(Service):
         return self.session.query(Like).filter(
             Like.workout_id == workout_id
         ).offset(offset).limit(per_page).all()
-
-    def get_num_likes(self, workout_id):
-        return self.session.query(Like).filter(Like.workout_id == workout_id).count()
 
     def delete_like(self, workout_id):
         like = self.session.query(Like).filter(

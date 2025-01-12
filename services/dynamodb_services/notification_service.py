@@ -53,3 +53,11 @@ class NotificationService:
         last_evaluated_key = response.get('LastEvaluatedKey', None)  # pagination key
 
         return notifications, last_evaluated_key
+
+    def delete_notification(self, pk, sk):
+        key = {
+            'PK': pk,
+            'SK': sk
+        }
+
+        return self._dynamodb_service.delete_item(key)

@@ -87,7 +87,7 @@ class UserService(Service):
             EventEmitterService().emit_event({
                 "name": "FOLLOW-CREATED",
                 "data": {
-                    "created_at": response.created_at,
+                    "created_at": str(response.created_at),
                     "subject_id": follower.id.hex,
                     "subject_username": follower.username,
                     "subject_pic": follower.profile_pic,

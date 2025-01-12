@@ -1,7 +1,7 @@
 # Makefile for managing docker-compose and Alembic migrations
 
 # Variables
-DOCKER_COMPOSE = docker-compose
+DOCKER_COMPOSE = docker compose
 SERVICE = pump_backend
 
 # Docker Compose commands

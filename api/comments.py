@@ -2,6 +2,7 @@ from flask_classful import FlaskView, route
 from flask import request
 from middleware.token_required import token_required
 from services.comment_service import CommentService
+from utils.comment_utils import get_num_comments
 
 
 class CommentsView(FlaskView):
@@ -30,5 +31,5 @@ class CommentsView(FlaskView):
     @route('/<workout_id>/num_comments', methods=['GET'])
     @token_required
     def get_num_comments(self, workout_id):
-        service_data = CommentService().get_num_comments(workout_id)
+        service_data = get_num_comments(workout_id)
         return {"num_comments": service_data}, 200

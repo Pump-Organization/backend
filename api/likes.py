@@ -2,6 +2,7 @@ from flask_classful import FlaskView, route
 from flask import request
 from middleware.token_required import token_required
 from services.like_service import LikeService
+from utils.like_utils import get_num_likes
 
 
 class LikesView(FlaskView):
@@ -30,5 +31,5 @@ class LikesView(FlaskView):
     @route('/<workout_id>/num_likes', methods=['GET'])
     @token_required
     def get_num_likes(self, workout_id):
-        service_data = LikeService().get_num_likes(workout_id)
+        service_data = get_num_likes(workout_id)
         return {"num_likes": service_data}, 200

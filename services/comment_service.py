@@ -28,7 +28,7 @@ class CommentService(Service):
             EventEmitterService().emit_event({
                 "name": "COMMENT-CREATED",
                 "data": {
-                    "created_at": response.created_at,
+                    "created_at": str(response.created_at),
                     "target_id": organizer_id.hex,
                     "subject_id": g.user_id.hex,
                     "subject_username": subject.username,
@@ -53,9 +53,6 @@ class CommentService(Service):
         return self.session.query(Comment).filter(
             Comment.workout_id == workout_id
         ).offset(offset).limit(per_page).all()
-
-    def get_num_comments(self, workout_id):
-        return self.session.query(Comment).filter(Comment.workout_id == workout_id).count()
 
     def delete_comment(self, comment_id):
         comment = self.get_data(comment_id)

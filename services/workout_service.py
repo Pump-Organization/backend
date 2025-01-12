@@ -1,9 +1,12 @@
 import settings
-from db.models.workout import Workout, WorkoutStatusEnum
 from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
+from db.models.like import Like
+from db.models.workout import Workout, WorkoutStatusEnum
 from services.service import Service
 from services.attendee_service import AttendeeService
 from constants.error_constants import ForbiddenError, NotFoundError
+from utils.comment_utils import get_num_comments
+from utils.like_utils import get_num_likes
 from datetime import datetime
 from flask import g
 from sqlalchemy.orm import joinedload
@@ -46,7 +49,18 @@ class WorkoutService(Service):
         return workout_data
 
     def get_workout(self, workout_id):
-        return self.get_data(workout_id)
+        workout = self.session.query(Workout).filter(Workout.id == workout_id).first()
+        if not workout:
+            raise NotFoundError
+        workout_dict = workout.to_json()
+        workout_dict["is_liked"] = self.session.query(Like).filter(
+            Like.user_id == g.user_id,
+            Like.workout_id == workout_id
+        ).first() is not None
+        workout_dict["num_likes"] = get_num_likes(workout_id)
+        workout_dict["num_comments"] = get_num_comments(workout_id)
+
+        return workout_dict
 
     def update_workout(self, workout_id, data):
         if g.user_id != self.get_organizer_id(workout_id):
