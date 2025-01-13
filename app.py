@@ -19,7 +19,6 @@ from api.search import SearchView
 from constants.custom_json_provider import CustomJSONProvider
 from constants.error_constants import CUSTOM_ERRORS, AppError, BadDataError
 from db.db import db
-from middleware.sanitize_request_data import sanitize_request_data
 from middleware.log_request import log_request
 from sqlalchemy.exc import IntegrityError, DataError
 
@@ -77,7 +76,6 @@ app.register_error_handler(Exception, handle_app_error)
 
 #################################### CUSTOM MIDDLEWARE #######################################
 app.before_request(log_request)
-app.before_request(sanitize_request_data)
 
 
 #################################### CUSTOM CONFIGS ##########################################
