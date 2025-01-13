@@ -67,7 +67,7 @@ class LikeService(Service):
                 "name": "LIKE-DELETED",
                 "data": {
                     "target_id": organizer_id.hex,
-                    "created_at": like.created_at,
+                    "created_at": str(like.created_at),
                 }
             })
         except Exception:

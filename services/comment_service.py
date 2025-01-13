@@ -67,7 +67,7 @@ class CommentService(Service):
                 "name": "COMMENT-DELETED",
                 "data": {
                     "target_id": organizer_id.hex,
-                    "created_at": comment.created_at,
+                    "created_at": str(comment.created_at),
                 }
             })
         except Exception:
