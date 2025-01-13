@@ -114,7 +114,7 @@ class UserService(Service):
                     "name": "FOLLOW-DELETED",
                     "data": {
                         "target_id": user_id,
-                        "created_at": follower.created_at
+                        "created_at": str(follower.created_at)
                     }
                 })
             except Exception:

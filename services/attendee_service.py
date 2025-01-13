@@ -86,7 +86,7 @@ class AttendeeService(Service):
                 "name": "INVITE-DELETED",
                 "data": {
                     "target_id": user_id.hex,
-                    "created_at": attendee.created_at,
+                    "created_at": str(attendee.created_at),
                 }
             })
         except Exception:
