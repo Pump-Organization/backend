@@ -76,8 +76,8 @@ app.register_error_handler(Exception, handle_app_error)
 
 
 #################################### CUSTOM MIDDLEWARE #######################################
-app.before_request(sanitize_request_data)
 app.before_request(log_request)
+app.before_request(sanitize_request_data)
 
 
 #################################### CUSTOM CONFIGS ##########################################
