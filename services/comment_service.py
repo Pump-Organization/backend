@@ -50,9 +50,18 @@ class CommentService(Service):
     def get_comments(self, workout_id, page=1):
         per_page = settings.COMMENTS_PER_PAGE
         offset = (page - 1) * per_page
-        return self.session.query(Comment).filter(
+        comments = self.session.query(Comment).filter(
             Comment.workout_id == workout_id
         ).offset(offset).limit(per_page).all()
+        response = []
+        for comment in comments:
+            comment_data = comment.to_json()
+            comment_user = comment.user
+            comment_data['user_pic'] = comment_user.profile_pic
+            comment_data['user_username'] = comment_user.username
+            response.append(comment_data)
+
+        return response
 
     def delete_comment(self, comment_id):
         comment = self.get_data(comment_id)
