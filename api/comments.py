@@ -20,7 +20,7 @@ class CommentsView(FlaskView):
     def get_comments(self, workout_id):
         page = request.args.get('page', 1, int)
         service_data = CommentService().get_comments(workout_id, page)
-        return [comment.to_json() for comment in service_data], 200
+        return service_data, 200
 
     @route('/<comment_id>', methods=['DELETE'])
     @token_required
