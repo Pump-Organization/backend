@@ -13,7 +13,7 @@ class CommentsView(FlaskView):
     def create_comment(self):
         request_data = request.get_json()
         service_data = CommentService().create_comment(request_data)
-        return service_data.to_json(), 200
+        return service_data, 200
 
     @route('/<workout_id>', methods=['GET'])
     @token_required
