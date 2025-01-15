@@ -20,7 +20,7 @@ class CommentService(Service):
             workout_id=data.get('workout_id'),
             content=data.get('content')
         )
-        response = self.add_data(comment)
+        comment = self.add_data(comment)
 
         try:
             organizer_id = WorkoutService().get_organizer_id(data.get('workout_id'))
@@ -28,7 +28,7 @@ class CommentService(Service):
             EventEmitterService().emit_event({
                 "name": "COMMENT-CREATED",
                 "data": {
-                    "created_at": str(response.created_at),
+                    "created_at": str(comment.created_at),
                     "target_id": organizer_id.hex,
                     "subject_id": g.user_id.hex,
                     "subject_username": subject.username,
@@ -44,6 +44,10 @@ class CommentService(Service):
         except Exception:
             logging.critical("### Error emitting event")
             logging.critical(traceback.format_exc())
+
+        response = comment.to_json()
+        response['user_pic'] = comment.user.profile_pic
+        response['user_username'] = comment.user.username
 
         return response
 

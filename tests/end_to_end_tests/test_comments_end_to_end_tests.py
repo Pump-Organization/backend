@@ -8,6 +8,8 @@ class TestCommentsEndToEndTests:
         expected_comment = {
             'id': create_comment_response.json['id'],
             'user_id': test_base_user['base_user']['id'],
+            'user_username': test_base_user['base_user']['username'],
+            'user_pic': None,
             'workout_id': test_base_workout['id'],
             'content': 'Great workout!',
         }
