@@ -59,6 +59,10 @@ class WorkoutService(Service):
         ).first() is not None
         workout_dict["num_likes"] = get_num_likes(workout_id)
         workout_dict["num_comments"] = get_num_comments(workout_id)
+        organizer = next(attendee.user for attendee in workout.attendees
+                         if attendee.attendee_type == AttendeeTypeEnum.organizer)
+        workout_dict['organizer_username'] = organizer.username if organizer else None
+        workout_dict['organizer_pic'] = organizer.profile_pic if organizer else None
 
         return workout_dict
 
