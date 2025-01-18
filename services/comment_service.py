@@ -20,7 +20,7 @@ class CommentService(Service):
             workout_id=data.get('workout_id'),
             content=data.get('content')
         )
-        response = self.add_data(comment)
+        comment = self.add_data(comment)
 
         try:
             organizer_id = WorkoutService().get_organizer_id(data.get('workout_id'))
@@ -28,7 +28,7 @@ class CommentService(Service):
             EventEmitterService().emit_event({
                 "name": "COMMENT-CREATED",
                 "data": {
-                    "created_at": str(response.created_at),
+                    "created_at": str(comment.created_at),
                     "target_id": organizer_id.hex,
                     "subject_id": g.user_id.hex,
                     "subject_username": subject.username,
@@ -45,14 +45,27 @@ class CommentService(Service):
             logging.critical("### Error emitting event")
             logging.critical(traceback.format_exc())
 
+        response = comment.to_json()
+        response['user_pic'] = comment.user.profile_pic
+        response['user_username'] = comment.user.username
+
         return response
 
     def get_comments(self, workout_id, page=1):
         per_page = settings.COMMENTS_PER_PAGE
         offset = (page - 1) * per_page
-        return self.session.query(Comment).filter(
+        comments = self.session.query(Comment).filter(
             Comment.workout_id == workout_id
         ).offset(offset).limit(per_page).all()
+        response = []
+        for comment in comments:
+            comment_data = comment.to_json()
+            comment_user = comment.user
+            comment_data['user_pic'] = comment_user.profile_pic
+            comment_data['user_username'] = comment_user.username
+            response.append(comment_data)
+
+        return response
 
     def delete_comment(self, comment_id):
         comment = self.get_data(comment_id)
@@ -67,7 +80,7 @@ class CommentService(Service):
                 "name": "COMMENT-DELETED",
                 "data": {
                     "target_id": organizer_id.hex,
-                    "created_at": comment.created_at,
+                    "created_at": str(comment.created_at),
                 }
             })
         except Exception:

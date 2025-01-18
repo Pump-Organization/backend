@@ -37,6 +37,8 @@ class TestWorkoutsEndToEndTests:
         get_expected_workout['is_liked'] = False
         get_expected_workout['num_likes'] = 0
         get_expected_workout['num_comments'] = 0
+        get_expected_workout['organizer_username'] = test_base_user["base_user"]["username"]
+        get_expected_workout['organizer_pic'] = None
         assert get_workout_response.status_code == 200
         assert get_workout_response.json == get_expected_workout
 

@@ -8,6 +8,8 @@ class TestCommentsEndToEndTests:
         expected_comment = {
             'id': create_comment_response.json['id'],
             'user_id': test_base_user['base_user']['id'],
+            'user_username': test_base_user['base_user']['username'],
+            'user_pic': None,
             'workout_id': test_base_workout['id'],
             'content': 'Great workout!',
         }
@@ -20,6 +22,8 @@ class TestCommentsEndToEndTests:
                                           headers={'Authorization': f'Bearer {test_base_user["token"]}'})
         expected_comment = {
             'id': get_comments_response.json[0]['id'],
+            'user_username': test_base_user['base_user']['username'],
+            'user_pic': None,
             'user_id': test_base_user['base_user']['id'],
             'workout_id': test_base_workout['id'],
             'content': 'Great workout!',
