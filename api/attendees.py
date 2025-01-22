@@ -9,7 +9,7 @@ class AttendeesView(FlaskView):
 
     @route('', methods=['POST'])
     @token_required
-    def create_attendee(self):  # TODO: emit notification event to attendee
+    def create_attendee(self):
         request_data = request.get_json()
         service_data = AttendeeService().create_attendee(request_data)
         return service_data.to_json(), 200
