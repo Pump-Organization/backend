@@ -5,9 +5,9 @@ from services.attendee_service import AttendeeService
 
 
 class AttendeesView(FlaskView):
-    route_base = 'attendees'
+    route_base = "attendees"
 
-    @route('', methods=['POST'])
+    @route("", methods=["POST"])
     @token_required
     def create_attendee(self):
         request_data = request.get_json()

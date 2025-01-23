@@ -14,7 +14,7 @@ class WorkoutStatusEnum(str, enum.Enum):
 
 
 class Workout(db.Model):
-    __tablename__ = 'workout'
+    __tablename__ = "workout"
 
     id: UUID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title: str = Column(String)
@@ -28,29 +28,29 @@ class Workout(db.Model):
     published_at: dt.datetime = Column(DateTime, nullable=True)
     created_at: str = Column(DateTime, default=dt.datetime.now(dt.timezone.utc))
 
-    attendees = db.relationship('Attendee', back_populates='workout')
-    likes = db.relationship('Like', back_populates='workout')
-    comments = db.relationship('Comment', back_populates='workout')
+    attendees = db.relationship("Attendee", back_populates="workout")
+    likes = db.relationship("Like", back_populates="workout")
+    comments = db.relationship("Comment", back_populates="workout")
 
-    @validates('title')
+    @validates("title")
     def validate_workout_title(self, key, title):
         if len(title) > 50:
             raise BadDataError
         return title
 
-    @validates('city')
+    @validates("city")
     def validate_workout_city(self, key, city):
         if len(city) > 50:
             raise BadDataError
         return city
 
-    @validates('location')
+    @validates("location")
     def validate_workout_location(self, key, location):
         if len(location) > 50:
             raise BadDataError
         return location
 
-    @validates('description')
+    @validates("description")
     def validate_workout_description(self, key, description):
         if not description:
             return
@@ -58,7 +58,7 @@ class Workout(db.Model):
             raise BadDataError
         return description
 
-    @validates('workout_pic')
+    @validates("workout_pic")
     def validate_workout_pic_url(self, key, url):
         if not url:
             return
@@ -68,13 +68,13 @@ class Workout(db.Model):
 
     def to_json(self):
         return {
-            'id': self.id,
-            'title': self.title,
-            'description': self.description,
-            'workout_pic': self.workout_pic,
-            'location': self.location,
-            'city': self.city,
-            'datetime': self.datetime.isoformat(),  # serialize datetime to ISO format
-            'endtime': self.endtime.isoformat(),
-            'status': self.status,
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "workout_pic": self.workout_pic,
+            "location": self.location,
+            "city": self.city,
+            "datetime": self.datetime.isoformat(),  # serialize datetime to ISO format
+            "endtime": self.endtime.isoformat(),
+            "status": self.status,
         }

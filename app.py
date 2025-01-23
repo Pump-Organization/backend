@@ -17,7 +17,12 @@ from api.notifications import NotificationsView
 from api.presigned_url import PresignedUrlView
 from api.search import SearchView
 from constants.custom_json_provider import CustomJSONProvider
-from constants.error_constants import CUSTOM_ERRORS, AppError, BadDataError, NotFoundError
+from constants.error_constants import (
+    CUSTOM_ERRORS,
+    AppError,
+    BadDataError,
+    NotFoundError,
+)
 from db.db import db
 from middleware.log_request import log_request
 from sqlalchemy.exc import IntegrityError, DataError
@@ -40,10 +45,13 @@ cors_resources = {
 CORS(app, resources=cors_resources)
 
 #################################### SQLALCHEMY ##############################################
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://{}:{}@{}/{}".format(
-    settings.POSTGRES_USER, settings.POSTGRES_PASSWORD,
-    settings.POSTGRES_HOST, settings.POSTGRES_DB)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://{}:{}@{}/{}".format(
+    settings.POSTGRES_USER,
+    settings.POSTGRES_PASSWORD,
+    settings.POSTGRES_HOST,
+    settings.POSTGRES_DB,
+)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
 
@@ -71,7 +79,7 @@ def handle_app_error(error):
     elif type(error) not in CUSTOM_ERRORS:
         error = AppError
     logger.critical(traceback.format_exc())
-    return {'error': error.message}, error.status_code
+    return {"error": error.message}, error.status_code
 
 
 app.register_error_handler(Exception, handle_app_error)
@@ -85,8 +93,8 @@ app.before_request(log_request)
 app.json = CustomJSONProvider(app)
 
 
-flask_env = os.getenv('FLASK_ENV', 'production')
-debug = flask_env != 'production'
+flask_env = os.getenv("FLASK_ENV", "production")
+debug = flask_env != "production"
 
 
 @app.route("/")
@@ -94,5 +102,5 @@ def healthcheck():
     return flask_env
 
 
-if __name__ == '__main__':
-    app.run(debug=debug, port=8000, host='0.0.0.0')
+if __name__ == "__main__":
+    app.run(debug=debug, port=8000, host="0.0.0.0")

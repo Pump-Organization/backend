@@ -7,30 +7,23 @@ from services.service import Service
 class EmailService(Service):
     def __init__(self, model=None) -> None:
         super().__init__(model)
-        self.ses_client = boto3.client('ses', region_name=settings.AWS_REGION)
+        self.ses_client = boto3.client("ses", region_name=settings.AWS_REGION)
 
-    def send_email(self, destination, subject, body_text, body_html=None, source=NO_REPLY_EMAIL):  # noqa E501
+    def send_email(
+        self, destination, subject, body_text, body_html=None, source=NO_REPLY_EMAIL
+    ):  # noqa E501
         response = self.ses_client.send_email(
             Source=source,
             Destination={
-                'ToAddresses': [
+                "ToAddresses": [
                     destination,
                 ],
             },
             Message={
-                'Subject': {
-                    'Data': subject,
-                    'Charset': 'utf-8'
-                },
-                'Body': {
-                    'Text': {
-                        'Data': body_text,
-                        'Charset': 'utf-8'
-                    },
-                    'Html': {
-                        'Data': body_html,
-                        'Charset': 'utf-8'
-                    },
+                "Subject": {"Data": subject, "Charset": "utf-8"},
+                "Body": {
+                    "Text": {"Data": body_text, "Charset": "utf-8"},
+                    "Html": {"Data": body_html, "Charset": "utf-8"},
                 },
             },
         )

@@ -12,7 +12,7 @@ from db.db import db
 
 
 class User(db.Model):
-    __tablename__ = 'user'
+    __tablename__ = "user"
 
     id: UUID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     username: str = Column(String, unique=True)
@@ -22,33 +22,37 @@ class User(db.Model):
     email: str = Column(String, unique=True)
     bio: str = Column(String, nullable=True)
     hashed_password: str = Column(String)
-    created_at: str = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
+    created_at: str = Column(
+        DateTime, default=datetime.datetime.now(datetime.timezone.utc)
+    )
 
-    attendances = db.relationship('Attendee', back_populates='user')
-    followers = db.relationship('Follower', foreign_keys='Follower.followed_id',
-                                back_populates='followed')
-    followings = db.relationship('Follower', foreign_keys='Follower.follower_id',
-                                 back_populates='follower')
-    likes = db.relationship('Like', back_populates='user')
-    comments = db.relationship('Comment', back_populates='user')
+    attendances = db.relationship("Attendee", back_populates="user")
+    followers = db.relationship(
+        "Follower", foreign_keys="Follower.followed_id", back_populates="followed"
+    )
+    followings = db.relationship(
+        "Follower", foreign_keys="Follower.follower_id", back_populates="follower"
+    )
+    likes = db.relationship("Like", back_populates="user")
+    comments = db.relationship("Comment", back_populates="user")
 
-    @validates('username')
+    @validates("username")
     def validate_username(self, key, username):
         if not re.match("^(?=.*[a-z])[a-z0-9_]{3,30}$", username):
             raise BadDataError
         if profanity.contains_profanity(username):
             raise BadDataError
-        if username in {'null', 'undefined', 'none'}:
+        if username in {"null", "undefined", "none"}:
             raise BadDataError
         return username
 
-    @validates('email')
+    @validates("email")
     def validate_email(self, key, address):
-        if '@' not in parseaddr(address)[1]:
+        if "@" not in parseaddr(address)[1]:
             raise BadDataError
         return parseaddr(address)[1]
 
-    @validates('name')
+    @validates("name")
     def validate_name(self, key, name):
         if not name:
             return
@@ -56,7 +60,7 @@ class User(db.Model):
             raise BadDataError
         return name
 
-    @validates('profile_pic')
+    @validates("profile_pic")
     def validate_profile_pic_url(self, key, url):
         if not url:
             return
@@ -64,7 +68,7 @@ class User(db.Model):
             raise BadDataError
         return url
 
-    @validates('location')
+    @validates("location")
     def validate_location(self, key, location):
         if not location:
             return
@@ -72,7 +76,7 @@ class User(db.Model):
             raise BadDataError
         return location
 
-    @validates('bio')
+    @validates("bio")
     def validate_bio(self, key, bio):
         if not bio:
             return
@@ -82,19 +86,19 @@ class User(db.Model):
 
     def to_json(self):
         return {
-            'id': self.id,
-            'username': self.username,
-            'name': self.name,
-            'profile_pic': self.profile_pic,
-            'location': self.location,
-            'email': self.email,
-            'bio': self.bio
+            "id": self.id,
+            "username": self.username,
+            "name": self.name,
+            "profile_pic": self.profile_pic,
+            "location": self.location,
+            "email": self.email,
+            "bio": self.bio,
         }
 
     def to_quickview(self):
         return {
-            'id': self.id,
-            'username': self.username,
-            'name': self.name,
-            'profile_pic': self.profile_pic
+            "id": self.id,
+            "username": self.username,
+            "name": self.name,
+            "profile_pic": self.profile_pic,
         }

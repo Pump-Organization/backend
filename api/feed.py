@@ -5,11 +5,11 @@ from services.profile_service import ProfileService
 
 
 class FeedView(FlaskView):
-    route_base = 'feed'
+    route_base = "feed"
 
-    @route('', methods=['GET'])
+    @route("", methods=["GET"])
     @token_required
     def get_feed(self):
-        page = request.args.get('page', 1, type=int)
+        page = request.args.get("page", 1, type=int)
         service_data = ProfileService().get_feed(page)
         return service_data, 200

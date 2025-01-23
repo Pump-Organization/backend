@@ -19,7 +19,4 @@ def event_listener(event, context):
 
 def serialize_event(event_data):
     message = json.loads(event_data["Records"][0]["body"])
-    return {
-        "name": message["detail-type"],
-        "data": message["detail"]
-    }
+    return {"name": message["detail-type"], "data": message["detail"]}
