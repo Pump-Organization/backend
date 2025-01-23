@@ -33,12 +33,17 @@ downgrade:
 test:
 	$(DOCKER_COMPOSE) exec $(SERVICE) pytest --cov -vv
 
+format:
+	$(DOCKER_COMPOSE) exec $(SERVICE) black .
+
 # Help command
 help:
 	@echo "Usage:"
 	@echo "  make detached          Start the application using docker-compose"
 	@echo "  make down              Delete application containers"
 	@echo "  make build             Build the Docker images"
+	@echo "  make shell             Open a shell in the application container"
+	@echo "  make format            Format the repo using Black"
 	@echo "  make test      	 Run unit tests and print coverage report"
 	@echo "  make upgrade           Apply the latest Alembic migrations"
 	@echo "  make migration \"msg\"   Create a new Alembic migration with a message"
