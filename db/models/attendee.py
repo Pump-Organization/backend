@@ -38,6 +38,7 @@ class Attendee(db.Model):
     def to_json(self):
         return {
             "user_id": self.user_id,
+            "user_pic": self.user.profile_pic,
             "workout_id": self.workout_id,
             "attendee_type": self.attendee_type,
             "status": self.status,

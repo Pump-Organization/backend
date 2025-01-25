@@ -74,3 +74,18 @@ class Workout(db.Model):
             "endtime": self.endtime.isoformat(),
             "status": self.status,
         }
+
+    def to_full(self):
+        # include attendees
+        return {
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "workout_pic": self.workout_pic,
+            "location": self.location,
+            "city": self.city,
+            "datetime": self.datetime.isoformat(),
+            "endtime": self.endtime.isoformat(),
+            "status": self.status,
+            "attendees": [attendee.to_json() for attendee in self.attendees],
+        }

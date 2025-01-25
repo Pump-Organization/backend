@@ -61,7 +61,7 @@ class ProfileService(Service):
                 for attendee in workout.attendees
                 if attendee.attendee_type == AttendeeTypeEnum.organizer
             )
-            workout_json = workout.to_json()
+            workout_json = workout.to_full()
             workout_json["organizer_username"] = (
                 organizer.username if organizer else None
             )
@@ -121,7 +121,7 @@ class ProfileService(Service):
                 for attendee in workout.attendees
                 if attendee.attendee_type == AttendeeTypeEnum.organizer
             )
-            workout_json = workout.to_json()
+            workout_json = workout.to_full()
             workout_json["organizer_username"] = (
                 organizer.username if organizer else None
             )
