@@ -40,29 +40,25 @@ class Workout(db.Model):
 
     @validates("city")
     def validate_workout_city(self, key, city):
-        if len(city) > 50:
+        if city and len(city) > 50:
             raise BadDataError
         return city
 
     @validates("location")
     def validate_workout_location(self, key, location):
-        if len(location) > 50:
+        if location and len(location) > 50:
             raise BadDataError
         return location
 
     @validates("description")
     def validate_workout_description(self, key, description):
-        if not description:
-            return
-        if len(description) > 2200:
+        if description and len(description) > 2200:
             raise BadDataError
         return description
 
     @validates("workout_pic")
     def validate_workout_pic_url(self, key, url):
-        if not url:
-            return
-        if len(url) > 2083:
+        if url and len(url) > 2083:
             raise BadDataError
         return url
 

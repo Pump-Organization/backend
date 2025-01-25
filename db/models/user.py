@@ -54,33 +54,25 @@ class User(db.Model):
 
     @validates("name")
     def validate_name(self, key, name):
-        if not name:
-            return
-        if len(name) > 50:
+        if name and len(name) > 50:
             raise BadDataError
         return name
 
     @validates("profile_pic")
     def validate_profile_pic_url(self, key, url):
-        if not url:
-            return
-        if len(url) > 2083:
+        if url and len(url) > 2083:
             raise BadDataError
         return url
 
     @validates("location")
     def validate_location(self, key, location):
-        if not location:
-            return
-        if len(location) > 100:
+        if location and len(location) > 100:
             raise BadDataError
         return location
 
     @validates("bio")
     def validate_bio(self, key, bio):
-        if not bio:
-            return
-        if len(bio) > 150:
+        if bio and len(bio) > 150:
             raise BadDataError
         return bio
 
