@@ -64,7 +64,7 @@ class WorkoutService(Service):
         workout = self.session.query(Workout).filter(Workout.id == workout_id).first()
         if not workout:
             raise NotFoundError
-        workout_dict = workout.to_json()
+        workout_dict = workout.to_full()
         workout_dict["is_liked"] = (
             self.session.query(Like)
             .filter(Like.user_id == g.user_id, Like.workout_id == workout_id)
@@ -130,7 +130,7 @@ class WorkoutService(Service):
 
         results = []
         for workout in workouts:
-            results.append(workout.to_json())
+            results.append(workout.to_full())
         return results
 
     def get_upcoming_workouts(self, user_id, date, status="accepted", page=1):
@@ -152,7 +152,7 @@ class WorkoutService(Service):
                 for attendee in workout.attendees
                 if attendee.attendee_type == AttendeeTypeEnum.organizer
             )
-            workout_json = workout.to_json()
+            workout_json = workout.to_full()
             workout_json["organizer_username"] = (
                 organizer.username if organizer else None
             )

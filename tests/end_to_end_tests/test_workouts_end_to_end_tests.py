@@ -47,6 +47,22 @@ class TestWorkoutsEndToEndTests:
             "username"
         ]
         get_expected_workout["organizer_pic"] = None
+        get_expected_workout["attendees"] = [
+            {
+                "attendee_type": "organizer",
+                "status": "accepted",
+                "user_id": test_base_user["base_user"]["id"],
+                "user_pic": None,
+                "workout_id": get_expected_workout["id"],
+            },
+            {
+                "attendee_type": "guest",
+                "status": "pending",
+                "user_id": test_base_user["second_user"]["id"],
+                "user_pic": None,
+                "workout_id": get_expected_workout["id"],
+            },
+        ]
         assert get_workout_response.status_code == 200
         assert get_workout_response.json == get_expected_workout
 
@@ -118,6 +134,7 @@ class TestWorkoutsEndToEndTests:
             "status": AttendeeStatusEnum.accepted.value,
             "user_id": test_base_user["second_user"]["id"],
             "workout_id": self.expected_workout["id"],
+            "user_pic": None,
         }
 
     def test_reject_workout(self, client, test_base_user):
