@@ -6,29 +6,29 @@ from utils.comment_utils import get_num_comments
 
 
 class CommentsView(FlaskView):
-    route_base = 'comments'
+    route_base = "comments"
 
-    @route('', methods=['POST'])
+    @route("", methods=["POST"])
     @token_required
     def create_comment(self):
         request_data = request.get_json()
         service_data = CommentService().create_comment(request_data)
         return service_data, 200
 
-    @route('/<workout_id>', methods=['GET'])
+    @route("/<workout_id>", methods=["GET"])
     @token_required
     def get_comments(self, workout_id):
-        page = request.args.get('page', 1, int)
+        page = request.args.get("page", 1, int)
         service_data = CommentService().get_comments(workout_id, page)
         return service_data, 200
 
-    @route('/<comment_id>', methods=['DELETE'])
+    @route("/<comment_id>", methods=["DELETE"])
     @token_required
     def delete_comment(self, comment_id):
         CommentService().delete_comment(comment_id)
-        return '', 204
+        return "", 204
 
-    @route('/<workout_id>/num_comments', methods=['GET'])
+    @route("/<workout_id>/num_comments", methods=["GET"])
     @token_required
     def get_num_comments(self, workout_id):
         service_data = get_num_comments(workout_id)

@@ -3,6 +3,7 @@ class AppError(Exception):
         super().__init__()
         if message is not None:
             self.message = message
+
     status_code = 500
     message = "internal server error"
 

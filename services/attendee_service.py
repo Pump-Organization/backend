@@ -13,39 +13,40 @@ class AttendeeService(Service):
     def __init__(self) -> None:
         super().__init__(Attendee)
 
-    def create_attendee(self, data, status=AttendeeStatusEnum.pending, organizer_id=None):
+    def create_attendee(
+        self, data, status=AttendeeStatusEnum.pending, organizer_id=None
+    ):
         if organizer_id is None:
-            organizer_id = self.get_workout_organizer(data.get('workout_id'))
+            organizer_id = self.get_workout_organizer(data.get("workout_id"))
 
         if g.user_id != organizer_id:
             raise ForbiddenError
 
         attendee = Attendee(
-            user_id=data.get('user_id'),
-            workout_id=data.get('workout_id'),
-            attendee_type=data.get('attendee_type', AttendeeTypeEnum.guest),
-            status=status
+            user_id=data.get("user_id"),
+            workout_id=data.get("workout_id"),
+            attendee_type=data.get("attendee_type", AttendeeTypeEnum.guest),
+            status=status,
         )
         response: Attendee = self.add_data(attendee)
 
         try:
             organizer = UserService().get_user(organizer_id)
-            EventEmitterService().emit_event({
-                "name": "INVITE-CREATED",
-                "data": {
-                    "created_at": str(response.created_at),
-                    "target_id": data.get('user_id'),
-                    "subject_id": organizer_id.hex,
-                    "subject_username": organizer.username,
-                    "subject_pic": organizer.profile_pic,
-                    "related_objects": [
-                        {
-                            "type": "workout",
-                            "id": data.get('workout_id')
-                        }
-                    ]
+            EventEmitterService().emit_event(
+                {
+                    "name": "INVITE-CREATED",
+                    "data": {
+                        "created_at": str(response.created_at),
+                        "target_id": data.get("user_id"),
+                        "subject_id": organizer_id.hex,
+                        "subject_username": organizer.username,
+                        "subject_pic": organizer.profile_pic,
+                        "related_objects": [
+                            {"type": "workout", "id": data.get("workout_id")}
+                        ],
+                    },
                 }
-            })
+            )
         except Exception:
             logging.critical("### Error emitting event")
             logging.critical(traceback.format_exc())
@@ -53,10 +54,11 @@ class AttendeeService(Service):
         return response
 
     def get_attendee(self, workout_id, user_id):
-        attendee = self.session.query(Attendee).filter(
-            Attendee.workout_id == workout_id,
-            Attendee.user_id == user_id
-        ).one()
+        attendee = (
+            self.session.query(Attendee)
+            .filter(Attendee.workout_id == workout_id, Attendee.user_id == user_id)
+            .one()
+        )
         return attendee
 
     def update_attendee(self, user_id, workout_id, data):
@@ -69,10 +71,11 @@ class AttendeeService(Service):
         return attendee
 
     def delete_attendee(self, workout_id, user_id):
-        attendee = self.session.query(Attendee).filter(
-            Attendee.workout_id == workout_id,
-            Attendee.user_id == user_id
-        ).first()
+        attendee = (
+            self.session.query(Attendee)
+            .filter(Attendee.workout_id == workout_id, Attendee.user_id == user_id)
+            .first()
+        )
         if not attendee:
             return
         organizer_id = self.get_workout_organizer(workout_id)
@@ -82,13 +85,15 @@ class AttendeeService(Service):
         self.session.commit()
 
         try:
-            EventEmitterService().emit_event({
-                "name": "INVITE-DELETED",
-                "data": {
-                    "target_id": user_id.hex,
-                    "created_at": str(attendee.created_at),
+            EventEmitterService().emit_event(
+                {
+                    "name": "INVITE-DELETED",
+                    "data": {
+                        "target_id": user_id.hex,
+                        "created_at": str(attendee.created_at),
+                    },
                 }
-            })
+            )
         except Exception:
             logging.critical("### Error emitting event")
             logging.critical(traceback.format_exc())
@@ -99,27 +104,32 @@ class AttendeeService(Service):
         attendees_info = (
             self.session.query(User, Attendee.status)
             .join(Attendee, Attendee.user_id == User.id)
-            .filter(
-                Attendee.workout_id == workout_id
-            ).all()
+            .filter(Attendee.workout_id == workout_id)
+            .all()
         )
         data = [
-            {'user': user.to_quickview(), 'status': status} for user, status in attendees_info
+            {"user": user.to_quickview(), "status": status}
+            for user, status in attendees_info
         ]
         return data
 
     def get_workout_organizer(self, workout_id):
-        organizer = self.session.query(Attendee).filter(
-            Attendee.workout_id == workout_id,
-            Attendee.attendee_type == AttendeeTypeEnum.organizer
-        ).first()
+        organizer = (
+            self.session.query(Attendee)
+            .filter(
+                Attendee.workout_id == workout_id,
+                Attendee.attendee_type == AttendeeTypeEnum.organizer,
+            )
+            .first()
+        )
         return organizer.user_id if organizer else None
 
     def accept_workout(self, workout_id, user_id):
-        attendee = self.session.query(Attendee).filter(
-            Attendee.workout_id == workout_id,
-            Attendee.user_id == user_id
-        ).first()
+        attendee = (
+            self.session.query(Attendee)
+            .filter(Attendee.workout_id == workout_id, Attendee.user_id == user_id)
+            .first()
+        )
 
         attendee.status = AttendeeStatusEnum.accepted
         self.session.commit()

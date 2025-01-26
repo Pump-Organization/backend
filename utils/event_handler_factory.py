@@ -32,4 +32,6 @@ class EventHandlerFactory:
             event_handler = self.__event_handlers[event["name"]]
             return event_handler(event)
         except KeyError:
-            raise EventNotRegisteredError(f"event_name {event['name']} is not registered")
+            raise EventNotRegisteredError(
+                f"event_name {event['name']} is not registered"
+            )

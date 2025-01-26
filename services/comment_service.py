@@ -17,52 +17,55 @@ class CommentService(Service):
     def create_comment(self, data):
         comment = Comment(
             user_id=g.user_id,
-            workout_id=data.get('workout_id'),
-            content=data.get('content')
+            workout_id=data.get("workout_id"),
+            content=data.get("content"),
         )
         comment = self.add_data(comment)
 
         try:
-            organizer_id = WorkoutService().get_organizer_id(data.get('workout_id'))
+            organizer_id = WorkoutService().get_organizer_id(data.get("workout_id"))
             subject = UserService().get_user(g.user_id)
-            EventEmitterService().emit_event({
-                "name": "COMMENT-CREATED",
-                "data": {
-                    "created_at": str(comment.created_at),
-                    "target_id": organizer_id.hex,
-                    "subject_id": g.user_id.hex,
-                    "subject_username": subject.username,
-                    "subject_pic": subject.profile_pic,
-                    "related_objects": [
-                        {
-                            "type": "workout",
-                            "id": data.get('workout_id')
-                        }
-                    ]
+            EventEmitterService().emit_event(
+                {
+                    "name": "COMMENT-CREATED",
+                    "data": {
+                        "created_at": str(comment.created_at),
+                        "target_id": organizer_id.hex,
+                        "subject_id": g.user_id.hex,
+                        "subject_username": subject.username,
+                        "subject_pic": subject.profile_pic,
+                        "related_objects": [
+                            {"type": "workout", "id": data.get("workout_id")}
+                        ],
+                    },
                 }
-            })
+            )
         except Exception:
             logging.critical("### Error emitting event")
             logging.critical(traceback.format_exc())
 
         response = comment.to_json()
-        response['user_pic'] = comment.user.profile_pic
-        response['user_username'] = comment.user.username
+        response["user_pic"] = comment.user.profile_pic
+        response["user_username"] = comment.user.username
 
         return response
 
     def get_comments(self, workout_id, page=1):
         per_page = settings.COMMENTS_PER_PAGE
         offset = (page - 1) * per_page
-        comments = self.session.query(Comment).filter(
-            Comment.workout_id == workout_id
-        ).offset(offset).limit(per_page).all()
+        comments = (
+            self.session.query(Comment)
+            .filter(Comment.workout_id == workout_id)
+            .offset(offset)
+            .limit(per_page)
+            .all()
+        )
         response = []
         for comment in comments:
             comment_data = comment.to_json()
             comment_user = comment.user
-            comment_data['user_pic'] = comment_user.profile_pic
-            comment_data['user_username'] = comment_user.username
+            comment_data["user_pic"] = comment_user.profile_pic
+            comment_data["user_username"] = comment_user.username
             response.append(comment_data)
 
         return response
@@ -76,13 +79,15 @@ class CommentService(Service):
 
         try:
             organizer_id = WorkoutService().get_organizer_id(comment.workout_id)
-            EventEmitterService().emit_event({
-                "name": "COMMENT-DELETED",
-                "data": {
-                    "target_id": organizer_id.hex,
-                    "created_at": str(comment.created_at),
+            EventEmitterService().emit_event(
+                {
+                    "name": "COMMENT-DELETED",
+                    "data": {
+                        "target_id": organizer_id.hex,
+                        "created_at": str(comment.created_at),
+                    },
                 }
-            })
+            )
         except Exception:
             logging.critical("### Error emitting event")
             logging.critical(traceback.format_exc())

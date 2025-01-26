@@ -4,7 +4,7 @@ from db.db import db
 
 
 class RefreshToken(db.Model):
-    __tablename__ = 'refresh_token'
+    __tablename__ = "refresh_token"
 
     token = Column(String, primary_key=True)
     user_id = Column(String, nullable=False)
@@ -12,7 +12,7 @@ class RefreshToken(db.Model):
 
     def to_json(self):
         return {
-            'token': self.token,
-            'user_id': self.user_id,
-            'expires_at': self.expires_at
+            "token": self.token,
+            "user_id": self.user_id,
+            "expires_at": self.expires_at,
         }

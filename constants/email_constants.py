@@ -1,11 +1,11 @@
 import settings
 
-FORGOT_PASSWORD_SUBJECT = 'Reset your Pump password'
+FORGOT_PASSWORD_SUBJECT = "Reset your Pump password"
 NO_REPLY_EMAIL = settings.NO_REPLY_EMAIL
 
 
 def FORGOT_PASSWORD_BODY_TEXT(reset_password_url):
-    return ("""Hello,
+    return """Hello,
 
     We received a request to reset the password for your account associated with this email address.
 
@@ -18,7 +18,9 @@ def FORGOT_PASSWORD_BODY_TEXT(reset_password_url):
     This link will expire in 15 minutes.
 
     Thank you,
-    The Pump Team""".format(reset_password_url))
+    The Pump Team""".format(
+        reset_password_url
+    )
 
 
 def FORGOT_PASSWORD_BODY_HTML(reset_password_url):

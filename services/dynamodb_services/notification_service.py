@@ -4,30 +4,25 @@ from services.dynamodb_services.dynamodb_service import DynamoDbService
 
 class NotificationService:
     def __init__(self):
-        self._dynamodb_service = DynamoDbService(f"pump-notification-table-{settings.env}")
+        self._dynamodb_service = DynamoDbService(
+            f"pump-notification-table-{settings.env}"
+        )
 
     def create_notification(self, notification):
         self._dynamodb_service.put_item(notification)
 
     def mark_notification_viewed(self, user_id, sk):
-        key = {
-            'PK': f"USER#{user_id}",
-            'SK': sk
-        }
+        key = {"PK": f"USER#{user_id}", "SK": sk}
 
         update_expression = "SET #viewed = :viewed"
-        expression_attribute_names = {
-            "#viewed": "viewed"
-        }
-        expression_attribute_values = {
-            ":viewed": 1
-        }
+        expression_attribute_names = {"#viewed": "viewed"}
+        expression_attribute_values = {":viewed": 1}
 
         response = self._dynamodb_service.update_item(
             key=key,
             update_expression=update_expression,
             expression_attribute_names=expression_attribute_names,
-            expression_attribute_values=expression_attribute_values
+            expression_attribute_values=expression_attribute_values,
         )
 
         return response
@@ -38,26 +33,23 @@ class NotificationService:
 
         # if LastEvaluatedKey is present, add it to the query params
         query_params = {
-            'KeyConditionExpression': key_condition_expression,
-            'ExpressionAttributeValues': expression_attribute_values,
-            'Limit': limit,
-            'ScanIndexForward': False  # newest first
+            "KeyConditionExpression": key_condition_expression,
+            "ExpressionAttributeValues": expression_attribute_values,
+            "Limit": limit,
+            "ScanIndexForward": False,  # newest first
         }
 
         if last_evaluated_key:
-            query_params['ExclusiveStartKey'] = last_evaluated_key
+            query_params["ExclusiveStartKey"] = last_evaluated_key
 
         response = self._dynamodb_service.query(**query_params)
 
-        notifications = response.get('Items', [])
-        last_evaluated_key = response.get('LastEvaluatedKey', None)  # pagination key
+        notifications = response.get("Items", [])
+        last_evaluated_key = response.get("LastEvaluatedKey", None)  # pagination key
 
         return notifications, last_evaluated_key
 
     def delete_notification(self, pk, sk):
-        key = {
-            'PK': pk,
-            'SK': sk
-        }
+        key = {"PK": pk, "SK": sk}
 
         return self._dynamodb_service.delete_item(key)
