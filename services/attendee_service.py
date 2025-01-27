@@ -101,16 +101,8 @@ class AttendeeService(Service):
         return
 
     def list_workout_attendees(self, workout_id):  # TODO: add pagination
-        attendees_info = (
-            self.session.query(User, Attendee.status)
-            .join(Attendee, Attendee.user_id == User.id)
-            .filter(Attendee.workout_id == workout_id)
-            .all()
-        )
-        data = [
-            {"user": user.to_quickview(), "status": status}
-            for user, status in attendees_info
-        ]
+        attendees = Attendee.query.filter_by(workout_id=workout_id).all()
+        data = [attendee.to_full_user() for attendee in attendees]
         return data
 
     def get_workout_organizer(self, workout_id):
