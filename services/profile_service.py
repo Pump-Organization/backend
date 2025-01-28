@@ -62,6 +62,7 @@ class ProfileService(Service):
                 if attendee.attendee_type == AttendeeTypeEnum.organizer
             )
             workout_json = workout.to_full()
+            workout_json["organizer_id"] = organizer.id if organizer else None
             workout_json["organizer_username"] = (
                 organizer.username if organizer else None
             )
@@ -122,6 +123,7 @@ class ProfileService(Service):
                 if attendee.attendee_type == AttendeeTypeEnum.organizer
             )
             workout_json = workout.to_full()
+            workout_json["organizer_id"] = organizer.id if organizer else None
             workout_json["organizer_username"] = (
                 organizer.username if organizer else None
             )

@@ -43,6 +43,7 @@ class TestWorkoutsEndToEndTests:
         get_expected_workout["is_liked"] = False
         get_expected_workout["num_likes"] = 0
         get_expected_workout["num_comments"] = 0
+        get_expected_workout["organizer_id"] = test_base_user["base_user"]["id"]
         get_expected_workout["organizer_username"] = test_base_user["base_user"][
             "username"
         ]

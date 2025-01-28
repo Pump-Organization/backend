@@ -2,7 +2,6 @@ import logging
 import traceback
 from flask import g
 from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
-from db.models.user import User
 from constants.error_constants import ForbiddenError
 from services.service import Service
 from services.user_service import UserService
