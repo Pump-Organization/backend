@@ -43,3 +43,12 @@ class Attendee(db.Model):
             "attendee_type": self.attendee_type,
             "status": self.status,
         }
+
+    def to_full_user(self):
+        return {
+            "user_id": self.user_id,
+            "username": self.user.username,
+            "user_pic": self.user.profile_pic,
+            "status": self.status,
+            "attendee_type": self.attendee_type,
+        }

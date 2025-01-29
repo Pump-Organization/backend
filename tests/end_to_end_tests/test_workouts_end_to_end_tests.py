@@ -43,6 +43,7 @@ class TestWorkoutsEndToEndTests:
         get_expected_workout["is_liked"] = False
         get_expected_workout["num_likes"] = 0
         get_expected_workout["num_comments"] = 0
+        get_expected_workout["organizer_id"] = test_base_user["base_user"]["id"]
         get_expected_workout["organizer_username"] = test_base_user["base_user"][
             "username"
         ]
@@ -104,21 +105,17 @@ class TestWorkoutsEndToEndTests:
         assert list_workout_attendees_response.json == [
             {
                 "status": AttendeeStatusEnum.accepted.value,
-                "user": {
-                    "id": test_base_user["base_user"]["id"],
-                    "name": test_base_user["base_user"]["name"],
-                    "username": test_base_user["base_user"]["username"],
-                    "profile_pic": None,
-                },
+                "user_id": test_base_user["base_user"]["id"],
+                "username": test_base_user["base_user"]["username"],
+                "user_pic": None,
+                "attendee_type": AttendeeTypeEnum.organizer.value,
             },
             {
                 "status": AttendeeStatusEnum.pending.value,
-                "user": {
-                    "id": test_base_user["second_user"]["id"],
-                    "name": test_base_user["second_user"]["name"],
-                    "username": test_base_user["second_user"]["username"],
-                    "profile_pic": None,
-                },
+                "user_id": test_base_user["second_user"]["id"],
+                "username": test_base_user["second_user"]["username"],
+                "user_pic": None,
+                "attendee_type": AttendeeTypeEnum.guest.value,
             },
         ]
 
@@ -153,12 +150,10 @@ class TestWorkoutsEndToEndTests:
         assert list_workout_attendees_response.json == [
             {
                 "status": AttendeeStatusEnum.accepted.value,
-                "user": {
-                    "id": test_base_user["base_user"]["id"],
-                    "name": test_base_user["base_user"]["name"],
-                    "username": test_base_user["base_user"]["username"],
-                    "profile_pic": None,
-                },
+                "attendee_type": AttendeeTypeEnum.organizer.value,
+                "user_id": test_base_user["base_user"]["id"],
+                "username": test_base_user["base_user"]["username"],
+                "user_pic": None,
             }
         ]
 

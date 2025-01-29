@@ -65,6 +65,14 @@ class WorkoutService(Service):
         if not workout:
             raise NotFoundError
         workout_dict = workout.to_full()
+        organizer = next(
+            attendee.user
+            for attendee in workout.attendees
+            if attendee.attendee_type == AttendeeTypeEnum.organizer
+        )
+        workout_dict["organizer_id"] = organizer.id if organizer else None
+        workout_dict["organizer_username"] = organizer.username if organizer else None
+        workout_dict["organizer_pic"] = organizer.profile_pic if organizer else None
         workout_dict["is_liked"] = (
             self.session.query(Like)
             .filter(Like.user_id == g.user_id, Like.workout_id == workout_id)
@@ -78,6 +86,7 @@ class WorkoutService(Service):
             for attendee in workout.attendees
             if attendee.attendee_type == AttendeeTypeEnum.organizer
         )
+        workout_dict["organizer_id"] = organizer.id if organizer else None
         workout_dict["organizer_username"] = organizer.username if organizer else None
         workout_dict["organizer_pic"] = organizer.profile_pic if organizer else None
 
@@ -153,6 +162,7 @@ class WorkoutService(Service):
                 if attendee.attendee_type == AttendeeTypeEnum.organizer
             )
             workout_json = workout.to_full()
+            workout_json["organizer_id"] = organizer.id if organizer else None
             workout_json["organizer_username"] = (
                 organizer.username if organizer else None
             )
