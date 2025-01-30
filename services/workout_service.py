@@ -1,3 +1,4 @@
+from services.event_emitter_service import EventEmitterService
 import settings
 from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
 from db.models.like import Like
@@ -109,8 +110,24 @@ class WorkoutService(Service):
     def delete_workout(self, workout_id):
         if g.user_id != self.get_organizer_id(workout_id):
             raise ForbiddenError
+
+        attendees = Attendee.query.filter_by(workout_id=workout_id).all()
+
         self.session.query(Workout).filter(Workout.id == workout_id).delete()
         self.session.commit()
+
+        # emit invite deleted event for each attendee
+        for attendee in attendees:
+            EventEmitterService().emit_event(
+                {
+                    "name": "INVITE-DELETED",
+                    "data": {
+                        "created_at": str(attendee.created_at),
+                        "target_id": attendee.user_id,
+                    },
+                }
+            )
+
         return
 
     def get_num_workouts(self, user_id):
