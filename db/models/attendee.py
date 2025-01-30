@@ -1,8 +1,5 @@
 import datetime
 import enum
-import logging
-import traceback
-from services.event_emitter_service import EventEmitterService
 from sqlalchemy import Column, Enum, ForeignKey, DateTime, PrimaryKeyConstraint, event
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import UUID
@@ -55,21 +52,3 @@ class Attendee(db.Model):
             "status": self.status,
             "attendee_type": self.attendee_type,
         }
-
-
-# Event listener to emit INVITE-DELETED event
-@event.listens_for(Attendee, "after_delete")
-def emit_invite_deleted_event(mapper, connection, target):
-    try:
-        EventEmitterService().emit_event(
-            {
-                "name": "INVITE-DELETED",
-                "data": {
-                    "target_id": target.user_id.hex,
-                    "created_at": str(target.created_at),
-                },
-            }
-        )
-    except Exception:
-        logging.critical("### Error emitting event")
-        logging.critical(traceback.format_exc())
