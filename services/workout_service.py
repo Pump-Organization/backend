@@ -130,7 +130,7 @@ class WorkoutService(Service):
                         "name": "INVITE-DELETED",
                         "data": {
                             "created_at": str(attendee["created_at"]),
-                            "target_id": attendee["user_id"],
+                            "target_id": attendee["user_id"].hex,
                         },
                     }
                 )
