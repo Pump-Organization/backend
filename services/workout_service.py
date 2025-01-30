@@ -1,3 +1,5 @@
+import logging
+import traceback
 from services.event_emitter_service import EventEmitterService
 import settings
 from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
@@ -111,22 +113,30 @@ class WorkoutService(Service):
         if g.user_id != self.get_organizer_id(workout_id):
             raise ForbiddenError
 
-        attendees = Attendee.query.filter_by(workout_id=workout_id).all()
+        # fetch attendee data for eventing before deleting workout
+        attendees_data = [
+            {"created_at": attendee.created_at, "user_id": attendee.user_id}
+            for attendee in Attendee.query.filter_by(workout_id=workout_id).all()
+        ]
 
         self.session.query(Workout).filter(Workout.id == workout_id).delete()
         self.session.commit()
 
         # emit invite deleted event for each attendee
-        for attendee in attendees:
-            EventEmitterService().emit_event(
-                {
-                    "name": "INVITE-DELETED",
-                    "data": {
-                        "created_at": str(attendee.created_at),
-                        "target_id": attendee.user_id,
-                    },
-                }
-            )
+        try:
+            for attendee in attendees_data:
+                EventEmitterService().emit_event(
+                    {
+                        "name": "INVITE-DELETED",
+                        "data": {
+                            "created_at": str(attendee.created_at),
+                            "target_id": attendee.user_id,
+                        },
+                    }
+                )
+        except Exception:
+            logging.critical("### Error emitting event")
+            logging.critical(traceback.format_exc())
 
         return
 
