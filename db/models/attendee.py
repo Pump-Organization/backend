@@ -1,6 +1,6 @@
 import datetime
 import enum
-from sqlalchemy import Column, Enum, ForeignKey, DateTime, PrimaryKeyConstraint
+from sqlalchemy import Column, Enum, ForeignKey, DateTime, PrimaryKeyConstraint, event
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import UUID
 

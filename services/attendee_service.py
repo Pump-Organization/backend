@@ -83,19 +83,20 @@ class AttendeeService(Service):
         self.session.delete(attendee)
         self.session.commit()
 
-        try:
-            EventEmitterService().emit_event(
-                {
-                    "name": "INVITE-DELETED",
-                    "data": {
-                        "target_id": user_id.hex,
-                        "created_at": str(attendee.created_at),
-                    },
-                }
-            )
-        except Exception:
-            logging.critical("### Error emitting event")
-            logging.critical(traceback.format_exc())
+        # TODO: DELETE THIS CODE IF SQLALCHEMY LISTENERS WORKS
+        # try:
+        #     EventEmitterService().emit_event(
+        #         {
+        #             "name": "INVITE-DELETED",
+        #             "data": {
+        #                 "target_id": user_id.hex,
+        #                 "created_at": str(attendee.created_at),
+        #             },
+        #         }
+        #     )
+        # except Exception:
+        #     logging.critical("### Error emitting event")
+        #     logging.critical(traceback.format_exc())
 
         return
 
