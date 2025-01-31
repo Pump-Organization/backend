@@ -1,4 +1,5 @@
 import boto3
+import uuid
 from constants.error_constants import BadDataError, ForbiddenError
 from services.workout_service import WorkoutService
 from settings import AWS_REGION, MEDIA_BUCKET_NAME
@@ -19,7 +20,8 @@ class PresignedUrlView(FlaskView):
     @token_required
     def get_profile_pic_presigned_url(self):
         bucket_name = MEDIA_BUCKET_NAME
-        key = f"images/profile_pics/{g.user_id.hex}.jpg"
+        uuid = uuid.uuid4()
+        key = f"images/profile_pics/{uuid.hex}.jpg"
         return self.get_presigned_url(bucket_name, key)
 
     @route("/workout_pic", methods=["GET"])
@@ -31,7 +33,8 @@ class PresignedUrlView(FlaskView):
         if g.user_id != WorkoutService().get_organizer_id(workout_id):
             raise ForbiddenError
         bucket_name = MEDIA_BUCKET_NAME
-        key = f"images/workout_pics/{workout_id}.jpg"
+        uuid = uuid.uuid4()
+        key = f"images/workout_pics/{uuid.hex}.jpg"
         return self.get_presigned_url(bucket_name, key)
 
     def get_presigned_url(self, bucket_name, key):
