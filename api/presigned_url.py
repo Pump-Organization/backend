@@ -20,8 +20,8 @@ class PresignedUrlView(FlaskView):
     @token_required
     def get_profile_pic_presigned_url(self):
         bucket_name = MEDIA_BUCKET_NAME
-        uuid = uuid.uuid4()
-        key = f"images/profile_pics/{uuid.hex}.jpg"
+        image_name = uuid.uuid4().hex
+        key = f"images/profile_pics/{image_name}.jpg"
         return self.get_presigned_url(bucket_name, key)
 
     @route("/workout_pic", methods=["GET"])
@@ -33,8 +33,8 @@ class PresignedUrlView(FlaskView):
         if g.user_id != WorkoutService().get_organizer_id(workout_id):
             raise ForbiddenError
         bucket_name = MEDIA_BUCKET_NAME
-        uuid = uuid.uuid4()
-        key = f"images/workout_pics/{uuid.hex}.jpg"
+        image_name = uuid.uuid4().hex
+        key = f"images/workout_pics/{image_name}.jpg"
         return self.get_presigned_url(bucket_name, key)
 
     def get_presigned_url(self, bucket_name, key):
