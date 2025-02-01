@@ -8,6 +8,25 @@ class NotificationService:
             f"pump-notification-table-{settings.env}"
         )
 
+    def has_unviewed_notifications(self, user_id):
+        key_condition_expression = "PK = :pk"
+        expression_attribute_values = {
+            ":pk": f"USER#{user_id}",
+        }
+
+        query_params = {
+            "KeyConditionExpression": key_condition_expression,
+            "ExpressionAttributeValues": expression_attribute_values,
+            "Limit": 1,  # we only need to know if the most recent notification is unviewed
+            "ScanIndexForward": False,  # sort results in descending order
+        }
+
+        response = self._dynamodb_service.query(**query_params)
+        if len(response.get("Items")) < 1:
+            return False
+
+        return response.get("Items")[0].get("viewed") == 0
+
     def create_notification(self, notification):
         self._dynamodb_service.put_item(notification)
 

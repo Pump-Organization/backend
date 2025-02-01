@@ -75,7 +75,7 @@ class Workout(db.Model):
             "status": self.status,
         }
 
-    def to_full(self):
+    def to_full(self, num_attendees=3):
         # include attendees
         return {
             "id": self.id,
@@ -87,5 +87,7 @@ class Workout(db.Model):
             "datetime": self.datetime.isoformat(),
             "endtime": self.endtime.isoformat(),
             "status": self.status,
-            "attendees": [attendee.to_json() for attendee in self.attendees],
+            "attendees": [
+                attendee.to_json() for attendee in self.attendees[:num_attendees]
+            ],
         }
