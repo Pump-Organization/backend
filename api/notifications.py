@@ -26,3 +26,9 @@ class NotificationsView(FlaskView):
             "last_evaluated_key": last_evaluated_key,
             "user_hex": g.user_id.hex,
         }, 200
+
+    @route("/unviewed", methods=["GET"])
+    @token_required
+    def has_unviewed_notifications(self):
+        has_unviewed = NotificationService().has_unviewed_notifications(g.user_id.hex)
+        return {"has_unviewed": has_unviewed}, 200
