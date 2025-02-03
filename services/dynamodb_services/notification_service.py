@@ -74,7 +74,7 @@ class NotificationService(Service):
         if subject_ids:
             # batch fetch profile pictures for all users
             users = self.session.query(User).filter(User.id.in_(subject_ids)).all()
-            user_profiles = {user.id: user.profile_pic for user in users}
+            user_profiles = {user.id.hex: user.profile_pic for user in users}
 
             # attach profile pictures to notifications
             for notification in notifications:
