@@ -1,4 +1,5 @@
 import settings
+import uuid
 from db.models.user import User
 from services.dynamodb_services.dynamodb_service import DynamoDbService
 from services.service import Service
@@ -68,16 +69,12 @@ class NotificationService(Service):
         last_evaluated_key = response.get("LastEvaluatedKey", None)  # pagination key
 
         # extract unique user IDs from notifications
-        subject_ids = {n["subject_id"] for n in notifications}
+        subject_ids = {uuid.UUID(n["subject_id"]) for n in notifications}
 
         if subject_ids:
             # batch fetch profile pictures for all users
-            users = (
-                self.session.query(User.id, User.profile_pic)
-                .filter(User.id.in_(subject_ids))
-                .all()
-            )
-            user_profiles = {user.id: user.profile_pic for user in users}
+            users = self.session.query(User).filter(User.id.in_(subject_ids)).all()
+            user_profiles = {user.id.hex: user.profile_pic for user in users}
 
             # attach profile pictures to notifications
             for notification in notifications:
