@@ -33,7 +33,6 @@ class CommentService(Service):
                         "target_id": organizer_id.hex,
                         "subject_id": g.user_id.hex,
                         "subject_username": subject.username,
-                        "subject_pic": subject.profile_pic,
                         "related_objects": [
                             {"type": "workout", "id": data.get("workout_id")}
                         ],
