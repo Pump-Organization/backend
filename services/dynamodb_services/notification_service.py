@@ -73,7 +73,7 @@ class NotificationService(Service):
         if subject_ids:
             # batch fetch profile pictures for all users
             users = (
-                self._db_session.query(User.id, User.profile_pic)
+                self.session.query(User.id, User.profile_pic)
                 .filter(User.id.in_(subject_ids))
                 .all()
             )
