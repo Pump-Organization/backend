@@ -10,7 +10,6 @@ class NotificationFactory:
             "type": "FOLLOW",
             "subject_id": event_data["subject_id"],
             "subject_username": event_data["subject_username"],
-            "subject_pic": event_data["subject_pic"],
             "viewed": 0,  # 0 = not viewed, 1 = viewed
         }
 
@@ -23,7 +22,6 @@ class NotificationFactory:
             "type": "INVITE",
             "subject_id": event_data["subject_id"],
             "subject_username": event_data["subject_username"],
-            "subject_pic": event_data["subject_pic"],
             "related_objects": event_data["related_objects"],
             "viewed": 0,  # 0 = not viewed, 1 = viewed
         }
@@ -37,7 +35,6 @@ class NotificationFactory:
             "type": "LIKE",
             "subject_id": event_data["subject_id"],
             "subject_username": event_data["subject_username"],
-            "subject_pic": event_data["subject_pic"],
             "related_objects": event_data["related_objects"],
             "viewed": 0,  # 0 = not viewed, 1 = viewed
         }
@@ -51,7 +48,6 @@ class NotificationFactory:
             "type": "COMMENT",
             "subject_id": event_data["subject_id"],
             "subject_username": event_data["subject_username"],
-            "subject_pic": event_data["subject_pic"],
             "related_objects": event_data["related_objects"],
             "viewed": 0,  # 0 = not viewed, 1 = viewed
         }

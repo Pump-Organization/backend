@@ -39,7 +39,6 @@ class AttendeeService(Service):
                         "target_id": data.get("user_id"),
                         "subject_id": organizer_id.hex,
                         "subject_username": organizer.username,
-                        "subject_pic": organizer.profile_pic,
                         "related_objects": [
                             {"type": "workout", "id": data.get("workout_id")}
                         ],

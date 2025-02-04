@@ -93,7 +93,6 @@ class UserService(Service):
                         "created_at": str(response.created_at),
                         "subject_id": follower.id.hex,
                         "subject_username": follower.username,
-                        "subject_pic": follower.profile_pic,
                         "target_id": user_id,
                     },
                 }
