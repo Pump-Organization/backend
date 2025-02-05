@@ -110,7 +110,7 @@ class ProfileService(Service):
             )
             .options(joinedload(Workout.attendees).joinedload(Attendee.user))
             .distinct()
-            .order_by(Workout.datetime.desc())
+            .order_by(Workout.datetime.desc(), Workout.id)
             .limit(settings.POSTS_PER_PAGE)
             .offset((page - 1) * settings.POSTS_PER_PAGE)
         )
