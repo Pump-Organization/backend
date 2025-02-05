@@ -1,5 +1,6 @@
+import logging
 from flask_classful import FlaskView, route
-from flask import g, request
+from flask import g, jsonify, request
 from middleware.token_required import token_required
 from services.dynamodb_services.notification_service import NotificationService
 
@@ -32,3 +33,17 @@ class NotificationsView(FlaskView):
     def has_unviewed_notifications(self):
         has_unviewed = NotificationService().has_unviewed_notifications(g.user_id.hex)
         return {"has_unviewed": has_unviewed}, 200
+
+    @route("/register-device", methods=["POST"])
+    @token_required
+    def register_device(self):
+        request_data = request.get_json()
+        device_token = request_data.get("device_token")
+        user_id = g.user_id.hex
+
+        if not user_id or not device_token:
+            return jsonify({"error": "Missing user_id or device_token"}), 400
+
+        logging.debug(f"Received device token for user {user_id}: {device_token}")
+
+        return jsonify({"token": device_token})
