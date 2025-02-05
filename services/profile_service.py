@@ -49,7 +49,7 @@ class ProfileService(Service):
                 Workout.endtime < now,
             )
             .options(joinedload(Workout.attendees).joinedload(Attendee.user))
-            .order_by(Workout.datetime.desc())
+            .order_by(Workout.datetime.desc(), Workout.id)
             .offset(offset)
             .limit(per_page)
         )
