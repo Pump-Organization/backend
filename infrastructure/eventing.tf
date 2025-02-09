@@ -70,3 +70,29 @@ resource "aws_sqs_queue_policy" "notification_queue_policy" {
     ]
   })
 }
+
+## SNS TOPIC for push notifications
+
+variable "apns_cert" {
+  description = "APNs Certificate"
+  type        = string
+  sensitive   = true
+}
+
+variable "apns_key" {
+  description = "APNs Private Key"
+  type        = string
+  sensitive   = true
+}
+
+resource "aws_sns_platform_application" "pump_apns" {
+  name                = "PumpAPNs"
+  platform           = "APNS"
+  platform_credential = var.apns_key
+  platform_principal = var.apns_cert
+  event_delivery_failure_topic_arn = aws_sns_topic.sns_failure_topic.arn
+}
+
+resource "aws_sns_topic" "sns_failure_topic" {
+  name = "sns-failure-notifications"
+}
