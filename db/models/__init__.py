@@ -4,4 +4,5 @@ from .follower import Follower  # noqa: F401
 from .like import Like  # noqa: F401
 from .refresh_token import RefreshToken  # noqa: F401
 from .user import User  # noqa: F401
+from .user_device import UserDevice  # noqa: F401
 from .workout import Workout, WorkoutStatusEnum  # noqa: F401

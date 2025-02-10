@@ -1,6 +1,10 @@
+import logging
+import boto3
+from constants.error_constants import AppError
 import settings
 import uuid
 from db.models.user import User
+from db.models.user_device import UserDevice
 from services.dynamodb_services.dynamodb_service import DynamoDbService
 from services.service import Service
 
@@ -11,6 +15,7 @@ class NotificationService(Service):
         self._dynamodb_service = DynamoDbService(
             f"pump-notification-table-{settings.env}"
         )
+        self._sns_client = boto3.client("sns", region_name=settings.AWS_REGION)
 
     def has_unviewed_notifications(self, user_id):
         key_condition_expression = "PK = :pk"
@@ -88,3 +93,46 @@ class NotificationService(Service):
         key = {"PK": pk, "SK": sk}
 
         return self._dynamodb_service.delete_item(key)
+
+    def register_device(self, user_id, device_token):
+        try:
+            # delete existing device token
+            stale_device_token = (
+                self.session.query(UserDevice)
+                .filter(UserDevice.user_id == user_id)
+                .first()
+            )
+            logging.debug(f"Deleting stale device token for user {user_id}")
+            if stale_device_token:
+                self.session.delete(stale_device_token)
+                self.session.commit()
+        except Exception:
+            raise AppError("Failed to register device")
+
+        endpoint_arn = self.create_sns_endpoint(device_token)
+        user_device = UserDevice(
+            user_id=user_id, device_token=device_token, endpoint_arn=endpoint_arn
+        )
+        return self.add_data(user_device)
+
+    def create_sns_endpoint(self, device_token):
+        if settings.env != "production":
+            return f"arn:aws:sns:us-west-1:123456789012:endpoint/APNS_SANDBOX/PUMP/{device_token}"
+
+        try:
+            response = self._sns_client.create_platform_endpoint(
+                PlatformApplicationArn=settings.SNS_PLATFORM_APPLICATION_ARN,
+                Token=device_token,
+            )
+        except Exception:
+            raise AppError("Failed to create SNS endpoint")
+
+        return response["EndpointArn"]
+
+    def send_push_notification(self, target_arn):
+        response = self._sns_client.publish(
+            TargetArn=target_arn,
+            Message="Hello from Pump!",
+            Subject="Test Notification",
+        )
+        return response
