@@ -103,7 +103,10 @@ class NotificationService(Service):
                 .first()
             )
             if stale_device_token:
-                logging.debug(f"Deleting stale device token for user {user_id}")
+                logging.debug(f"Deleting stale device token info for user {user_id}")
+                self._sns_client.delete_endpoint(
+                    EndpointArn=stale_device_token.endpoint_arn
+                )
                 self.session.delete(stale_device_token)
                 self.session.commit()
         except Exception:
