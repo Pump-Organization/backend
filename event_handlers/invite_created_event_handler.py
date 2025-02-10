@@ -10,3 +10,6 @@ class InviteCreatedEventHandler(AbstractEventHandler):
         event_data = self._event["data"]
         notification = NotificationFactory().create_invite_notification(event_data)
         NotificationService().create_notification(notification)
+        if notification.get("PK").split("#")[1] != notification.get("subject_id"):
+            # don't send push notification on self-invite
+            NotificationService().send_push_notification(notification)
