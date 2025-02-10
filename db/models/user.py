@@ -34,6 +34,7 @@ class User(db.Model):
     )
     likes = db.relationship("Like", back_populates="user")
     comments = db.relationship("Comment", back_populates="user")
+    devices = db.relationship("UserDevice", back_populates="user")
 
     @validates("username")
     def validate_username(self, key, username):
