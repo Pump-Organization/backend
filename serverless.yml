@@ -34,6 +34,10 @@ provider:
       Resource: arn:aws:ses:${aws:region}:${aws:accountId}:*
     - Effect: Allow
       Action:
+        - sns:Publish
+      Resource: arn:aws:sns:us-west-1:084828603127:app/APNS/PumpAPNs
+    - Effect: Allow
+      Action:
         - s3:PutObject
         - s3:GetObject
       Resource: arn:aws:s3:::pump-media-${env:ENVIRONMENT}/*
