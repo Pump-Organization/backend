@@ -1,6 +1,6 @@
 import logging
 import boto3
-from constants.error_constants import AppError
+from constants.error_constants import AppError, BadDataError
 import settings
 import uuid
 from db.models.user import User
@@ -132,10 +132,40 @@ class NotificationService(Service):
 
         return response["EndpointArn"]
 
-    def send_push_notification(self, target_arn):
+    def send_push_notification(self, notification: dict):
+        user_id, subject, message = self.format_notification(notification)
+        user_device = (
+            self.session.query(UserDevice)
+            .filter(UserDevice.user_id == uuid.UUID(user_id))
+            .first()
+        )
+        if not user_device:
+            raise BadDataError("User device not registered")
+
+        target_arn = user_device.endpoint_arn
         response = self._sns_client.publish(
             TargetArn=target_arn,
-            Message="Hello from Pump!",
-            Subject="Test Notification",
+            Message=message,
+            Subject=subject,
         )
         return response
+
+    @staticmethod
+    def format_notification(notification: dict):
+        user_id: str = notification.get("PK").split("#")[1]
+        if notification.get("type") == "FOLLOW":
+            subject = f"{notification['subject_username']} started following you"
+            message = f"{notification['subject_username']} started following you"
+        elif notification.get("type") == "INVITE":
+            subject = f"{notification['subject_username']} invited you to a workout"
+            message = f"{notification['subject_username']} invited you to a workout"
+        elif notification.get("type") == "LIKE":
+            subject = f"{notification['subject_username']} liked your workout"
+            message = f"{notification['subject_username']} liked your workout"
+        elif notification.get("type") == "COMMENT":
+            subject = f"{notification['subject_username']} commented on your workout"
+            message = f"{notification['subject_username']} commented on your workout"
+        else:
+            raise BadDataError("Invalid notification type")
+
+        return user_id, subject, message
