@@ -35,6 +35,8 @@ provider:
       Resource: arn:aws:ses:${aws:region}:${aws:accountId}:*
     - Effect: Allow
       Action:
+        - sns:CreatePlatformEndpoint
+        - sns:DeleteEndpoint
         - sns:Publish
       Resource: arn:aws:sns:us-west-1:084828603127:app/APNS/PumpAPNs
     - Effect: Allow
