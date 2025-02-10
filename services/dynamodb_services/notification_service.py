@@ -102,8 +102,8 @@ class NotificationService(Service):
                 .filter(UserDevice.user_id == user_id)
                 .first()
             )
-            logging.debug(f"Deleting stale device token for user {user_id}")
             if stale_device_token:
+                logging.debug(f"Deleting stale device token for user {user_id}")
                 self.session.delete(stale_device_token)
                 self.session.commit()
         except Exception:
