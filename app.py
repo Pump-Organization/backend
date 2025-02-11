@@ -23,7 +23,7 @@ from constants.error_constants import (
     BadDataError,
     NotFoundError,
 )
-from db.db import db
+from db.db import db, DATABASE_URL
 from middleware.log_request import log_request
 from sqlalchemy.exc import IntegrityError, DataError
 from werkzeug.exceptions import NotFound
@@ -45,14 +45,8 @@ cors_resources = {
 CORS(app, resources=cors_resources)
 
 #################################### SQLALCHEMY ##############################################
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://{}:{}@{}/{}".format(
-    settings.POSTGRES_USER,
-    settings.POSTGRES_PASSWORD,
-    settings.POSTGRES_HOST,
-    settings.POSTGRES_DB,
-)
+app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
 db.init_app(app)
 
 

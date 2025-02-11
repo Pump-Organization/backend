@@ -10,3 +10,4 @@ class FollowCreatedEventHandler(AbstractEventHandler):
         event_data = self._event["data"]
         notification = NotificationFactory().create_follow_notification(event_data)
         NotificationService().create_notification(notification)
+        NotificationService().send_push_notification(notification)
