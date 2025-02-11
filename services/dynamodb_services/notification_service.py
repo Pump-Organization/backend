@@ -1,8 +1,9 @@
 import logging
 import boto3
-from constants.error_constants import AppError, BadDataError
 import settings
 import uuid
+from constants.error_constants import AppError, BadDataError
+from db.db import DbSession
 from db.models.user import User
 from db.models.user_device import UserDevice
 from services.dynamodb_services.dynamodb_service import DynamoDbService
@@ -134,11 +135,13 @@ class NotificationService(Service):
 
     def send_push_notification(self, notification: dict):
         user_id, subject, message = self.format_notification(notification)
-        user_device = (
-            self.session.query(UserDevice)
-            .filter(UserDevice.user_id == uuid.UUID(user_id))
-            .first()
-        )
+        # use DbSession bc this is outside of flask app context
+        with DbSession() as session:
+            user_device = (
+                session.query(UserDevice)
+                .filter(UserDevice.user_id == uuid.UUID(user_id))
+                .first()
+            )
         if not user_device:
             raise BadDataError("User device not registered")
 
