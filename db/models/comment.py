@@ -12,8 +12,12 @@ class Comment(db.Model):
     __tablename__ = "comment"
 
     id: UUID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id: UUID = Column(UUID, ForeignKey("user.id"), nullable=False)
-    workout_id: UUID = Column(UUID, ForeignKey("workout.id"), nullable=False)
+    user_id: UUID = Column(
+        UUID, ForeignKey("user.id", ondelete="CASCADE"), nullable=False
+    )
+    workout_id: UUID = Column(
+        UUID, ForeignKey("workout.id", ondelete="CASCADE"), nullable=False
+    )
     content: str = Column(String, nullable=False)
     created_at: str = Column(
         DateTime, default=datetime.datetime.now(datetime.timezone.utc)
