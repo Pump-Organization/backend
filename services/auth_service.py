@@ -77,13 +77,18 @@ class AuthService(Service):
     def refresh_access_token(self, refresh_token):
         # decode the refresh token and check if it is valid
         if self.session.query(RefreshToken).filter_by(token=refresh_token).count() == 0:
-            raise UnauthorizedError
+            return None
 
-        payload = jwt.decode(refresh_token, settings.JWT_SECRET, algorithms=["HS256"])
+        try:
+            payload = jwt.decode(
+                refresh_token, settings.JWT_SECRET, algorithms=["HS256"]
+            )
+        except jwt.ExpiredSignatureError:
+            return None  # refresh token has expired, don't log as error
         user_id = payload["user_id"]
         user = self.session.query(User).filter(User.id == user_id)
         if not user:
-            raise UnauthorizedError
+            return None
         return {"token": self.generate_jwt_token(user_id)}
 
     def generate_forgot_password_token(self, email):
