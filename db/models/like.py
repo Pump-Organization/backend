@@ -9,8 +9,12 @@ from db.db import db
 class Like(db.Model):
     __tablename__ = "like"
 
-    user_id: UUID = Column(UUID, ForeignKey("user.id"), nullable=False)
-    workout_id: UUID = Column(UUID, ForeignKey("workout.id"), nullable=False)
+    user_id: UUID = Column(
+        UUID, ForeignKey("user.id", ondelete="CASCADE"), nullable=False
+    )
+    workout_id: UUID = Column(
+        UUID, ForeignKey("workout.id", ondelete="CASCADE"), nullable=False
+    )
     created_at = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
 
     user = relationship("User", back_populates="likes")
