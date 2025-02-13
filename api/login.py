@@ -18,6 +18,8 @@ class LoginView(FlaskView):
     def refresh(self):
         refresh_token = request.get_json().get("refresh_token")
         service_data = AuthService().refresh_access_token(refresh_token)
+        if not service_data:
+            return "Unauthorized", 401
         return service_data, 200
 
     @route("/forgot_password", methods=["POST"])
