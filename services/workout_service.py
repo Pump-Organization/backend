@@ -199,6 +199,14 @@ class WorkoutService(Service):
                 for attendee in workout.attendees
                 if attendee.status == AttendeeStatusEnum.accepted
             )
+            workout_json["is_liked"] = (
+                self.session.query(Like)
+                .filter(Like.user_id == g.user_id, Like.workout_id == workout.id)
+                .first()
+                is not None
+            )
+            workout_json["num_likes"] = get_num_likes(workout.id)
+            workout_json["num_comments"] = get_num_comments(workout.id)
             results.append(workout_json)
         return results
 
