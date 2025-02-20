@@ -1,10 +1,8 @@
 import boto3
 import uuid
-from constants.error_constants import BadDataError, ForbiddenError
-from services.workout_service import WorkoutService
 from settings import AWS_REGION, MEDIA_BUCKET_NAME
 from dotenv import load_dotenv
-from flask import g, jsonify, request
+from flask import jsonify
 from flask_classful import FlaskView, route
 from middleware.token_required import token_required
 
@@ -27,11 +25,6 @@ class PresignedUrlView(FlaskView):
     @route("/workout_pic", methods=["GET"])
     @token_required
     def get_workout_pic_presigned_url(self):
-        workout_id = request.args.get("workout_id")
-        if workout_id is None:
-            raise BadDataError
-        if g.user_id != WorkoutService().get_organizer_id(workout_id):
-            raise ForbiddenError
         bucket_name = MEDIA_BUCKET_NAME
         image_name = uuid.uuid4().hex
         key = f"images/workout_pics/{image_name}.jpg"
