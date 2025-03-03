@@ -1,13 +1,19 @@
 import datetime
+import enum
 import re
 import uuid
 from constants.error_constants import BadDataError
 from email.utils import parseaddr
 from sqlalchemy import Column, String, DateTime
-from sqlalchemy.types import UUID
+from sqlalchemy.types import Enum, UUID
 from sqlalchemy.orm import validates
 
 from db.db import db
+
+
+class PrivacySettingEnum(str, enum.Enum):
+    public = "public"
+    private = "private"
 
 
 class User(db.Model):
@@ -20,6 +26,9 @@ class User(db.Model):
     location: str = Column(String, nullable=True)
     email: str = Column(String, unique=True)
     bio: str = Column(String, nullable=True)
+    privacy_setting: str = Column(
+        Enum(PrivacySettingEnum), default="public", nullable=False
+    )
     hashed_password: str = Column(String)
     created_at: str = Column(
         DateTime, default=datetime.datetime.now(datetime.timezone.utc)
