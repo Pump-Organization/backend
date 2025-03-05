@@ -24,6 +24,7 @@ class ProfileService(Service):
             "username": user_data.username,
             "name": user_data.name,
             "profile_pic": user_data.profile_pic,
+            "privacy_setting": user_data.privacy_setting,
             "location": user_data.location,
             "email": user_data.email,
             "bio": user_data.bio,

@@ -12,6 +12,7 @@ class TestSearchEndToEndTests:
                     "username": test_base_user["base_user"]["username"],
                     "name": test_base_user["base_user"]["name"],
                     "profile_pic": None,
+                    "follow_status": "no",
                     "is_following": False,
                 },
                 {
@@ -19,6 +20,7 @@ class TestSearchEndToEndTests:
                     "username": test_base_user["second_user"]["username"],
                     "name": test_base_user["second_user"]["name"],
                     "profile_pic": None,
+                    "follow_status": "no",
                     "is_following": False,
                 },
             ],

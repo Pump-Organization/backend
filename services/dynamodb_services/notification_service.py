@@ -4,7 +4,7 @@ import settings
 import uuid
 from constants.error_constants import AppError, BadDataError
 from db.db import DbSession
-from db.models.user import User
+from db.models.user import User, PrivacySettingEnum
 from db.models.user_device import UserDevice
 from services.dynamodb_services.dynamodb_service import DynamoDbService
 from services.service import Service
@@ -157,8 +157,15 @@ class NotificationService(Service):
     def format_notification(notification: dict):
         user_id: str = notification.get("PK").split("#")[1]
         if notification.get("type") == "FOLLOW":
-            subject = f"{notification['subject_username']} started following you"
-            message = f"{notification['subject_username']} started following you"
+            with DbSession() as session:
+                user = session.query(User).filter_by(id=uuid.UUID(user_id)).first()
+                privacy_setting = user.privacy_setting
+            if privacy_setting == PrivacySettingEnum.private:
+                subject = f"{notification['subject_username']} requested to follow you"
+                message = f"{notification['subject_username']} requested to follow you"
+            else:
+                subject = f"{notification['subject_username']} started following you"
+                message = f"{notification['subject_username']} started following you"
         elif notification.get("type") == "INVITE":
             subject = f"{notification['subject_username']} invited you to a workout"
             message = f"{notification['subject_username']} invited you to a workout"

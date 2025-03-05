@@ -72,6 +72,7 @@ class TestUsersEndToEndTests:
         assert follow_user_response.json == {
             "followee_id": self.expected_user["id"],
             "follower_id": base_user["id"],
+            "status": "accepted",
         }
 
     def test_get_followers(self, client, test_base_user):

@@ -50,6 +50,13 @@ class UsersView(FlaskView):
         service_data = UserService().get_followers(user_id, page)
         return [follower.to_quickview() for follower in service_data], 200
 
+    @route("/follow_requests", methods=["GET"])
+    @token_required
+    def get_follow_requests(self):
+        page = request.args.get("page", 1, int)
+        service_data = UserService().get_follow_requests(page)
+        return [follow_request.to_quickview() for follow_request in service_data], 200
+
     @route("/<user_id>/following", methods=["GET"])
     @token_required
     def get_followings(self, user_id):

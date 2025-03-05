@@ -1,8 +1,14 @@
 import datetime
+import enum
 from sqlalchemy import Column, ForeignKey, DateTime, PrimaryKeyConstraint
-from sqlalchemy.types import UUID
+from sqlalchemy.types import Enum, UUID
 
 from db.db import db
+
+
+class FollowStatusEnum(str, enum.Enum):
+    pending = "pending"
+    accepted = "accepted"
 
 
 class Follower(db.Model):
@@ -10,6 +16,7 @@ class Follower(db.Model):
 
     follower_id: UUID = Column(UUID, ForeignKey("user.id", ondelete="CASCADE"))
     followed_id: UUID = Column(UUID, ForeignKey("user.id", ondelete="CASCADE"))
+    status: str = Column(Enum(FollowStatusEnum), default="accepted", nullable=False)
     created_at: str = Column(
         DateTime, default=datetime.datetime.now(datetime.timezone.utc)
     )
@@ -29,4 +36,5 @@ class Follower(db.Model):
         return {
             "follower_id": self.follower_id,
             "followee_id": self.followed_id,
+            "status": self.status,
         }
