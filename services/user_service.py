@@ -135,6 +135,7 @@ class UserService(Service):
             self.session.query(User)
             .join(Follower, Follower.follower_id == User.id)
             .filter(Follower.followed_id == user_id)
+            .order_by(Follower.created_at.desc())
             .paginate(page=page, per_page=USERS_PER_PAGE)
             .items
         )
@@ -145,6 +146,7 @@ class UserService(Service):
             self.session.query(User)
             .join(Follower, Follower.followed_id == User.id)
             .filter(Follower.follower_id == user_id)
+            .order_by(Follower.created_at.desc())
             .paginate(page=page, per_page=USERS_PER_PAGE)
             .items
         )
