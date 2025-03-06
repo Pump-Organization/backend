@@ -157,6 +157,7 @@ class UserService(Service):
                 Follower.followed_id == user_id,
                 Follower.status == FollowStatusEnum.accepted,
             )
+            .order_by(Follower.created_at.desc())
             .paginate(page=page, per_page=USERS_PER_PAGE)
             .items
         )
@@ -183,6 +184,7 @@ class UserService(Service):
                 Follower.follower_id == user_id,
                 Follower.status == FollowStatusEnum.accepted,
             )
+            .order_by(Follower.created_at.desc())
             .paginate(page=page, per_page=USERS_PER_PAGE)
             .items
         )
