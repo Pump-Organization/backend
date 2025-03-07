@@ -8,7 +8,7 @@ from constants.email_constants import (
     FORGOT_PASSWORD_SUBJECT,
 )  # noqa E501
 from datetime import datetime, timedelta, timezone
-from constants.error_constants import UnauthorizedError
+from constants.error_constants import BadDataError, UnauthorizedError
 from db.models.user import User
 from db.models.refresh_token import RefreshToken
 from services.service import Service
@@ -94,7 +94,7 @@ class AuthService(Service):
     def generate_forgot_password_token(self, email):
         user = self.query_by_attribute(email=email)
         if not user:
-            raise UnauthorizedError
+            raise BadDataError("Email not found")
         token = self.generate_jwt_token(
             user.id.hex,
             expires_at=15,
