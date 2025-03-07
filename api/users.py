@@ -1,5 +1,5 @@
 from flask_classful import FlaskView, route
-from flask import request
+from flask import g, request
 from middleware.token_required import token_required
 from services.user_service import UserService
 
@@ -40,8 +40,20 @@ class UsersView(FlaskView):
     @route("/<user_id>/unfollow", methods=["POST"])
     @token_required
     def unfollow_user(self, user_id):
-        UserService().unfollow_user(user_id)
+        UserService().delete_follower(g.user_id.hex, user_id)
         return "", 204
+
+    @route("/<user_id>/follower", methods=["DELETE"])
+    @token_required
+    def remove_follower(self, user_id):
+        UserService().delete_follower(user_id, g.user_id.hex)
+        return "", 204
+
+    @route("/<user_id>/follower", methods=["PUT"])
+    @token_required
+    def accept_follow_request(self, user_id):
+        service_data = UserService().accept_follow_request(user_id)
+        return service_data, 200
 
     @route("/<user_id>/followers", methods=["GET"])
     @token_required

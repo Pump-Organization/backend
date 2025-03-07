@@ -10,7 +10,7 @@ from constants.error_constants import (
     NotFoundError,
 )
 from settings import USERS_PER_PAGE
-from db.models.user import User
+from db.models.user import User, PrivacySettingEnum
 from db.models.follower import Follower, FollowStatusEnum
 from services.event_emitter_service import EventEmitterService
 from services.service import Service
@@ -36,6 +36,7 @@ class UserService(Service):
             location=data.get("location"),
             email=data.get("email"),
             bio=data.get("bio"),
+            privacy_setting=data.get("privacy_setting", PrivacySettingEnum.public),
             hashed_password=password,
         )
         return self.add_data(new_user)
@@ -122,11 +123,12 @@ class UserService(Service):
 
         return response
 
-    def unfollow_user(self, user_id):
-        if g.user_id == uuid.UUID(user_id):
-            raise BadDataError("cannot unfollow self")
+    def delete_follower(self, follower_id, followed_id):
+        logging.info(f"### Deleting follower {follower_id} from {followed_id}")
+        if g.user_id.hex not in [follower_id, followed_id]:
+            raise ForbiddenError
         follower = Follower.query.filter_by(
-            follower_id=g.user_id, followed_id=user_id
+            follower_id=follower_id, followed_id=followed_id
         ).first()
         if follower:
             self.session.delete(follower)
@@ -138,7 +140,7 @@ class UserService(Service):
                     {
                         "name": "FOLLOW-DELETED",
                         "data": {
-                            "target_id": user_id,
+                            "target_id": followed_id,
                             "created_at": str(follower.created_at),
                         },
                     }
@@ -148,6 +150,18 @@ class UserService(Service):
                 logging.critical(traceback.format_exc())
 
         return
+
+    def accept_follow_request(self, user_id):
+        follow_request = (
+            self.session.query(Follower)
+            .filter(Follower.follower_id == user_id, Follower.followed_id == g.user_id)
+            .first()
+        )
+        if follow_request:
+            follow_request.status = FollowStatusEnum.accepted
+            self.session.commit()
+
+        return follow_request.to_json()
 
     def get_followers(self, user_id, page=1):
         followers = (

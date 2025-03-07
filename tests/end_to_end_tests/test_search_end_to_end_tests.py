@@ -23,6 +23,14 @@ class TestSearchEndToEndTests:
                     "follow_status": "no",
                     "is_following": False,
                 },
+                {
+                    "id": test_base_user["private_user"]["id"],
+                    "username": test_base_user["private_user"]["username"],
+                    "name": test_base_user["private_user"]["name"],
+                    "profile_pic": None,
+                    "follow_status": "no",
+                    "is_following": False,
+                },
             ],
             key=lambda x: x["id"],
         )

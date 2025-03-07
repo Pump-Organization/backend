@@ -9,6 +9,7 @@ class TestUsersEndToEndTests:
         "username": test_uuid,
         "name": "E2E Test",
         "bio": None,
+        "privacy_setting": "public",
         "profile_pic": None,
         "location": None,
     }
@@ -55,6 +56,7 @@ class TestUsersEndToEndTests:
             "name": "Updated E2E Test",
             "bio": "I am a test",
             "profile_pic": None,
+            "privacy_setting": "public",
             "location": None,
         }
 
@@ -108,10 +110,82 @@ class TestUsersEndToEndTests:
         ]
 
     def test_unfollow_user(self, client, test_base_user):
-        base_user = test_base_user["base_user"]
         unfollow_user_response = client.post(
             f'/users/{self.expected_user["id"]}/unfollow',
             headers={"Authorization": f'Bearer {test_base_user["token"]}'},
         )
 
         assert unfollow_user_response.status_code == 204
+
+    def test_remove_follow(self, client, test_base_user):
+        # second user follows base user
+        client.post(
+            f'/users/{test_base_user["base_user"]["id"]}/follow',
+            headers={"Authorization": f'Bearer {test_base_user["second_token"]}'},
+        )
+
+        # base user removes second user as follower
+        remove_follower_response = client.delete(
+            f'/users/{test_base_user["second_user"]["id"]}/follower',
+            headers={"Authorization": f'Bearer {test_base_user["token"]}'},
+        )
+
+        assert remove_follower_response.status_code == 204
+
+    def test_privacy_setting(self, client, test_base_user):
+        # test sending follow request, listing follow requests, accepting follow request
+
+        # base user tries to get private user profile posts
+        get_private_profile_response = client.get(
+            f'/profiles/{test_base_user["private_user"]["id"]}/workouts',
+            headers={"Authorization": f'Bearer {test_base_user["token"]}'},
+        )
+        assert get_private_profile_response.status_code == 403
+
+        # base user sends follow request to private user
+        follow_user_response = client.post(
+            f'/users/{test_base_user["private_user"]["id"]}/follow',
+            headers={"Authorization": f'Bearer {test_base_user["token"]}'},
+        )
+        assert follow_user_response.status_code == 200
+        assert follow_user_response.json == {
+            "followee_id": test_base_user["private_user"]["id"],
+            "follower_id": test_base_user["base_user"]["id"],
+            "status": "pending",
+        }
+
+        # private user lists follow requests
+        get_follow_requests_response = client.get(
+            "/users/follow_requests",
+            headers={"Authorization": f'Bearer {test_base_user["private_token"]}'},
+        )
+        assert get_follow_requests_response.status_code == 200
+        assert get_follow_requests_response.json == [
+            {
+                "id": test_base_user["base_user"]["id"],
+                "username": test_base_user["base_user"]["username"],
+                "name": "Updated E2E Test",
+                "profile_pic": None,
+            }
+        ]
+
+        # private user accepts follow request
+        accept_follow_request_response = client.put(
+            f'/users/{test_base_user["base_user"]["id"]}/follower',
+            headers={"Authorization": f'Bearer {test_base_user["private_token"]}'},
+        )
+        assert accept_follow_request_response.status_code == 200
+        assert accept_follow_request_response.json == {
+            "follower_id": test_base_user["base_user"]["id"],
+            "followee_id": test_base_user["private_user"]["id"],
+            "status": "accepted",
+        }
+
+        # base user gets private profile posts
+        get_private_profile_response = client.get(
+            f'/profiles/{test_base_user["private_user"]["id"]}/workouts',
+            headers={"Authorization": f'Bearer {test_base_user["token"]}'},
+        )
+
+        assert get_private_profile_response.status_code == 200
+        assert get_private_profile_response.json == []
