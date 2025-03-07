@@ -159,6 +159,9 @@ class NotificationService(Service):
         if notification.get("type") == "FOLLOW":
             subject = f"{notification['subject_username']} started following you"
             message = f"{notification['subject_username']} started following you"
+        elif notification.get("type") == "FOLLOW_REQUEST":
+            subject = f"{notification['subject_username']} sent you a follow request"
+            message = f"{notification['subject_username']} sent you a follow request"
         elif notification.get("type") == "INVITE":
             subject = f"{notification['subject_username']} invited you to a workout"
             message = f"{notification['subject_username']} invited you to a workout"

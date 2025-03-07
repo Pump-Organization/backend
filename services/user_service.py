@@ -10,11 +10,12 @@ from constants.error_constants import (
     NotFoundError,
 )
 from settings import USERS_PER_PAGE
-from db.models.user import User
-from db.models.follower import Follower
+from db.models.user import User, PrivacySettingEnum
+from db.models.follower import Follower, FollowStatusEnum
 from services.event_emitter_service import EventEmitterService
 from services.service import Service
 from sqlalchemy import case, and_
+from utils.user_utils import is_user_public
 
 
 class UserService(Service):
@@ -35,6 +36,7 @@ class UserService(Service):
             location=data.get("location"),
             email=data.get("email"),
             bio=data.get("bio"),
+            privacy_setting=data.get("privacy_setting", PrivacySettingEnum.public),
             hashed_password=password,
         )
         return self.add_data(new_user)
@@ -78,17 +80,35 @@ class UserService(Service):
         if Follower.query.filter_by(follower_id=g.user_id, followed_id=user_id).first():
             raise ConflictError("already following")
 
+        is_public = is_user_public(user_id)
+
+        if is_public:
+            new_follower = Follower(
+                follower_id=g.user_id,
+                followed_id=user_id,
+                status=FollowStatusEnum.accepted,
+            )
+        else:
+            new_follower = Follower(
+                follower_id=g.user_id,
+                followed_id=user_id,
+                status=FollowStatusEnum.pending,
+            )
+
         # add follower to db
-        new_follower = Follower(follower_id=g.user_id, followed_id=user_id)
         response = self.add_data(new_follower)
+
+        if is_public:
+            event_name = "FOLLOW-CREATED"
+        else:
+            event_name = "FOLLOW_REQUEST-CREATED"
 
         try:
             follower = self.get_user(g.user_id)
-
             # emit event on successful transaction
             EventEmitterService().emit_event(
                 {
-                    "name": "FOLLOW-CREATED",
+                    "name": event_name,
                     "data": {
                         "created_at": str(response.created_at),
                         "subject_id": follower.id.hex,
@@ -103,11 +123,12 @@ class UserService(Service):
 
         return response
 
-    def unfollow_user(self, user_id):
-        if g.user_id == uuid.UUID(user_id):
-            raise BadDataError("cannot unfollow self")
+    def delete_follower(self, follower_id, followed_id):
+        logging.info(f"### Deleting follower {follower_id} from {followed_id}")
+        if g.user_id.hex not in [follower_id, followed_id]:
+            raise ForbiddenError
         follower = Follower.query.filter_by(
-            follower_id=g.user_id, followed_id=user_id
+            follower_id=follower_id, followed_id=followed_id
         ).first()
         if follower:
             self.session.delete(follower)
@@ -119,7 +140,7 @@ class UserService(Service):
                     {
                         "name": "FOLLOW-DELETED",
                         "data": {
-                            "target_id": user_id,
+                            "target_id": followed_id,
                             "created_at": str(follower.created_at),
                         },
                     }
@@ -130,22 +151,53 @@ class UserService(Service):
 
         return
 
+    def accept_follow_request(self, user_id):
+        follow_request = (
+            self.session.query(Follower)
+            .filter(Follower.follower_id == user_id, Follower.followed_id == g.user_id)
+            .first()
+        )
+        if follow_request:
+            follow_request.status = FollowStatusEnum.accepted
+            self.session.commit()
+
+        return follow_request.to_json()
+
     def get_followers(self, user_id, page=1):
         followers = (
             self.session.query(User)
             .join(Follower, Follower.follower_id == User.id)
-            .filter(Follower.followed_id == user_id)
+            .filter(
+                Follower.followed_id == user_id,
+                Follower.status == FollowStatusEnum.accepted,
+            )
             .order_by(Follower.created_at.desc())
             .paginate(page=page, per_page=USERS_PER_PAGE)
             .items
         )
         return followers
 
+    def get_follow_requests(self, page=1):
+        follow_requests = (
+            self.session.query(User)
+            .join(Follower, Follower.follower_id == User.id)
+            .filter(
+                Follower.followed_id == g.user_id,
+                Follower.status == FollowStatusEnum.pending,
+            )
+            .paginate(page=page, per_page=USERS_PER_PAGE)
+            .items
+        )
+        return follow_requests
+
     def get_followings(self, user_id, page=1):
         followings = (
             self.session.query(User)
             .join(Follower, Follower.followed_id == User.id)
-            .filter(Follower.follower_id == user_id)
+            .filter(
+                Follower.follower_id == user_id,
+                Follower.status == FollowStatusEnum.accepted,
+            )
             .order_by(Follower.created_at.desc())
             .paginate(page=page, per_page=USERS_PER_PAGE)
             .items
@@ -162,8 +214,29 @@ class UserService(Service):
             ),
             else_=False,
         )
+
+        follow_status = case(
+            (
+                and_(
+                    Follower.followed_id == User.id,
+                    Follower.follower_id == g.user_id,
+                    Follower.status == FollowStatusEnum.accepted,
+                ),
+                "yes",
+            ),
+            (
+                and_(
+                    Follower.followed_id == User.id,
+                    Follower.follower_id == g.user_id,
+                    Follower.status == FollowStatusEnum.pending,
+                ),
+                "pending",
+            ),
+            else_="no",
+        )
+
         users_query = (
-            self.session.query(User, is_following)
+            self.session.query(User, is_following, follow_status)
             .outerjoin(Follower, User.id == Follower.followed_id)
             .filter(User.username.ilike(f"%{query}%"))
         )
