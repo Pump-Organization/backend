@@ -1,5 +1,6 @@
 from flask_classful import FlaskView, route
 from flask import request
+from middleware.check_privacy import check_privacy
 from middleware.token_required import token_required
 from services.profile_service import ProfileService
 
@@ -15,6 +16,7 @@ class ProfilesView(FlaskView):
 
     @route("/<user_id>/workouts", methods=["GET"])
     @token_required
+    @check_privacy
     def get_profile_workouts(self, user_id):
         page = request.args.get("page", 1, int)
         service_data = ProfileService().get_profile_workouts(user_id, page)

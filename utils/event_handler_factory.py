@@ -18,6 +18,7 @@ class EventHandlerFactory:
 
     def __init__(self):
         self.__event_handlers["FOLLOW-CREATED"] = FollowCreatedEventHandler
+        self.__event_handlers["FOLLOW_REQUEST-CREATED"] = FollowCreatedEventHandler
         self.__event_handlers["FOLLOW-DELETED"] = FollowDeletedEventHandler
         self.__event_handlers["INVITE-CREATED"] = InviteCreatedEventHandler
         self.__event_handlers["INVITE-DELETED"] = InviteDeletedEventHandler

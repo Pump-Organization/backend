@@ -94,6 +94,7 @@ class User(db.Model):
             "location": self.location,
             "email": self.email,
             "bio": self.bio,
+            "privacy_setting": self.privacy_setting,
         }
 
     def to_quickview(self):

@@ -40,11 +40,22 @@ def test_base_user(client):
         "name": "E2E SECOND USER",
     }
 
+    test_private_user = {
+        "email": f"{test_uuid}c@test.com",
+        "username": f"{test_uuid}c",
+        "password": "password",
+        "name": "E2E PRIVATE USER",
+        "privacy_setting": "private",
+    }
+
+    # Create users
     create_user_response = client.post("/users", json=test_base_user)
     create_second_user_response = client.post("/users", json=test_second_user)
+    create_private_user_response = client.post("/users", json=test_private_user)
     assert create_user_response.status_code == 200
     test_base_user["id"] = create_user_response.json["id"]
     test_second_user["id"] = create_second_user_response.json["id"]
+    test_private_user["id"] = create_private_user_response.json["id"]
 
     # Authenticate and get JWT token
     auth_response = client.post(
@@ -67,11 +78,23 @@ def test_base_user(client):
     assert second_auth_response.status_code == 200
     second_jwt_token = second_auth_response.json["token"]
 
+    private_auth_response = client.post(
+        "/login",
+        json={
+            "username": test_private_user["username"],
+            "password": test_private_user["password"],
+        },
+    )
+    assert private_auth_response.status_code == 200
+    private_jwt_token = private_auth_response.json["token"]
+
     return {
         "base_user": test_base_user,
         "second_user": test_second_user,
+        "private_user": test_private_user,
         "token": jwt_token,
         "second_token": second_jwt_token,
+        "private_token": private_jwt_token,
     }
 
 

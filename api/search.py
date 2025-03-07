@@ -14,13 +14,14 @@ class SearchView(FlaskView):
         page = request.args.get("page", 1, type=int)
         service_data = UserService().search_users(search_query, page)
         return [
-            serialize_search_result(user, is_following)
-            for user, is_following in service_data
+            serialize_search_result(user, is_following, follow_status)
+            for user, is_following, follow_status in service_data
         ], 200
 
 
-def serialize_search_result(user, is_following):
+def serialize_search_result(user, is_following, follow_status):
     ret = user.to_quickview()
     ret["is_following"] = is_following
+    ret["follow_status"] = follow_status
 
     return ret
