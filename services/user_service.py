@@ -237,7 +237,16 @@ class UserService(Service):
 
         users_query = (
             self.session.query(User, is_following, follow_status)
-            .outerjoin(Follower, User.id == Follower.followed_id)
+            .outerjoin(
+                Follower,
+                and_(
+                    User.id == Follower.followed_id,
+                    and_(
+                        Follower.follower_id == g.user_id,
+                        Follower.status == FollowStatusEnum.accepted,
+                    ),
+                ),
+            )
             .filter(User.username.ilike(f"%{query}%"))
         )
         results = users_query.paginate(page=page, per_page=USERS_PER_PAGE).items
