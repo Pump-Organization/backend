@@ -1,4 +1,5 @@
 import logging
+import uuid
 import traceback
 from flask import g
 from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
@@ -124,3 +125,35 @@ class AttendeeService(Service):
         attendee.status = AttendeeStatusEnum.accepted
         self.session.commit()
         return attendee
+
+    def batch_create_attendees(self, workout_id: uuid.UUID, user_ids: list[uuid.UUID]):
+        if g.user_id != self.get_workout_organizer(workout_id):
+            raise ForbiddenError
+
+        attendees = []
+        for user_id in user_ids:
+            attendee = Attendee(
+                user_id=user_id,
+                workout_id=workout_id,
+                attendee_type=AttendeeTypeEnum.guest,
+                status=AttendeeStatusEnum.pending,
+            )
+            attendees.append(attendee)
+        self.session.add_all(attendees)
+        self.session.commit()
+        return attendees
+
+    def batch_delete_attendees(self, workout_id: uuid.UUID, user_ids: list[uuid.UUID]):
+        if g.user_id != self.get_workout_organizer(workout_id):
+            raise ForbiddenError
+
+        attendees = (
+            self.session.query(Attendee)
+            .filter(Attendee.workout_id == workout_id, Attendee.user_id.in_(user_ids))
+            .all()
+        )
+        for attendee in attendees:
+            self.session.delete(attendee)
+        self.session.commit()
+
+        return
