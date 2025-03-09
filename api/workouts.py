@@ -70,15 +70,6 @@ class WorkoutsView(FlaskView):
         service_data = AttendeeService().list_workout_attendees(workout_id)
         return [attendee for attendee in service_data], 200
 
-    @route("/<workout_id>/users", methods=["POST"])
-    @token_required
-    def update_workout_attendees(self, workout_id):
-        # {"added_attendees": [], "removed_attendees": []}
-        request_data = request.get_json()
-        AttendeeService().batch_create_attendees(workout_id, request_data.get("added_attendees", []))
-        AttendeeService().batch_delete_attendees(workout_id, request_data.get("removed_attendees", []))
-        return "successfully updated attendees", 200
-
     @route("/<workout_id>/accept", methods=["POST"])
     @token_required
     def accept_workout(self, workout_id):

@@ -84,6 +84,8 @@ class AttendeeService(Service):
         self.session.commit()
 
         try:
+            if isinstance(user_id, str):
+                user_id = uuid.UUID(user_id)
             EventEmitterService().emit_event(
                 {
                     "name": "INVITE-DELETED",
@@ -132,28 +134,32 @@ class AttendeeService(Service):
 
         attendees = []
         for user_id in user_ids:
-            attendee = Attendee(
-                user_id=user_id,
-                workout_id=workout_id,
-                attendee_type=AttendeeTypeEnum.guest,
-                status=AttendeeStatusEnum.pending,
-            )
-            attendees.append(attendee)
-        self.session.add_all(attendees)
-        self.session.commit()
+            try:
+                self.create_attendee(
+                    {
+                        "workout_id": workout_id,
+                        "user_id": user_id,
+                        "attendee_type": AttendeeTypeEnum.guest,
+                    }
+                )
+            except Exception as e:
+                logging.error(f"Error creating attendee: {e}")
+                traceback.print_exc()
+                continue
+            attendees.append(user_id)
+
         return attendees
 
     def batch_delete_attendees(self, workout_id: uuid.UUID, user_ids: list[uuid.UUID]):
         if g.user_id != self.get_workout_organizer(workout_id):
             raise ForbiddenError
 
-        attendees = (
-            self.session.query(Attendee)
-            .filter(Attendee.workout_id == workout_id, Attendee.user_id.in_(user_ids))
-            .all()
-        )
-        for attendee in attendees:
-            self.session.delete(attendee)
-        self.session.commit()
+        for user_id in user_ids:
+            try:
+                self.delete_attendee(workout_id, user_id)
+            except Exception as e:
+                logging.error(f"Error deleting attendee: {e}")
+                traceback.print_exc()
+                continue
 
         return
