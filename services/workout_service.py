@@ -105,9 +105,17 @@ class WorkoutService(Service):
                     value = datetime.strptime(value, settings.DATETIME_REPRESENTATION)
                 setattr(workout, key, value)
             self.session.commit()
-            return workout
         else:
             raise NotFoundError
+
+        # handle attendee updates
+        AttendeeService().batch_create_attendees(
+            workout_id, data.get("added_attendees", [])
+        )
+        AttendeeService().batch_delete_attendees(
+            workout_id, data.get("removed_attendees", [])
+        )
+        return workout
 
     def delete_workout(self, workout_id):
         if g.user_id != self.get_organizer_id(workout_id):
