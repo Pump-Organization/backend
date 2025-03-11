@@ -1,3 +1,4 @@
+import uuid
 from constants.error_constants import NotFoundError, ForbiddenError
 from db.db import db
 from flask import g
@@ -10,7 +11,7 @@ def check_privacy(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         user_id = kwargs.get("user_id")
-        if user_id == g.user_id:
+        if uuid.UUID(user_id) == g.user_id:
             return f(*args, **kwargs)
         user = db.session.get(User, user_id)
         if not user:

@@ -1,4 +1,5 @@
 import logging
+import uuid
 import traceback
 from flask import g
 from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
@@ -83,6 +84,8 @@ class AttendeeService(Service):
         self.session.commit()
 
         try:
+            if isinstance(user_id, str):
+                user_id = uuid.UUID(user_id)
             EventEmitterService().emit_event(
                 {
                     "name": "INVITE-DELETED",
@@ -124,3 +127,39 @@ class AttendeeService(Service):
         attendee.status = AttendeeStatusEnum.accepted
         self.session.commit()
         return attendee
+
+    def batch_create_attendees(self, workout_id: uuid.UUID, user_ids: list[uuid.UUID]):
+        if g.user_id != self.get_workout_organizer(workout_id):
+            raise ForbiddenError
+
+        attendees = []
+        for user_id in user_ids:
+            try:
+                self.create_attendee(
+                    {
+                        "workout_id": workout_id,
+                        "user_id": user_id,
+                        "attendee_type": AttendeeTypeEnum.guest,
+                    }
+                )
+            except Exception as e:
+                logging.error(f"Error creating attendee: {e}")
+                traceback.print_exc()
+                continue
+            attendees.append(user_id)
+
+        return attendees
+
+    def batch_delete_attendees(self, workout_id: uuid.UUID, user_ids: list[uuid.UUID]):
+        if g.user_id != self.get_workout_organizer(workout_id):
+            raise ForbiddenError
+
+        for user_id in user_ids:
+            try:
+                self.delete_attendee(workout_id, user_id)
+            except Exception as e:
+                logging.error(f"Error deleting attendee: {e}")
+                traceback.print_exc()
+                continue
+
+        return
