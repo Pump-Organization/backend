@@ -16,6 +16,7 @@ class ProfileService(Service):
     def get_profile(self, user_id):
         user_data = UserService().get_user(user_id)
         is_following = UserService().is_following_user(user_id)
+        follow_status = UserService().get_following_status(user_id)
         num_followers = UserService().get_num_followers(user_id)
         num_followings = UserService().get_num_followings(user_id)
         num_workouts = WorkoutService().get_num_workouts(user_id)
@@ -29,6 +30,7 @@ class ProfileService(Service):
             "email": user_data.email,
             "bio": user_data.bio,
             "is_following": is_following,
+            "follow_status": follow_status,
             "num_followers": num_followers,
             "num_following": num_followings,
             "num_workouts": num_workouts,
