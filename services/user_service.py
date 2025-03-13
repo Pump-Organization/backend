@@ -204,6 +204,22 @@ class UserService(Service):
         )
         return followings
 
+    def get_following_status(self, user_id):
+        follow = (
+            self.session.query(Follower)
+            .filter(
+                Follower.follower_id == g.user_id,
+                Follower.followed_id == user_id,
+            )
+            .first()
+        )
+        if follow:
+            if follow.status == FollowStatusEnum.pending:
+                return "pending"
+            if follow.status == FollowStatusEnum.accepted:
+                return "yes"
+        return "no"
+
     def search_users(self, query, page=1):
         is_following = case(
             (

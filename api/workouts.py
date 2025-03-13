@@ -66,7 +66,9 @@ class WorkoutsView(FlaskView):
         return "", 204
 
     @route("/<workout_id>/users", methods=["GET"])
-    def list_workout_attendees(self, workout_id):  # TODO: Add pagination
+    def list_workout_attendees(
+        self, workout_id
+    ):  # TODO: Add pagination - or not bc we need all attendees for EditWorkout screen
         service_data = AttendeeService().list_workout_attendees(workout_id)
         return [attendee for attendee in service_data], 200
 

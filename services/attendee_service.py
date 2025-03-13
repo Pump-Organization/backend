@@ -101,7 +101,9 @@ class AttendeeService(Service):
 
         return
 
-    def list_workout_attendees(self, workout_id):  # TODO: add pagination
+    def list_workout_attendees(
+        self, workout_id
+    ):  # TODO: add pagination - or not bc we need all attendees for EditWorkout screen
         attendees = Attendee.query.filter_by(workout_id=workout_id).all()
         data = [attendee.to_full_user() for attendee in attendees]
         return data
