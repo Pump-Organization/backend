@@ -277,9 +277,13 @@ class UserService(Service):
         )
 
     def get_num_followers(self, user_id):
-        num_followers = Follower.query.filter_by(followed_id=user_id).count()
+        num_followers = Follower.query.filter_by(
+            followed_id=user_id, status=FollowStatusEnum.accepted
+        ).count()
         return num_followers
 
     def get_num_followings(self, user_id):
-        num_followings = Follower.query.filter_by(follower_id=user_id).count()
+        num_followings = Follower.query.filter_by(
+            follower_id=user_id, status=FollowStatusEnum.accepted
+        ).count()
         return num_followings
