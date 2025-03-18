@@ -2,7 +2,6 @@ import bootstrap  # noqa
 import settings
 import logging
 import os
-import traceback
 from flask import Flask
 from flask_cors import CORS
 from api.users import UsersView
@@ -17,16 +16,9 @@ from api.notifications import NotificationsView
 from api.presigned_url import PresignedUrlView
 from api.search import SearchView
 from constants.custom_json_provider import CustomJSONProvider
-from constants.error_constants import (
-    CUSTOM_ERRORS,
-    AppError,
-    BadDataError,
-    NotFoundError,
-)
 from db.db import db, DATABASE_URL
 from middleware.log_request import log_request
-from sqlalchemy.exc import IntegrityError, DataError
-from werkzeug.exceptions import NotFound
+from error_handler import handle_app_error
 
 
 logger = logging.getLogger()
@@ -65,17 +57,6 @@ PresignedUrlView.register(app)
 
 
 #################################### ERROR HANDLER ##########################################
-def handle_app_error(error):
-    if isinstance(error, NotFound):
-        error = NotFoundError
-    elif type(error) in (IntegrityError, DataError, LookupError):
-        error = BadDataError
-    elif type(error) not in CUSTOM_ERRORS:
-        error = AppError
-    logger.critical(traceback.format_exc())
-    return {"error": error.message}, error.status_code
-
-
 app.register_error_handler(Exception, handle_app_error)
 
 
