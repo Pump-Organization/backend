@@ -25,3 +25,15 @@ class WorkoutExercise(db.Model):
     weight_unit: str = Column(Enum(WeightUnitsEnum), nullable=True)
 
     workout = relationship("Workout", back_populates="exercises")
+
+
+    def to_json(self):
+        return {
+            "id": self.id,
+            "workout_id": self.workout_id,
+            "exercise_name": self.exercise_name,
+            "sets": self.sets,
+            "reps": self.reps,
+            "weight": self.weight,
+            "weight_unit": self.weight_unit,
+        }

@@ -88,6 +88,7 @@ class Workout(db.Model):
             "datetime": self.datetime.isoformat(),
             "endtime": self.endtime.isoformat(),
             "status": self.status,
+            "routine": [exercise.to_json() for exercise in self.exercises],
             "attendees": [
                 attendee.to_json() for attendee in self.attendees[:num_attendees]
             ],
