@@ -28,6 +28,7 @@ class Workout(db.Model):
     published_at: dt.datetime = Column(DateTime, nullable=True)
     created_at: str = Column(DateTime, default=dt.datetime.now(dt.timezone.utc))
 
+    exercises = db.relationship("WorkoutExercise", back_populates="workout")
     attendees = db.relationship("Attendee", back_populates="workout")
     likes = db.relationship("Like", back_populates="workout")
     comments = db.relationship("Comment", back_populates="workout")
