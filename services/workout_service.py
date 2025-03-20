@@ -5,6 +5,7 @@ import settings
 from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
 from db.models.like import Like
 from db.models.workout import Workout, WorkoutStatusEnum
+from db.models.workout_exercise import WorkoutExercise
 from services.service import Service
 from services.attendee_service import AttendeeService
 from constants.error_constants import ForbiddenError, NotFoundError
@@ -20,6 +21,7 @@ class WorkoutService(Service):
         super().__init__(Workout)
 
     def create_workout(self, data):
+        # parse times from string to datetime
         parsed_datetime = datetime.strptime(
             data["datetime"], settings.DATETIME_REPRESENTATION
         )
@@ -27,6 +29,7 @@ class WorkoutService(Service):
             data["endtime"], settings.DATETIME_REPRESENTATION
         )
 
+        # create workout model and flush to get id
         new_workout = Workout(
             title=data.get("title"),
             description=data.get("description"),
@@ -38,12 +41,25 @@ class WorkoutService(Service):
         )
         workout_data = self.add_data(new_workout, False)
         self.session.flush()
+
+        # add workout exercises
+        for exercise in data.get("routine", []):
+            exercise_model = WorkoutExercise(
+                workout_id=new_workout.id,
+                exercise_name=exercise.get("exercise_name"),
+                sets=exercise.get("sets"),
+                reps=exercise.get("reps"),
+                weight=exercise.get("weight"),
+                weight_unit=exercise.get("weight_unit"),
+            )
+            self.add_data(exercise_model)
+
+        # add organizer and invitees to attendees table
         organizer_data = {
             "workout_id": new_workout.id.hex,
             "user_id": data.get("organizer_id").hex,
             "attendee_type": AttendeeTypeEnum.organizer,
         }
-
         AttendeeService().create_attendee(
             data=organizer_data,
             status=AttendeeStatusEnum.accepted,
