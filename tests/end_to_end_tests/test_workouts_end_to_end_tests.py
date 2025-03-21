@@ -47,6 +47,7 @@ class TestWorkoutsEndToEndTests:
         get_expected_workout["organizer_username"] = test_base_user["base_user"][
             "username"
         ]
+        get_expected_workout["routine"] = []
         get_expected_workout["organizer_pic"] = None
         get_expected_workout["attendees"] = [
             {
@@ -91,6 +92,23 @@ class TestWorkoutsEndToEndTests:
             "title": "Updated Friday pull day",
             "workout_pic": None,
             "status": WorkoutStatusEnum.pending.value,
+            "routine": [],
+            "attendees": [
+                {
+                    "attendee_type": "organizer",
+                    "status": "accepted",
+                    "user_id": test_base_user["base_user"]["id"],
+                    "user_pic": None,
+                    "workout_id": self.expected_workout["id"],
+                },
+                {
+                    "attendee_type": "guest",
+                    "status": "pending",
+                    "user_id": test_base_user["second_user"]["id"],
+                    "user_pic": None,
+                    "workout_id": self.expected_workout["id"],
+                },
+            ],
         }
 
         assert update_workout_response.status_code == 200
@@ -173,6 +191,16 @@ class TestWorkoutsEndToEndTests:
             "title": "Updated Friday pull day",
             "workout_pic": None,
             "status": WorkoutStatusEnum.published.value,
+            "routine": [],
+            "attendees": [
+                {
+                    "attendee_type": "organizer",
+                    "status": "accepted",
+                    "user_id": test_base_user["base_user"]["id"],
+                    "user_pic": None,
+                    "workout_id": self.expected_workout["id"],
+                }
+            ],
         }
 
     def test_delete_workout(self, client, test_base_user):

@@ -26,7 +26,6 @@ class WorkoutExercise(db.Model):
 
     workout = relationship("Workout", back_populates="exercises")
 
-
     def to_json(self):
         return {
             "id": self.id,

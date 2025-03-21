@@ -128,7 +128,7 @@ class AttendeeService(Service):
 
         attendee.status = AttendeeStatusEnum.accepted
         self.session.commit()
-        return attendee
+        return attendee.to_json()
 
     def batch_create_attendees(self, workout_id: uuid.UUID, user_ids: list[uuid.UUID]):
         if g.user_id != self.get_workout_organizer(workout_id):
