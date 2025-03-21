@@ -1,10 +1,12 @@
 import logging
 import traceback
+import uuid
 from services.event_emitter_service import EventEmitterService
 import settings
 from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
 from db.models.like import Like
 from db.models.workout import Workout, WorkoutStatusEnum
+from db.models.workout_exercise import WorkoutExercise
 from services.service import Service
 from services.attendee_service import AttendeeService
 from constants.error_constants import ForbiddenError, NotFoundError
@@ -20,6 +22,7 @@ class WorkoutService(Service):
         super().__init__(Workout)
 
     def create_workout(self, data):
+        # parse times from string to datetime
         parsed_datetime = datetime.strptime(
             data["datetime"], settings.DATETIME_REPRESENTATION
         )
@@ -27,6 +30,7 @@ class WorkoutService(Service):
             data["endtime"], settings.DATETIME_REPRESENTATION
         )
 
+        # create workout model and flush to get id
         new_workout = Workout(
             title=data.get("title"),
             description=data.get("description"),
@@ -38,12 +42,25 @@ class WorkoutService(Service):
         )
         workout_data = self.add_data(new_workout, False)
         self.session.flush()
+
+        # add workout exercises
+        for exercise in data.get("routine", []):
+            exercise_model = WorkoutExercise(
+                workout_id=new_workout.id,
+                exercise_name=exercise.get("exercise_name"),
+                sets=exercise.get("sets"),
+                reps=exercise.get("reps"),
+                weight=exercise.get("weight"),
+                weight_unit=exercise.get("weight_unit"),
+            )
+            self.add_data(exercise_model)
+
+        # add organizer and invitees to attendees table
         organizer_data = {
             "workout_id": new_workout.id.hex,
             "user_id": data.get("organizer_id").hex,
             "attendee_type": AttendeeTypeEnum.organizer,
         }
-
         AttendeeService().create_attendee(
             data=organizer_data,
             status=AttendeeStatusEnum.accepted,
@@ -108,6 +125,10 @@ class WorkoutService(Service):
         else:
             raise NotFoundError
 
+        # handle workout exercises if provided
+        if "routine" in data:
+            self.edit_workout_exercises(workout_id, data["routine"])
+
         # handle attendee updates
         AttendeeService().batch_create_attendees(
             workout_id, data.get("added_attendees", [])
@@ -115,7 +136,7 @@ class WorkoutService(Service):
         AttendeeService().batch_delete_attendees(
             workout_id, data.get("removed_attendees", [])
         )
-        return workout
+        return workout.to_full()
 
     def delete_workout(self, workout_id):
         if g.user_id != self.get_organizer_id(workout_id):
@@ -233,3 +254,41 @@ class WorkoutService(Service):
         return self.update_workout(
             workout_id, {"status": "published", "published_at": datetime.now()}
         )  # noqa E501
+
+    def edit_workout_exercises(self, workout_id, new_routine):
+        existing_exercises = {
+            ex.id: ex
+            for ex in self.session.query(WorkoutExercise)
+            .filter_by(workout_id=workout_id)
+            .all()
+        }
+        new_exercise_ids = {uuid.UUID(ex["id"]) for ex in new_routine if "id" in ex}
+        existing_exercise_ids = set(existing_exercises.keys())
+
+        # remove exercises that are not in the new list
+        exercises_to_remove = existing_exercise_ids - new_exercise_ids
+        for exercise_id in exercises_to_remove:
+            self.session.delete(existing_exercises[exercise_id])
+
+        # add/update exercises
+        for ex in new_routine:
+            if "id" in ex and uuid.UUID(ex["id"]) in existing_exercises:
+                existing_exercise = existing_exercises[uuid.UUID(ex["id"])]
+                existing_exercise.exercise_name = ex["exercise_name"]
+                existing_exercise.sets = ex.get("sets")
+                existing_exercise.reps = ex.get("reps")
+                existing_exercise.weight = ex.get("weight")
+                existing_exercise.weight_unit = ex.get("weight_unit", "lbs")
+            else:
+                new_exercise = WorkoutExercise(
+                    workout_id=workout_id,
+                    exercise_name=ex["exercise_name"],
+                    sets=ex.get("sets"),
+                    reps=ex.get("reps"),
+                    weight=ex.get("weight"),
+                    weight_unit=ex.get("weight_unit", "lbs"),
+                )
+                self.session.add(new_exercise)
+
+        self.session.commit()
+        return
