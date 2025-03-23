@@ -248,7 +248,9 @@ class WorkoutService(Service):
             )
             .first()
         )
-        return organizer.user_id if organizer else None
+        if not organizer:
+            raise NotFoundError("organizer not found")
+        return organizer.user_id
 
     def publish_workout(self, workout_id):
         return self.update_workout(
