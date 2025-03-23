@@ -141,6 +141,7 @@ class UserService(Service):
                         "name": "FOLLOW-DELETED",
                         "data": {
                             "target_id": followed_id,
+                            "subject_id": g.user_id.hex,
                             "created_at": str(follower.created_at),
                         },
                     }

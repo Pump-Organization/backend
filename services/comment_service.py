@@ -83,6 +83,7 @@ class CommentService(Service):
                     "name": "COMMENT-DELETED",
                     "data": {
                         "target_id": organizer_id.hex,
+                        "subject_id": g.user_id.hex,
                         "created_at": str(comment.created_at),
                     },
                 }

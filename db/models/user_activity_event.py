@@ -1,5 +1,5 @@
 import datetime
-from sqlalchemy import Column, ForeignKey, DateTime, PrimaryKeyConstraint
+from sqlalchemy import Column, ForeignKey, Date, PrimaryKeyConstraint
 from sqlalchemy.orm import relationship
 
 from db.db import db
@@ -9,7 +9,7 @@ class UserActivityEvent(db.Model):
     __tablename__ = "user_activity_event"
 
     user_id = Column(ForeignKey("user.id", ondelete="CASCADE"))
-    date = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc).date)
+    date = Column(Date, default=datetime.datetime.now(datetime.timezone.utc).date)
 
     user = relationship("User")
 
