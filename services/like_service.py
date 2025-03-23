@@ -73,6 +73,7 @@ class LikeService(Service):
                     "name": "LIKE-DELETED",
                     "data": {
                         "target_id": organizer_id.hex,
+                        "subject_id": g.user_id.hex,
                         "created_at": str(like.created_at),
                     },
                 }

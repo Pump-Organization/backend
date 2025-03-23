@@ -159,6 +159,7 @@ class WorkoutService(Service):
                         "name": "INVITE-DELETED",
                         "data": {
                             "created_at": str(attendee["created_at"]),
+                            "subject_id": g.user_id.hex,
                             "target_id": attendee["user_id"].hex,
                         },
                     }
