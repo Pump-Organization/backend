@@ -20,6 +20,9 @@ inputs = {
     notification_dlq_name = "pump-notification-dlq-${local.env}"
     notification_event_rule_name = "pump-notification-event-rule-${local.env}"
     notification_queue_name = "pump-notification-queue-${local.env}"
+	analytics_event_rule_name = "pump-analytics-event-rule-${local.env}"
+	analytics_queue_name = "pump-analytics-queue-${local.env}"
+	analytics_dlq_name = "pump-analytics-dlq-${local.env}"
 
     # main.tf
     aws_account_id = "597088031564"
