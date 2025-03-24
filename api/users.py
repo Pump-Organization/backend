@@ -1,5 +1,6 @@
 from flask_classful import FlaskView, route
 from flask import g, request
+from middleware.check_privacy import check_privacy
 from middleware.token_required import token_required
 from services.user_service import UserService
 
@@ -57,6 +58,7 @@ class UsersView(FlaskView):
 
     @route("/<user_id>/followers", methods=["GET"])
     @token_required
+    @check_privacy
     def get_followers(self, user_id):
         page = request.args.get("page", 1, int)
         service_data = UserService().get_followers(user_id, page)
@@ -71,6 +73,7 @@ class UsersView(FlaskView):
 
     @route("/<user_id>/following", methods=["GET"])
     @token_required
+    @check_privacy
     def get_followings(self, user_id):
         page = request.args.get("page", 1, int)
         service_data = UserService().get_followings(user_id, page)
