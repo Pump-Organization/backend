@@ -67,6 +67,11 @@ functions:
     events:
       - sqs:
           arn: arn:aws:sqs:${aws:region}:${aws:accountId}:pump-notification-queue-${env:ENVIRONMENT}
+  analytics-event-listener:
+    handler: analytics_event_listener.event_listener
+    events:
+      - sqs:
+          arn: arn:aws:sqs:${aws:region}:${aws:accountId}:pump-analytics-queue-${env:ENVIRONMENT}
 
 plugins:
   - serverless-wsgi

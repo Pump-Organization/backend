@@ -11,6 +11,7 @@ from db.models import (
     Workout,
     User,
     UserDevice,
+    UserActivityEvent,
     Follower,
     Attendee,
     RefreshToken,

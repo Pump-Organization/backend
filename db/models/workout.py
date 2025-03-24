@@ -28,6 +28,7 @@ class Workout(db.Model):
     published_at: dt.datetime = Column(DateTime, nullable=True)
     created_at: str = Column(DateTime, default=dt.datetime.now(dt.timezone.utc))
 
+    exercises = db.relationship("WorkoutExercise", back_populates="workout")
     attendees = db.relationship("Attendee", back_populates="workout")
     likes = db.relationship("Like", back_populates="workout")
     comments = db.relationship("Comment", back_populates="workout")
@@ -87,6 +88,7 @@ class Workout(db.Model):
             "datetime": self.datetime.isoformat(),
             "endtime": self.endtime.isoformat(),
             "status": self.status,
+            "routine": [exercise.to_json() for exercise in self.exercises],
             "attendees": [
                 attendee.to_json() for attendee in self.attendees[:num_attendees]
             ],
