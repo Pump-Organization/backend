@@ -258,10 +258,7 @@ class UserService(Service):
                 Follower,
                 and_(
                     User.id == Follower.followed_id,
-                    and_(
-                        Follower.follower_id == g.user_id,
-                        Follower.status == FollowStatusEnum.accepted,
-                    ),
+                    Follower.follower_id == g.user_id,
                 ),
             )
             .filter(User.username.ilike(f"%{query}%"))
