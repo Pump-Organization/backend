@@ -9,7 +9,11 @@ class AnalyticsService:
         self.session = DbSession()
 
     def get_daily_active_users(self, date):
-        return self.session.query(UserActivityEvent).filter(UserActivityEvent.date == date).count()
+        return (
+            self.session.query(UserActivityEvent)
+            .filter(UserActivityEvent.date == date)
+            .count()
+        )
 
     def add_user_activity_event(self, event_data):
         formatted_user_activity_event_data = self.format_user_activity_event(event_data)
