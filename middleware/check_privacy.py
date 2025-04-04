@@ -41,7 +41,7 @@ def check_workout_privacy(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         workout_id = kwargs.get("workout_id")
-        workout = Workout.query.get(workout_id)
+        workout = db.session.get(Workout, workout_id)
         if not workout:
             raise NotFoundError
 
@@ -73,10 +73,7 @@ def check_workout_privacy(f):
         attendee_ids = {attendee_id for (attendee_id,) in attendee_ids}
         for attendee_id in attendee_ids:
             attendee_user = User.query.get(attendee_id)
-            if (
-                attendee_user
-                and attendee_user.privacy_setting == PrivacySettingEnum.public
-            ):
+            if attendee_user and attendee_user.privacy_setting == PrivacySettingEnum.public:  # fmt: skip
                 # Allow access if any attendee is public
                 return f(*args, **kwargs)
 
