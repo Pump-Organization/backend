@@ -36,6 +36,7 @@ def check_privacy(f):
 
     return decorated_function
 
+
 def check_workout_privacy(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -66,18 +67,23 @@ def check_workout_privacy(f):
             return f(*args, **kwargs)
 
         # Allow if the requester follows any attendee or any attendee is public
-        attendee_ids = db.session.query(Attendee.user_id).filter_by(workout_id=workout_id).all()
+        attendee_ids = (
+            db.session.query(Attendee.user_id).filter_by(workout_id=workout_id).all()
+        )
         attendee_ids = {attendee_id for (attendee_id,) in attendee_ids}
         for attendee_id in attendee_ids:
             attendee_user = User.query.get(attendee_id)
-            if attendee_user and attendee_user.privacy_setting == PrivacySettingEnum.public:
+            if (
+                attendee_user
+                and attendee_user.privacy_setting == PrivacySettingEnum.public
+            ):
                 # Allow access if any attendee is public
                 return f(*args, **kwargs)
 
         following_attendee = Follower.query.filter(
             Follower.follower_id == g.user_id,
             Follower.followed_id.in_(attendee_ids),
-            Follower.status == FollowStatusEnum.accepted
+            Follower.status == FollowStatusEnum.accepted,
         ).first()
 
         if following_attendee:

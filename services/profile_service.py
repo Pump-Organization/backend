@@ -2,7 +2,8 @@ from datetime import datetime
 from flask import g
 from sqlalchemy import and_
 from sqlalchemy.orm import joinedload
-from db.models import Attendee, AttendeeStatusEnum, AttendeeTypeEnum, Workout, Follower
+from db.models import Attendee, AttendeeStatusEnum, AttendeeTypeEnum, Workout
+from db.models.follower import Follower, FollowStatusEnum
 from db.models.like import Like
 from services.user_service import UserService
 from services.workout_service import WorkoutService
@@ -91,7 +92,10 @@ class ProfileService(Service):
     def get_feed(self, page=1):
         following_ids_subquery = (
             self.session.query(Follower.followed_id.label("followed_id"))
-            .filter(Follower.follower_id == g.user_id)
+            .filter(
+                Follower.follower_id == g.user_id,
+                Follower.status == FollowStatusEnum.accepted,
+            )
             .subquery()
         )
         following_ids = [
