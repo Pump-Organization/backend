@@ -28,6 +28,7 @@ provider:
     FLASK_ENV: ${env:ENVIRONMENT}
     ENVIRONMENT: ${env:ENVIRONMENT}
     SNS_PLATFORM_APPLICATION_ARN: ${env:SNS_PLATFORM_APPLICATION_ARN}
+  logRetentionInDays: 14
   iamRoleStatements:
     - Effect: Allow
       Action:
