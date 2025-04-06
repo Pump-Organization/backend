@@ -12,6 +12,7 @@ from constants.error_constants import (
 from settings import USERS_PER_PAGE
 from db.models.user import User, PrivacySettingEnum
 from db.models.follower import Follower, FollowStatusEnum
+from db.models.user_block import UserBlock
 from services.event_emitter_service import EventEmitterService
 from services.service import Service
 from sqlalchemy import case, and_
@@ -77,7 +78,9 @@ class UserService(Service):
     def follow_user(self, user_id):
         if g.user_id == uuid.UUID(user_id):
             raise BadDataError("cannot follow self")
-        if Follower.query.filter_by(follower_id=g.user_id, followed_id=user_id).first():
+        if self.session.get(
+            Follower, ({"follower_id": g.user_id, "followed_id": user_id})
+        ):
             raise ConflictError("already following")
 
         is_public = is_user_public(user_id)
@@ -285,3 +288,40 @@ class UserService(Service):
             follower_id=user_id, status=FollowStatusEnum.accepted
         ).count()
         return num_followings
+
+    def block_user(self, user_id):
+        """
+        block a user
+        """
+        if g.user_id == user_id:
+            raise BadDataError("cannot block self")
+
+        # check if already blocked
+        if self.session.get(
+            UserBlock, {"blocker_id": g.user_id, "blocked_id": user_id}
+        ):
+            raise ConflictError("user already blocked")
+
+        new_block = UserBlock(
+            blocker_id=g.user_id,
+            blocked_id=user_id,
+        )
+
+        self.session.add(new_block)
+        self.session.commit()
+
+        return new_block.to_json()
+
+    def list_blocks(self, page=1):
+        """
+        get all blocks for the current user
+        """
+        blocks_query = (
+            self.session.query(UserBlock)
+            .filter(UserBlock.blocker_id == g.user_id)
+            .order_by(UserBlock.created_at.desc())
+        )
+
+        blocks = blocks_query.paginate(page=page, per_page=USERS_PER_PAGE).items
+
+        return [block.to_json() for block in blocks]
