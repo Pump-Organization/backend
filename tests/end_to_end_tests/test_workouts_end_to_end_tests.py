@@ -216,3 +216,15 @@ class TestWorkoutsEndToEndTests:
             headers={"Authorization": f'Bearer {test_base_user["token"]}'},
         )
         assert get_workout_response.status_code == 404
+
+    def test_report_workout(self, client, test_base_user, test_base_workout):
+        report_workout_response = client.post(
+            f'/workouts/{test_base_workout["id"]}/report',
+            headers={"Authorization": f'Bearer {test_base_user["token"]}'},
+            json={"reason": "Inappropriate content"},
+        )
+
+        assert report_workout_response.status_code == 200
+        assert report_workout_response.json == {
+            "message": "Reported successfully",
+        }

@@ -17,6 +17,7 @@ from db.models import (
     RefreshToken,
     Like,
     Comment,
+    WorkoutReport,
 )
 
 # this is the Alembic Config object, which provides

@@ -92,11 +92,12 @@ class WorkoutsView(FlaskView):
         AttendeeService().delete_attendee(workout_id, g.user_id)
         return "", 204
 
-    def serialize_attendee(self, attendee):
-        return {
-            "id": attendee.id,
-            "username": attendee.username,
-            "name": attendee.name,
-            "profile_pic": attendee.profile_pic,
-            "status": attendee.status,
-        }
+    @route("/<workout_id>/report", methods=["POST"])
+    @token_required
+    def report_workout(self, workout_id):
+        """
+        Report a workout as inappropriate.
+        """
+        request_data = request.get_json()
+        WorkoutService().report_workout(workout_id, request_data.get("reason", None))
+        return {"message": "Reported successfully"}, 200
