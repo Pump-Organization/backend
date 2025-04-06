@@ -78,3 +78,22 @@ class UsersView(FlaskView):
         page = request.args.get("page", 1, int)
         service_data = UserService().get_followings(user_id, page)
         return [following.to_quickview() for following in service_data], 200
+
+    @route("/blocks", methods=["GET"])
+    @token_required
+    def list_blocked_users(self):
+        """
+        get all blocks for the current user
+        """
+        page = request.args.get("page", 1, int)
+        service_data = UserService().list_blocks(page)
+        return service_data, 200
+
+    @route("/<user_id>/block", methods=["POST"])
+    @token_required
+    def block_user(self, user_id):
+        """
+        block a user
+        """
+        service_data = UserService().block_user(user_id)
+        return service_data, 200

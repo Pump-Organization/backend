@@ -51,7 +51,7 @@ def check_workout_privacy(f):
         if user_id == g.user_id:
             return f(*args, **kwargs)
 
-        user = User.query.get(user_id)
+        user = db.session.get(user_id)
         if not user:
             raise NotFoundError
 
