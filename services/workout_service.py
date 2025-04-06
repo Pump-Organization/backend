@@ -7,6 +7,9 @@ from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
 from db.models.like import Like
 from db.models.workout import Workout, WorkoutStatusEnum
 from db.models.workout_exercise import WorkoutExercise
+from db.models.workout_reports import (
+    WorkoutReport,
+)  # noqa: F401, for reporting functionality
 from services.service import Service
 from services.attendee_service import AttendeeService
 from constants.error_constants import ForbiddenError, NotFoundError
@@ -294,4 +297,21 @@ class WorkoutService(Service):
                 self.session.add(new_exercise)
 
         self.session.commit()
+        return
+
+    def report_workout(self, workout_id, reason):
+        """
+        Report a workout. This function will flag a report for a workout.
+        """
+        try:
+            report_entry = WorkoutReport(
+                workout_id=workout_id, user_id=g.user_id, reason=reason
+            )
+            self.session.add(report_entry)
+            self.session.commit()
+        except Exception as e:
+            logging.critical("### error reporting workout")
+            logging.critical(traceback.format_exc())
+            raise e
+
         return

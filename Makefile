@@ -28,7 +28,7 @@ migration:
 	$(DOCKER_COMPOSE) exec $(SERVICE) alembic revision --autogenerate -m "$(filter-out $@,$(MAKECMDGOALS))"
 
 downgrade:
-	$(DOCKER_COMPOSE) exec $(SERVICE) alembic downgrade $(REVISION)
+	$(DOCKER_COMPOSE) exec $(SERVICE) alembic downgrade -1
 
 test:
 	$(DOCKER_COMPOSE) exec $(SERVICE) pytest --cov -vv
