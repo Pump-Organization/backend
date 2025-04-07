@@ -78,6 +78,12 @@ class UserService(Service):
     def follow_user(self, user_id):
         if g.user_id == uuid.UUID(user_id):
             raise BadDataError("cannot follow self")
+
+        # check if user is blocked
+        if user_id in g.blocked_users:
+            raise NotFoundError
+
+        # check if already following
         if self.session.get(
             Follower, ({"follower_id": g.user_id, "followed_id": user_id})
         ):
@@ -127,7 +133,6 @@ class UserService(Service):
         return response
 
     def delete_follower(self, follower_id, followed_id):
-        logging.info(f"### Deleting follower {follower_id} from {followed_id}")
         if g.user_id.hex not in [follower_id, followed_id]:
             raise ForbiddenError
         follower = Follower.query.filter_by(
@@ -315,16 +320,22 @@ class UserService(Service):
 
         return new_block.to_json()
 
-    def list_blocks(self, page=1):
+    def list_blocks(self):  # not paginated by default, since this is a small list
         """
         get all blocks for the current user
         """
-        blocks_query = (
-            self.session.query(UserBlock)
-            .filter(UserBlock.blocker_id == g.user_id)
-            .order_by(UserBlock.created_at.desc())
-        )
+        blocks = (
+            self.session.query(UserBlock).filter(UserBlock.blocker_id == g.user_id)
+        ).all()
 
-        blocks = blocks_query.paginate(page=page, per_page=USERS_PER_PAGE).items
+        return [block.to_json() for block in blocks]
+
+    def list_blocked_by(self):
+        """
+        get all users that have blocked the current user
+        """
+        blocks = (
+            self.session.query(UserBlock).filter(UserBlock.blocked_id == g.user_id)
+        ).all()
 
         return [block.to_json() for block in blocks]

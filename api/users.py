@@ -1,7 +1,9 @@
 from flask_classful import FlaskView, route
 from flask import g, request
+from constants.error_constants import ForbiddenError
 from middleware.check_privacy import check_privacy
 from middleware.token_required import token_required
+from middleware.with_blocked_users_context import with_blocked_users_context
 from services.user_service import UserService
 
 
@@ -15,7 +17,10 @@ class UsersView(FlaskView):
         return service_data.to_json(), 200
 
     @route("/<user_id>", methods=["GET"])
+    @token_required
     def get_user(self, user_id):
+        if g.user_id.hex != user_id:
+            raise ForbiddenError
         service_data = UserService().get_user(user_id)
         return service_data.to_json(), 200
 
@@ -34,6 +39,7 @@ class UsersView(FlaskView):
 
     @route("/<user_id>/follow", methods=["POST"])
     @token_required
+    @with_blocked_users_context
     def follow_user(self, user_id):
         service_data = UserService().follow_user(user_id)
         return service_data.to_json(), 200
@@ -58,6 +64,7 @@ class UsersView(FlaskView):
 
     @route("/<user_id>/followers", methods=["GET"])
     @token_required
+    @with_blocked_users_context
     @check_privacy
     def get_followers(self, user_id):
         page = request.args.get("page", 1, int)
@@ -73,6 +80,7 @@ class UsersView(FlaskView):
 
     @route("/<user_id>/following", methods=["GET"])
     @token_required
+    @with_blocked_users_context
     @check_privacy
     def get_followings(self, user_id):
         page = request.args.get("page", 1, int)
@@ -85,8 +93,7 @@ class UsersView(FlaskView):
         """
         get all blocks for the current user
         """
-        page = request.args.get("page", 1, int)
-        service_data = UserService().list_blocks(page)
+        service_data = UserService().list_blocks()
         return service_data, 200
 
     @route("/<user_id>/block", methods=["POST"])
