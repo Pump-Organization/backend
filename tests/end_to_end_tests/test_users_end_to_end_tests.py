@@ -30,11 +30,25 @@ class TestUsersEndToEndTests:
         assert create_user_response.status_code == 200
         assert create_user_response.json == self.expected_user
 
-    def test_get_user(self, client):
-        get_user_response = client.get(f'/users/{self.expected_user["id"]}')
+    def test_get_user(self, client, test_base_user):
+        get_user_response = client.get(
+            f'/users/{test_base_user["base_user"]["id"]}',
+            headers={"Authorization": f'Bearer {test_base_user["token"]}'},
+        )
+
+        get_user_expected_data = {
+            "id": test_base_user["base_user"]["id"],
+            "email": test_base_user["base_user"]["email"],
+            "username": test_base_user["base_user"]["username"],
+            "name": "E2E BASE USER",
+            "bio": None,
+            "profile_pic": None,
+            "privacy_setting": "public",
+            "location": None,
+        }
 
         assert get_user_response.status_code == 200
-        assert get_user_response.json == self.expected_user
+        assert get_user_response.json == get_user_expected_data
 
     def test_fixture_user(self, test_base_user):
         assert test_base_user["base_user"]["name"] == "E2E BASE USER"
@@ -236,7 +250,7 @@ class TestUsersEndToEndTests:
         # verify the follow is removed
         following_response_after_block = client.get(
             f'/users/{test_base_user["base_user"]["id"]}/followers',
-            headers={"Authorization": f'Bearer {test_base_user["second_token"]}'},
+            headers={"Authorization": f'Bearer {test_base_user["token"]}'},
         )
         assert following_response_after_block.status_code == 200
         assert len(following_response_after_block.json) == 0  # should be empty

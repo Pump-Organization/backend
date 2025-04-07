@@ -13,6 +13,8 @@ def check_privacy(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         user_id = kwargs.get("user_id")
+        if g.get("blocked_users") and user_id in g.blocked_users:
+            raise NotFoundError
         if uuid.UUID(user_id) == g.user_id:
             return f(*args, **kwargs)
         user = db.session.get(User, user_id)
