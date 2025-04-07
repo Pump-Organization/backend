@@ -291,7 +291,7 @@ class UserService(Service):
 
     def block_user(self, user_id):
         """
-        block a user
+        block a user, remove follows between the blocker and blocked user
         """
         if g.user_id == user_id:
             raise BadDataError("cannot block self")
@@ -308,6 +308,9 @@ class UserService(Service):
         )
 
         self.session.add(new_block)
+        self.delete_follower(follower_id=g.user_id.hex, followed_id=user_id)
+        self.delete_follower(follower_id=user_id, followed_id=g.user_id.hex)
+
         self.session.commit()
 
         return new_block.to_json()

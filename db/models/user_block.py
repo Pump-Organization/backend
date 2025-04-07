@@ -26,5 +26,4 @@ class UserBlock(db.Model):
         return {
             "blocker_id": self.blocker_id,
             "blocked_id": self.blocked_id,
-            "created_at": self.created_at,
         }

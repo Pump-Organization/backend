@@ -191,7 +191,25 @@ class TestUsersEndToEndTests:
         assert get_private_profile_response.json == []
 
     def test_block_user(self, client, test_base_user):
-        # Block the expected user
+        """
+        testing that block user adds to db and removes follows between the blocker and blocked user
+        """
+        # user 2 follows user 1
+        follow_user_response = client.post(
+            f'/users/{test_base_user["base_user"]["id"]}/follow',
+            headers={"Authorization": f'Bearer {test_base_user["second_token"]}'},
+        )
+        assert follow_user_response.status_code == 200
+
+        # verify the follow exists
+        following_response = client.get(
+            f'/users/{test_base_user["base_user"]["id"]}/followers',
+            headers={"Authorization": f'Bearer {test_base_user["second_token"]}'},
+        )
+        assert following_response.status_code == 200
+        assert len(following_response.json) == 1
+
+        # block the expected user
         block_user_response = client.post(
             f'/users/{test_base_user["second_user"]["id"]}/block',
             headers={"Authorization": f'Bearer {test_base_user["token"]}'},
@@ -201,7 +219,6 @@ class TestUsersEndToEndTests:
         assert block_user_response.json == {
             "blocker_id": test_base_user["base_user"]["id"],
             "blocked_id": test_base_user["second_user"]["id"],
-            "created_at": block_user_response.json["created_at"],
         }
 
         # verify the user is blocked
@@ -214,5 +231,12 @@ class TestUsersEndToEndTests:
         assert list_blocked_response.json[0] == {
             "blocker_id": test_base_user["base_user"]["id"],
             "blocked_id": test_base_user["second_user"]["id"],
-            "created_at": list_blocked_response.json[0]["created_at"],
         }
+
+        # verify the follow is removed
+        following_response_after_block = client.get(
+            f'/users/{test_base_user["base_user"]["id"]}/followers',
+            headers={"Authorization": f'Bearer {test_base_user["second_token"]}'},
+        )
+        assert following_response_after_block.status_code == 200
+        assert len(following_response_after_block.json) == 0  # should be empty
