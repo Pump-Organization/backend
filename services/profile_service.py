@@ -2,6 +2,7 @@ from datetime import datetime
 from flask import g
 from sqlalchemy import and_
 from sqlalchemy.orm import joinedload
+from constants.error_constants import NotFoundError
 from db.models import Attendee, AttendeeStatusEnum, AttendeeTypeEnum, Workout
 from db.models.follower import Follower, FollowStatusEnum
 from db.models.like import Like
@@ -15,6 +16,8 @@ import settings
 
 class ProfileService(Service):
     def get_profile(self, user_id):
+        if g.get("blocked_users") and user_id in g.blocked_users:
+            raise NotFoundError
         user_data = UserService().get_user(user_id)
         is_following = UserService().is_following_user(user_id)
         follow_status = UserService().get_following_status(user_id)

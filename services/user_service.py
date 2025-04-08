@@ -260,6 +260,8 @@ class UserService(Service):
             else_="no",
         )
 
+        blocked_user_uuids = [uuid.UUID(user_id) for user_id in g.blocked_users]
+
         users_query = (
             self.session.query(User, is_following, follow_status)
             .outerjoin(
@@ -269,8 +271,12 @@ class UserService(Service):
                     Follower.follower_id == g.user_id,
                 ),
             )
-            .filter(User.username.ilike(f"%{query}%"))
+            .filter(
+                User.username.ilike(f"%{query}%"),
+                ~User.id.in_(blocked_user_uuids),
+            )
         )
+
         results = users_query.paginate(page=page, per_page=USERS_PER_PAGE).items
         return results
 
