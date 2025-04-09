@@ -16,6 +16,9 @@ class AttendeeService(Service):
     def create_attendee(
         self, data, status=AttendeeStatusEnum.pending, organizer_id=None
     ):
+        if g.get("blocked_users") and data.get("user_id") in g.blocked_users:
+            raise ForbiddenError
+
         if organizer_id is None:
             organizer_id = self.get_workout_organizer(data.get("workout_id"))
 
