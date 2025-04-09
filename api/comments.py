@@ -1,6 +1,7 @@
 from flask_classful import FlaskView, route
 from flask import request
 from middleware.token_required import token_required
+from middleware.with_blocked_users_context import with_blocked_users_context
 from services.comment_service import CommentService
 from utils.comment_utils import get_num_comments
 
@@ -10,6 +11,7 @@ class CommentsView(FlaskView):
 
     @route("", methods=["POST"])
     @token_required
+    @with_blocked_users_context
     def create_comment(self):
         request_data = request.get_json()
         service_data = CommentService().create_comment(request_data)
@@ -17,6 +19,7 @@ class CommentsView(FlaskView):
 
     @route("/<workout_id>", methods=["GET"])
     @token_required
+    @with_blocked_users_context
     def get_comments(self, workout_id):
         page = request.args.get("page", 1, int)
         service_data = CommentService().get_comments(workout_id, page)

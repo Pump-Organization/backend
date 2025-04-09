@@ -15,6 +15,12 @@ class CommentService(Service):
         super().__init__(Comment)
 
     def create_comment(self, data):
+        organizer_id = WorkoutService().get_organizer_id(data.get("workout_id"))
+
+        # check if organizer is blocked
+        if g.get("blocked_users") and organizer_id.hex in g.blocked_users:
+            raise ForbiddenError
+
         comment = Comment(
             user_id=g.user_id,
             workout_id=data.get("workout_id"),
@@ -23,7 +29,6 @@ class CommentService(Service):
         comment = self.add_data(comment)
 
         try:
-            organizer_id = WorkoutService().get_organizer_id(data.get("workout_id"))
             subject = UserService().get_user(g.user_id)
             EventEmitterService().emit_event(
                 {
@@ -50,6 +55,12 @@ class CommentService(Service):
         return response
 
     def get_comments(self, workout_id, page=1):
+        # check if organizer is blocked
+        organizer_id = WorkoutService().get_organizer_id(workout_id)
+        if g.get("blocked_users") and organizer_id.hex in g.blocked_users:
+            raise ForbiddenError
+
+        # query comments given workout_id
         per_page = settings.COMMENTS_PER_PAGE
         offset = (page - 1) * per_page
         comments = (

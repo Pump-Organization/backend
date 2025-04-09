@@ -1,6 +1,7 @@
 from flask_classful import FlaskView, route
 from flask import request
 from middleware.token_required import token_required
+from middleware.with_blocked_users_context import with_blocked_users_context
 from services.attendee_service import AttendeeService
 
 
@@ -9,6 +10,7 @@ class AttendeesView(FlaskView):
 
     @route("", methods=["POST"])
     @token_required
+    @with_blocked_users_context
     def create_attendee(self):
         request_data = request.get_json()
         service_data = AttendeeService().create_attendee(request_data)
