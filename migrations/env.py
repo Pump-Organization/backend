@@ -10,6 +10,7 @@ from db.db import db
 from db.models import (
     Attendee,
     Comment,
+    CustomUserExercise,
     Follower,
     Like,
     RefreshToken,

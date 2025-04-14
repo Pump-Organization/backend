@@ -8,6 +8,7 @@ from api.users import UsersView
 from api.workouts import WorkoutsView
 from api.attendees import AttendeesView
 from api.comments import CommentsView
+from api.custom_exercises import CustomExercisesView
 from api.likes import LikesView
 from api.feed import FeedView
 from api.profiles import ProfilesView
@@ -49,6 +50,7 @@ AttendeesView.register(app)
 ProfilesView.register(app)
 LikesView.register(app)
 CommentsView.register(app)
+CustomExercisesView.register(app)
 LoginView.register(app)
 FeedView.register(app)
 NotificationsView.register(app)

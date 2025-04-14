@@ -682,14 +682,14 @@
     "id": "default-glute-bridge",
     "name": "Glute Bridge",
     "equipment": "Bodyweight",
-    "muscle_group": "Glutes",
+    "muscle_group": "Legs",
     "metric_type": "bodyweight_reps"
   },
   {
     "id": "default-single-leg-glute-bridge",
     "name": "Single-Leg Glute Bridge",
     "equipment": "Bodyweight",
-    "muscle_group": "Glutes",
+    "muscle_group": "Legs",
     "metric_type": "bodyweight_reps"
   },
   {
