@@ -1,5 +1,6 @@
 from .attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum  # noqa: F401
 from .comment import Comment  # noqa: F401
+from .custom_user_exercise import CustomUserExercise  # noqa: F401
 from .follower import Follower  # noqa: F401
 from .like import Like  # noqa: F401
 from .refresh_token import RefreshToken  # noqa: F401

@@ -45,6 +45,7 @@ class User(db.Model):
     comments = db.relationship("Comment", back_populates="user")
     devices = db.relationship("UserDevice", back_populates="user")
     workout_reports = db.relationship("WorkoutReport", back_populates="user")
+    custom_exercises = db.relationship("CustomUserExercise", back_populates="user")
 
     @validates("username")
     def validate_username(self, key, username):
