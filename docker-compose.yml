@@ -16,6 +16,21 @@ services:
     stdin_open: true # docker run -i
     tty: true # docker run -t
 
+  pump-app:
+    build:
+      context: .
+      dockerfile: Dockerfile-fastapi
+    ports:
+      - "50:50"
+    depends_on:
+      pump-db-host:
+        condition: service_healthy
+    volumes:
+      - .:/app # Mount the current directory to /app in the container
+    restart: always # Restart the container if it exits
+    stdin_open: true # docker run -i
+    tty: true # docker run -t
+
   pump-db-host:
     image: postgres
     restart: always
