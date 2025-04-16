@@ -90,17 +90,20 @@ class UsersView(FlaskView):
     @route("/blocks", methods=["GET"])
     @token_required
     def list_blocked_users(self):
-        """
-        get all blocks for the current user
-        """
+        # list all blocked users
         service_data = UserService().list_blocks()
         return service_data, 200
 
     @route("/<user_id>/block", methods=["POST"])
     @token_required
     def block_user(self, user_id):
-        """
-        block a user
-        """
+        # block a user
         service_data = UserService().block_user(user_id)
         return service_data, 200
+
+    @route("/<user_id>/unblock", methods=["POST"])
+    @token_required
+    def unblock_user(self, user_id):
+        # unblock a user
+        UserService().unblock_user(user_id)
+        return "", 204

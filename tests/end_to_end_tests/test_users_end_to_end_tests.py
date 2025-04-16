@@ -204,7 +204,7 @@ class TestUsersEndToEndTests:
         assert get_private_profile_response.status_code == 200
         assert get_private_profile_response.json == []
 
-    def test_block_user(self, client, test_base_user):
+    def test_block_unblock_user(self, client, test_base_user):
         """
         testing that block user adds to db and removes follows between the blocker and blocked user
         """
@@ -254,3 +254,20 @@ class TestUsersEndToEndTests:
         )
         assert following_response_after_block.status_code == 200
         assert len(following_response_after_block.json) == 0  # should be empty
+
+        # unblock the user
+        unblock_user_response = client.post(
+            f'/users/{test_base_user["second_user"]["id"]}/unblock',
+            headers={"Authorization": f'Bearer {test_base_user["token"]}'},
+        )
+
+        assert unblock_user_response.status_code == 204
+
+        # verify the user is unblocked
+        list_blocked_response_after_unblock = client.get(
+            f"/users/blocks",
+            headers={"Authorization": f'Bearer {test_base_user["token"]}'},
+        )
+
+        assert list_blocked_response_after_unblock.status_code == 200
+        assert len(list_blocked_response_after_unblock.json) == 0
