@@ -301,9 +301,7 @@ class UserService(Service):
         return num_followings
 
     def block_user(self, user_id):
-        """
-        block a user, remove follows between the blocker and blocked user
-        """
+        # block a user, remove follows between the blocker and blocked user
         if g.user_id == user_id:
             raise BadDataError("cannot block self")
 
@@ -325,6 +323,22 @@ class UserService(Service):
         self.session.commit()
 
         return new_block.to_json()
+
+    def unblock_user(self, user_id):
+        # unblock a user
+        if g.user_id == user_id:
+            raise BadDataError("cannot unblock self")
+
+        block = self.session.get(
+            UserBlock, {"blocker_id": g.user_id, "blocked_id": user_id}
+        )
+        if not block:
+            return
+
+        self.session.delete(block)
+        self.session.commit()
+
+        return
 
     def list_blocks(self):  # not paginated by default, since this is a small list
         """
