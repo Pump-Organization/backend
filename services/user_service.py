@@ -359,3 +359,14 @@ class UserService(Service):
         ).all()
 
         return [block.to_json() for block in blocks]
+
+    def list_blocked_users(self):
+        # list all users that are blocked by the current user
+        # return list of Users.to_quickview()
+        blocked_users = (
+            self.session.query(User)
+            .join(UserBlock, User.id == UserBlock.blocked_id)
+            .filter(UserBlock.blocker_id == g.user_id)
+        ).all()
+
+        return [user.to_quickview() for user in blocked_users] if blocked_users else []
