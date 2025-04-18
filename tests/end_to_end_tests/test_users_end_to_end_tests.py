@@ -30,11 +30,25 @@ class TestUsersEndToEndTests:
         assert create_user_response.status_code == 200
         assert create_user_response.json == self.expected_user
 
-    def test_get_user(self, client):
-        get_user_response = client.get(f'/users/{self.expected_user["id"]}')
+    def test_get_user(self, client, test_base_user):
+        get_user_response = client.get(
+            f'/users/{test_base_user["base_user"]["id"]}',
+            headers={"Authorization": f'Bearer {test_base_user["token"]}'},
+        )
+
+        get_user_expected_data = {
+            "id": test_base_user["base_user"]["id"],
+            "email": test_base_user["base_user"]["email"],
+            "username": test_base_user["base_user"]["username"],
+            "name": "E2E BASE USER",
+            "bio": None,
+            "profile_pic": None,
+            "privacy_setting": "public",
+            "location": None,
+        }
 
         assert get_user_response.status_code == 200
-        assert get_user_response.json == self.expected_user
+        assert get_user_response.json == get_user_expected_data
 
     def test_fixture_user(self, test_base_user):
         assert test_base_user["base_user"]["name"] == "E2E BASE USER"
@@ -189,3 +203,73 @@ class TestUsersEndToEndTests:
 
         assert get_private_profile_response.status_code == 200
         assert get_private_profile_response.json == []
+
+    def test_block_unblock_user(self, client, test_base_user):
+        """
+        testing that block user adds to db and removes follows between the blocker and blocked user
+        """
+        # user 2 follows user 1
+        follow_user_response = client.post(
+            f'/users/{test_base_user["base_user"]["id"]}/follow',
+            headers={"Authorization": f'Bearer {test_base_user["second_token"]}'},
+        )
+        assert follow_user_response.status_code == 200
+
+        # verify the follow exists
+        following_response = client.get(
+            f'/users/{test_base_user["base_user"]["id"]}/followers',
+            headers={"Authorization": f'Bearer {test_base_user["second_token"]}'},
+        )
+        assert following_response.status_code == 200
+        assert len(following_response.json) == 1
+
+        # block the expected user
+        block_user_response = client.post(
+            f'/users/{test_base_user["second_user"]["id"]}/block',
+            headers={"Authorization": f'Bearer {test_base_user["token"]}'},
+        )
+
+        assert block_user_response.status_code == 200
+        assert block_user_response.json == {
+            "blocker_id": test_base_user["base_user"]["id"],
+            "blocked_id": test_base_user["second_user"]["id"],
+        }
+
+        # verify the user is blocked
+        list_blocked_response = client.get(
+            f"/users/blocks",
+            headers={"Authorization": f'Bearer {test_base_user["token"]}'},
+        )
+        assert list_blocked_response.status_code == 200
+        assert len(list_blocked_response.json) == 1
+        assert list_blocked_response.json[0] == {
+            "id": test_base_user["second_user"]["id"],
+            "username": test_base_user["second_user"]["username"],
+            "name": test_base_user["second_user"]["name"],
+            "profile_pic": None,
+        }
+
+        # verify the follow is removed
+        following_response_after_block = client.get(
+            f'/users/{test_base_user["base_user"]["id"]}/followers',
+            headers={"Authorization": f'Bearer {test_base_user["token"]}'},
+        )
+        assert following_response_after_block.status_code == 200
+        assert len(following_response_after_block.json) == 0  # should be empty
+
+        # unblock the user
+        unblock_user_response = client.post(
+            f'/users/{test_base_user["second_user"]["id"]}/unblock',
+            headers={"Authorization": f'Bearer {test_base_user["token"]}'},
+        )
+
+        assert unblock_user_response.status_code == 204
+
+        # verify the user is unblocked
+        list_blocked_response_after_unblock = client.get(
+            f"/users/blocks",
+            headers={"Authorization": f'Bearer {test_base_user["token"]}'},
+        )
+
+        assert list_blocked_response_after_unblock.status_code == 200
+        assert len(list_blocked_response_after_unblock.json) == 0

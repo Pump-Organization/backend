@@ -1,0 +1,710 @@
+[
+  {
+    "id": "default-barbell-bench-press",
+    "name": "Barbell Bench Press",
+    "equipment": "Barbell",
+    "muscle_group": "Chest",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-dumbbell-bench-press",
+    "name": "Dumbbell Bench Press",
+    "equipment": "Dumbbell",
+    "muscle_group": "Chest",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-incline-barbell-bench-press",
+    "name": "Incline Barbell Bench Press",
+    "equipment": "Barbell",
+    "muscle_group": "Chest",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-incline-dumbbell-press",
+    "name": "Incline Dumbbell Press",
+    "equipment": "Dumbbell",
+    "muscle_group": "Chest",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-chest-fly-machine",
+    "name": "Chest Fly (Machine)",
+    "equipment": "Machine",
+    "muscle_group": "Chest",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-push-up",
+    "name": "Push-up",
+    "equipment": "Bodyweight",
+    "muscle_group": "Chest",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-cable-crossover",
+    "name": "Cable Crossover",
+    "equipment": "Cable",
+    "muscle_group": "Chest",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-pull-up",
+    "name": "Pull-up",
+    "equipment": "Bodyweight",
+    "muscle_group": "Back",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-lat-pulldown",
+    "name": "Lat Pulldown",
+    "equipment": "Machine",
+    "muscle_group": "Back",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-barbell-row",
+    "name": "Barbell Row",
+    "equipment": "Barbell",
+    "muscle_group": "Back",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-dumbbell-row",
+    "name": "Dumbbell Row",
+    "equipment": "Dumbbell",
+    "muscle_group": "Back",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-seated-cable-row",
+    "name": "Seated Cable Row",
+    "equipment": "Cable",
+    "muscle_group": "Back",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-deadlift",
+    "name": "Deadlift",
+    "equipment": "Barbell",
+    "muscle_group": "Back",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-t-bar-row",
+    "name": "T-Bar Row",
+    "equipment": "Machine",
+    "muscle_group": "Back",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-barbell-squat",
+    "name": "Barbell Squat",
+    "equipment": "Barbell",
+    "muscle_group": "Legs",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-leg-press",
+    "name": "Leg Press",
+    "equipment": "Machine",
+    "muscle_group": "Legs",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-lunges",
+    "name": "Lunges",
+    "equipment": "Bodyweight",
+    "muscle_group": "Legs",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-dumbbell-step-up",
+    "name": "Dumbbell Step-up",
+    "equipment": "Dumbbell",
+    "muscle_group": "Legs",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-leg-curl",
+    "name": "Leg Curl",
+    "equipment": "Machine",
+    "muscle_group": "Legs",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-leg-extension",
+    "name": "Leg Extension",
+    "equipment": "Machine",
+    "muscle_group": "Legs",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-romanian-deadlift",
+    "name": "Romanian Deadlift",
+    "equipment": "Barbell",
+    "muscle_group": "Legs",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-calf-raise-machine",
+    "name": "Calf Raise (Machine)",
+    "equipment": "Machine",
+    "muscle_group": "Legs",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-overhead-press",
+    "name": "Overhead Press",
+    "equipment": "Barbell",
+    "muscle_group": "Shoulders",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-dumbbell-shoulder-press",
+    "name": "Dumbbell Shoulder Press",
+    "equipment": "Dumbbell",
+    "muscle_group": "Shoulders",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-lateral-raise",
+    "name": "Lateral Raise",
+    "equipment": "Dumbbell",
+    "muscle_group": "Shoulders",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-front-raise",
+    "name": "Front Raise",
+    "equipment": "Dumbbell",
+    "muscle_group": "Shoulders",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-cable-lateral-raise",
+    "name": "Cable Lateral Raise",
+    "equipment": "Cable",
+    "muscle_group": "Shoulders",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-arnold-press",
+    "name": "Arnold Press",
+    "equipment": "Dumbbell",
+    "muscle_group": "Shoulders",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-barbell-curl",
+    "name": "Barbell Curl",
+    "equipment": "Barbell",
+    "muscle_group": "Arms",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-dumbbell-curl",
+    "name": "Dumbbell Curl",
+    "equipment": "Dumbbell",
+    "muscle_group": "Arms",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-preacher-curl",
+    "name": "Preacher Curl",
+    "equipment": "Machine",
+    "muscle_group": "Arms",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-tricep-pushdown",
+    "name": "Tricep Pushdown",
+    "equipment": "Cable",
+    "muscle_group": "Arms",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-dips",
+    "name": "Dips",
+    "equipment": "Bodyweight",
+    "muscle_group": "Arms",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-skullcrusher",
+    "name": "Skullcrusher",
+    "equipment": "Barbell",
+    "muscle_group": "Arms",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-hammer-curl",
+    "name": "Hammer Curl",
+    "equipment": "Dumbbell",
+    "muscle_group": "Arms",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-plank",
+    "name": "Plank",
+    "equipment": "Bodyweight",
+    "muscle_group": "Core",
+    "metric_type": "duration"
+  },
+  {
+    "id": "default-crunch",
+    "name": "Crunch",
+    "equipment": "Bodyweight",
+    "muscle_group": "Core",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-russian-twist",
+    "name": "Russian Twist",
+    "equipment": "Bodyweight",
+    "muscle_group": "Core",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-hanging-leg-raise",
+    "name": "Hanging Leg Raise",
+    "equipment": "Bodyweight",
+    "muscle_group": "Core",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-cable-crunch",
+    "name": "Cable Crunch",
+    "equipment": "Cable",
+    "muscle_group": "Core",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-ab-wheel-rollout",
+    "name": "Ab Wheel Rollout",
+    "equipment": "Bodyweight",
+    "muscle_group": "Core",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-treadmill-run",
+    "name": "Treadmill Run",
+    "equipment": "Treadmill",
+    "muscle_group": "Cardio",
+    "metric_type": "time_distance"
+  },
+  {
+    "id": "default-rowing-machine",
+    "name": "Rowing Machine",
+    "equipment": "Machine",
+    "muscle_group": "Cardio",
+    "metric_type": "time_distance"
+  },
+  {
+    "id": "default-stationary-bike",
+    "name": "Stationary Bike",
+    "equipment": "Machine",
+    "muscle_group": "Cardio",
+    "metric_type": "time_distance"
+  },
+  {
+    "id": "default-jump-rope",
+    "name": "Jump Rope",
+    "equipment": "Bodyweight",
+    "muscle_group": "Cardio",
+    "metric_type": "time_distance"
+  },
+  {
+    "id": "default-outdoor-run",
+    "name": "Outdoor Run",
+    "equipment": "Bodyweight",
+    "muscle_group": "Cardio",
+    "metric_type": "time_distance"
+  },
+  {
+    "id": "default-decline-barbell-bench-press",
+    "name": "Decline Barbell Bench Press",
+    "equipment": "Barbell",
+    "muscle_group": "Chest",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-decline-dumbbell-press",
+    "name": "Decline Dumbbell Press",
+    "equipment": "Dumbbell",
+    "muscle_group": "Chest",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-machine-chest-press",
+    "name": "Machine Chest Press",
+    "equipment": "Machine",
+    "muscle_group": "Chest",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-chin-up",
+    "name": "Chin-up",
+    "equipment": "Bodyweight",
+    "muscle_group": "Back",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-inverted-row",
+    "name": "Inverted Row",
+    "equipment": "Bodyweight",
+    "muscle_group": "Back",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-straight-arm-pulldown",
+    "name": "Straight Arm Pulldown",
+    "equipment": "Cable",
+    "muscle_group": "Back",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-one-arm-dumbbell-row",
+    "name": "One-Arm Dumbbell Row",
+    "equipment": "Dumbbell",
+    "muscle_group": "Back",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-goblet-squat",
+    "name": "Goblet Squat",
+    "equipment": "Dumbbell",
+    "muscle_group": "Legs",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-sumo-deadlift",
+    "name": "Sumo Deadlift",
+    "equipment": "Barbell",
+    "muscle_group": "Legs",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-hip-thrust",
+    "name": "Hip Thrust",
+    "equipment": "Barbell",
+    "muscle_group": "Legs",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-bulgarian-split-squat",
+    "name": "Bulgarian Split Squat",
+    "equipment": "Dumbbell",
+    "muscle_group": "Legs",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-standing-calf-raise",
+    "name": "Standing Calf Raise",
+    "equipment": "Bodyweight",
+    "muscle_group": "Legs",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-cable-front-raise",
+    "name": "Cable Front Raise",
+    "equipment": "Cable",
+    "muscle_group": "Shoulders",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-rear-delt-fly",
+    "name": "Rear Delt Fly",
+    "equipment": "Dumbbell",
+    "muscle_group": "Shoulders",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-face-pull",
+    "name": "Face Pull",
+    "equipment": "Cable",
+    "muscle_group": "Shoulders",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-upright-row",
+    "name": "Upright Row",
+    "equipment": "Barbell",
+    "muscle_group": "Shoulders",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-concentration-curl",
+    "name": "Concentration Curl",
+    "equipment": "Dumbbell",
+    "muscle_group": "Arms",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-incline-dumbbell-curl",
+    "name": "Incline Dumbbell Curl",
+    "equipment": "Dumbbell",
+    "muscle_group": "Arms",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-cable-curl",
+    "name": "Cable Curl",
+    "equipment": "Cable",
+    "muscle_group": "Arms",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-overhead-tricep-extension",
+    "name": "Overhead Tricep Extension",
+    "equipment": "Dumbbell",
+    "muscle_group": "Arms",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-close-grip-bench-press",
+    "name": "Close-Grip Bench Press",
+    "equipment": "Barbell",
+    "muscle_group": "Arms",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-sit-up",
+    "name": "Sit-up",
+    "equipment": "Bodyweight",
+    "muscle_group": "Core",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-toe-touch",
+    "name": "Toe Touch",
+    "equipment": "Bodyweight",
+    "muscle_group": "Core",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-mountain-climbers",
+    "name": "Mountain Climbers",
+    "equipment": "Bodyweight",
+    "muscle_group": "Core",
+    "metric_type": "duration"
+  },
+  {
+    "id": "default-hollow-hold",
+    "name": "Hollow Hold",
+    "equipment": "Bodyweight",
+    "muscle_group": "Core",
+    "metric_type": "duration"
+  },
+  {
+    "id": "default-weighted-sit-up",
+    "name": "Weighted Sit-up",
+    "equipment": "Dumbbell",
+    "muscle_group": "Core",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-elliptical-trainer",
+    "name": "Elliptical Trainer",
+    "equipment": "Machine",
+    "muscle_group": "Cardio",
+    "metric_type": "time_distance"
+  },
+  {
+    "id": "default-stair-climber",
+    "name": "Stair Climber",
+    "equipment": "Machine",
+    "muscle_group": "Cardio",
+    "metric_type": "time_distance"
+  },
+  {
+    "id": "default-high-knees",
+    "name": "High Knees",
+    "equipment": "Bodyweight",
+    "muscle_group": "Cardio",
+    "metric_type": "duration"
+  },
+  {
+    "id": "default-burpees",
+    "name": "Burpees",
+    "equipment": "Bodyweight",
+    "muscle_group": "Cardio",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-battle-ropes",
+    "name": "Battle Ropes",
+    "equipment": "Ropes",
+    "muscle_group": "Cardio",
+    "metric_type": "duration"
+  },
+  {
+    "id": "default-atg-split-squat",
+    "name": "ATG Split Squat",
+    "equipment": "Bodyweight",
+    "muscle_group": "Legs",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-poliquin-step-up",
+    "name": "Poliquin Step-up",
+    "equipment": "Bodyweight",
+    "muscle_group": "Legs",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-reverse-sled-drag",
+    "name": "Reverse Sled Drag",
+    "equipment": "Sled",
+    "muscle_group": "Legs",
+    "metric_type": "time_distance"
+  },
+  {
+    "id": "default-tibialis-raise",
+    "name": "Tibialis Raise",
+    "equipment": "Bodyweight",
+    "muscle_group": "Legs",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-seated-tibialis-raise",
+    "name": "Seated Tibialis Raise",
+    "equipment": "Machine",
+    "muscle_group": "Legs",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-patrick-step",
+    "name": "Patrick Step",
+    "equipment": "Bodyweight",
+    "muscle_group": "Legs",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-kot-calf-raise",
+    "name": "KOT Calf Raise",
+    "equipment": "Bodyweight",
+    "muscle_group": "Legs",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-backward-treadmill-walk",
+    "name": "Backward Treadmill Walk",
+    "equipment": "Treadmill",
+    "muscle_group": "Cardio",
+    "metric_type": "time_distance"
+  },
+  {
+    "id": "default-one-arm-farmers-carry",
+    "name": "Farmer's Carry",
+    "equipment": "Dumbbell",
+    "muscle_group": "Core",
+    "metric_type": "time_distance"
+  },
+  {
+    "id": "default-suitcase-carry",
+    "name": "Suitcase Carry",
+    "equipment": "Dumbbell",
+    "muscle_group": "Core",
+    "metric_type": "time_distance"
+  },
+  {
+    "id": "default-front-rack-carry",
+    "name": "Front Rack Carry",
+    "equipment": "Barbell",
+    "muscle_group": "Core",
+    "metric_type": "time_distance"
+  },
+  {
+    "id": "default-overhead-carry",
+    "name": "Overhead Carry",
+    "equipment": "Dumbbell",
+    "muscle_group": "Core",
+    "metric_type": "time_distance"
+  },
+  {
+    "id": "default-bird-dog",
+    "name": "Bird Dog",
+    "equipment": "Bodyweight",
+    "muscle_group": "Core",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-dead-bug",
+    "name": "Dead Bug",
+    "equipment": "Bodyweight",
+    "muscle_group": "Core",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-pallof-press",
+    "name": "Pallof Press",
+    "equipment": "Cable",
+    "muscle_group": "Core",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-banded-shoulder-dislocation",
+    "name": "Banded Shoulder Dislocation",
+    "equipment": "Band",
+    "muscle_group": "Shoulders",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-wall-slide",
+    "name": "Wall Slide",
+    "equipment": "Bodyweight",
+    "muscle_group": "Shoulders",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-ytwl-raises",
+    "name": "YTWL Raises",
+    "equipment": "Dumbbell",
+    "muscle_group": "Shoulders",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-external-shoulder-rotation",
+    "name": "External Shoulder Rotation",
+    "equipment": "Cable",
+    "muscle_group": "Shoulders",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-copenhagen-plank",
+    "name": "Copenhagen Plank",
+    "equipment": "Bodyweight",
+    "muscle_group": "Legs",
+    "metric_type": "duration"
+  },
+  {
+    "id": "default-glute-bridge",
+    "name": "Glute Bridge",
+    "equipment": "Bodyweight",
+    "muscle_group": "Legs",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-single-leg-glute-bridge",
+    "name": "Single-Leg Glute Bridge",
+    "equipment": "Bodyweight",
+    "muscle_group": "Legs",
+    "metric_type": "bodyweight_reps"
+  },
+  {
+    "id": "default-jefferson-curl",
+    "name": "Jefferson Curl",
+    "equipment": "Barbell",
+    "muscle_group": "Back",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-reverse-nordic-curl",
+    "name": "Reverse Nordic Curl",
+    "equipment": "Bodyweight",
+    "muscle_group": "Legs",
+    "metric_type": "bodyweight_reps"
+  }
+]
+

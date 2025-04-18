@@ -2,7 +2,9 @@ from datetime import datetime
 from flask import g
 from sqlalchemy import and_
 from sqlalchemy.orm import joinedload
-from db.models import Attendee, AttendeeStatusEnum, AttendeeTypeEnum, Workout, Follower
+from constants.error_constants import NotFoundError
+from db.models import Attendee, AttendeeStatusEnum, AttendeeTypeEnum, Workout
+from db.models.follower import Follower, FollowStatusEnum
 from db.models.like import Like
 from services.user_service import UserService
 from services.workout_service import WorkoutService
@@ -14,6 +16,8 @@ import settings
 
 class ProfileService(Service):
     def get_profile(self, user_id):
+        if g.get("blocked_users") and user_id in g.blocked_users:
+            raise NotFoundError
         user_data = UserService().get_user(user_id)
         is_following = UserService().is_following_user(user_id)
         follow_status = UserService().get_following_status(user_id)
@@ -91,7 +95,10 @@ class ProfileService(Service):
     def get_feed(self, page=1):
         following_ids_subquery = (
             self.session.query(Follower.followed_id.label("followed_id"))
-            .filter(Follower.follower_id == g.user_id)
+            .filter(
+                Follower.follower_id == g.user_id,
+                Follower.status == FollowStatusEnum.accepted,
+            )
             .subquery()
         )
         following_ids = [

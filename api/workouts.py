@@ -1,6 +1,7 @@
 from datetime import datetime
 from flask_classful import FlaskView, route
 from flask import g, request
+from middleware.check_privacy import check_workout_privacy
 from middleware.token_required import token_required
 from services.attendee_service import AttendeeService
 from services.workout_service import WorkoutService
@@ -48,6 +49,7 @@ class WorkoutsView(FlaskView):
 
     @route("/<workout_id>", methods=["GET"])
     @token_required
+    @check_workout_privacy
     def get_workout(self, workout_id):
         service_data = WorkoutService().get_workout(workout_id)
         return service_data, 200
@@ -90,11 +92,12 @@ class WorkoutsView(FlaskView):
         AttendeeService().delete_attendee(workout_id, g.user_id)
         return "", 204
 
-    def serialize_attendee(self, attendee):
-        return {
-            "id": attendee.id,
-            "username": attendee.username,
-            "name": attendee.name,
-            "profile_pic": attendee.profile_pic,
-            "status": attendee.status,
-        }
+    @route("/<workout_id>/report", methods=["POST"])
+    @token_required
+    def report_workout(self, workout_id):
+        """
+        Report a workout as inappropriate.
+        """
+        request_data = request.get_json()
+        WorkoutService().report_workout(workout_id, request_data.get("reason", None))
+        return {"message": "Reported successfully"}, 200

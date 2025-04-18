@@ -12,6 +12,7 @@ from constants.error_constants import (
 from settings import USERS_PER_PAGE
 from db.models.user import User, PrivacySettingEnum
 from db.models.follower import Follower, FollowStatusEnum
+from db.models.user_block import UserBlock
 from services.event_emitter_service import EventEmitterService
 from services.service import Service
 from sqlalchemy import case, and_
@@ -77,7 +78,15 @@ class UserService(Service):
     def follow_user(self, user_id):
         if g.user_id == uuid.UUID(user_id):
             raise BadDataError("cannot follow self")
-        if Follower.query.filter_by(follower_id=g.user_id, followed_id=user_id).first():
+
+        # check if user is blocked
+        if user_id in g.blocked_users:
+            raise NotFoundError
+
+        # check if already following
+        if self.session.get(
+            Follower, ({"follower_id": g.user_id, "followed_id": user_id})
+        ):
             raise ConflictError("already following")
 
         is_public = is_user_public(user_id)
@@ -124,7 +133,6 @@ class UserService(Service):
         return response
 
     def delete_follower(self, follower_id, followed_id):
-        logging.info(f"### Deleting follower {follower_id} from {followed_id}")
         if g.user_id.hex not in [follower_id, followed_id]:
             raise ForbiddenError
         follower = Follower.query.filter_by(
@@ -252,6 +260,8 @@ class UserService(Service):
             else_="no",
         )
 
+        blocked_user_uuids = [uuid.UUID(user_id) for user_id in g.blocked_users]
+
         users_query = (
             self.session.query(User, is_following, follow_status)
             .outerjoin(
@@ -261,8 +271,12 @@ class UserService(Service):
                     Follower.follower_id == g.user_id,
                 ),
             )
-            .filter(User.username.ilike(f"%{query}%"))
+            .filter(
+                User.username.ilike(f"%{query}%"),
+                ~User.id.in_(blocked_user_uuids),
+            )
         )
+
         results = users_query.paginate(page=page, per_page=USERS_PER_PAGE).items
         return results
 
@@ -285,3 +299,74 @@ class UserService(Service):
             follower_id=user_id, status=FollowStatusEnum.accepted
         ).count()
         return num_followings
+
+    def block_user(self, user_id):
+        # block a user, remove follows between the blocker and blocked user
+        if g.user_id == user_id:
+            raise BadDataError("cannot block self")
+
+        # check if already blocked
+        if self.session.get(
+            UserBlock, {"blocker_id": g.user_id, "blocked_id": user_id}
+        ):
+            raise ConflictError("user already blocked")
+
+        new_block = UserBlock(
+            blocker_id=g.user_id,
+            blocked_id=user_id,
+        )
+
+        self.session.add(new_block)
+        self.delete_follower(follower_id=g.user_id.hex, followed_id=user_id)
+        self.delete_follower(follower_id=user_id, followed_id=g.user_id.hex)
+
+        self.session.commit()
+
+        return new_block.to_json()
+
+    def unblock_user(self, user_id):
+        # unblock a user
+        if g.user_id == user_id:
+            raise BadDataError("cannot unblock self")
+
+        block = self.session.get(
+            UserBlock, {"blocker_id": g.user_id, "blocked_id": user_id}
+        )
+        if not block:
+            return
+
+        self.session.delete(block)
+        self.session.commit()
+
+        return
+
+    def list_blocks(self):  # not paginated by default, since this is a small list
+        """
+        get all blocks for the current user
+        """
+        blocks = (
+            self.session.query(UserBlock).filter(UserBlock.blocker_id == g.user_id)
+        ).all()
+
+        return [block.to_json() for block in blocks]
+
+    def list_blocked_by(self):
+        """
+        get all users that have blocked the current user
+        """
+        blocks = (
+            self.session.query(UserBlock).filter(UserBlock.blocked_id == g.user_id)
+        ).all()
+
+        return [block.to_json() for block in blocks]
+
+    def list_blocked_users(self):
+        # list all users that are blocked by the current user
+        # return list of Users.to_quickview()
+        blocked_users = (
+            self.session.query(User)
+            .join(UserBlock, User.id == UserBlock.blocked_id)
+            .filter(UserBlock.blocker_id == g.user_id)
+        ).all()
+
+        return [user.to_quickview() for user in blocked_users] if blocked_users else []

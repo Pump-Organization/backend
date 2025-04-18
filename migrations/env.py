@@ -8,15 +8,18 @@ from alembic import context
 
 from db.db import db
 from db.models import (
-    Workout,
-    User,
-    UserDevice,
-    UserActivityEvent,
-    Follower,
     Attendee,
-    RefreshToken,
-    Like,
     Comment,
+    CustomUserExercise,
+    Follower,
+    Like,
+    RefreshToken,
+    User,
+    UserActivityEvent,
+    UserBlock,
+    UserDevice,
+    Workout,
+    WorkoutReport,
 )
 
 # this is the Alembic Config object, which provides
