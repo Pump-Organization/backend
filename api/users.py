@@ -91,7 +91,7 @@ class UsersView(FlaskView):
     @token_required
     def list_blocked_users(self):
         # list all blocked users
-        service_data = UserService().list_blocks()
+        service_data = UserService().list_blocked_users()
         return service_data, 200
 
     @route("/<user_id>/block", methods=["POST"])

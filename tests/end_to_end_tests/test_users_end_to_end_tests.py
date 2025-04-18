@@ -243,8 +243,10 @@ class TestUsersEndToEndTests:
         assert list_blocked_response.status_code == 200
         assert len(list_blocked_response.json) == 1
         assert list_blocked_response.json[0] == {
-            "blocker_id": test_base_user["base_user"]["id"],
-            "blocked_id": test_base_user["second_user"]["id"],
+            "id": test_base_user["second_user"]["id"],
+            "username": test_base_user["second_user"]["username"],
+            "name": test_base_user["second_user"]["name"],
+            "profile_pic": None,
         }
 
         # verify the follow is removed
