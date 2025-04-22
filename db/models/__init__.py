@@ -10,4 +10,5 @@ from .user_block import UserBlock  # noqa: F401
 from .user_device import UserDevice  # noqa: F401
 from .workout import Workout, WorkoutStatusEnum  # noqa: F401
 from .workout_exercise import WorkoutExercise, WeightUnitsEnum  # noqa: F401
+from .workout_set import WorkoutSet, DistanceUnitEnum, WeightUnitEnum  # noqa: F401
 from .workout_reports import WorkoutReport  # noqa: F401

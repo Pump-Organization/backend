@@ -29,6 +29,7 @@ class Workout(db.Model):
     created_at: str = Column(DateTime, default=dt.datetime.now(dt.timezone.utc))
 
     exercises = db.relationship("WorkoutExercise", back_populates="workout")
+    sets = db.relationship("WorkoutSet", back_populates="workout")
     attendees = db.relationship("Attendee", back_populates="workout")
     likes = db.relationship("Like", back_populates="workout")
     comments = db.relationship("Comment", back_populates="workout")
