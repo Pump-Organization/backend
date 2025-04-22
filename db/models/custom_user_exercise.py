@@ -19,6 +19,7 @@ class ExerciseMuscleGroupEnum(str, enum.Enum):
 
 class ExerciseMetricTypeEnum(str, enum.Enum):
     weight_reps = "weight_reps"
+    weight_duration = "weight_duration"
     duration = "duration"
     time_distance = "time_distance"
     bodyweight_reps = "bodyweight_reps"
