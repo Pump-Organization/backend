@@ -70,4 +70,8 @@ class TestExercisesEndToEndTests:
         )
 
         assert list_exercises_response_after_delete.status_code == 200
-        assert len(list_exercises_response.json) - len(list_exercises_response_after_delete.json) == 1
+        assert (
+            len(list_exercises_response.json)
+            - len(list_exercises_response_after_delete.json)
+            == 1
+        )
