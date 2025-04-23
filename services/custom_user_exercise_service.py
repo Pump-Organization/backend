@@ -1,9 +1,8 @@
-import json
 from constants.error_constants import ForbiddenError, NotFoundError
 from db.models.custom_user_exercise import CustomUserExercise
 from flask import g
-from pathlib import Path
 from services.service import Service
+from settings import SYSTEM_USER_ID
 
 
 class CustomUserExerciseService(Service):
@@ -66,7 +65,11 @@ class CustomUserExerciseService(Service):
 
     def get_all_exercises(self):
         custom_exercises = self.list_custom_exercises()
-        with Path("constants/default_exercises.json").open("r") as f:
-            default_exercises = json.load(f)
+        default_exercises = [
+            exercise.to_json()
+            for exercise in self.session.query(CustomUserExercise)
+            .filter(CustomUserExercise.user_id == SYSTEM_USER_ID)
+            .all()
+        ]
 
         return default_exercises + custom_exercises

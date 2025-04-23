@@ -54,7 +54,6 @@ class CustomUserExercise(db.Model):
     def to_json(self):
         return {
             "id": self.id,
-            "user_id": self.user_id,
             "name": self.name,
             "equipment": self.equipment,
             "muscle_group": self.muscle_group,

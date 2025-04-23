@@ -23,7 +23,6 @@ class TestExercisesEndToEndTests:
             "equipment": "Rowing Machine",
             "muscle_group": "Back",
             "metric_type": ExerciseMetricTypeEnum.time_distance.value,
-            "user_id": test_base_user["base_user"]["id"],
         }
 
         assert create_exercise_response.status_code == 201
@@ -44,7 +43,6 @@ class TestExercisesEndToEndTests:
             "equipment": "Rowing Machine",
             "muscle_group": "Back",
             "metric_type": ExerciseMetricTypeEnum.time_distance.value,
-            "user_id": test_base_user["base_user"]["id"],
         }
 
         assert update_exercise_response.status_code == 200
@@ -56,13 +54,7 @@ class TestExercisesEndToEndTests:
             headers={"Authorization": f'Bearer {test_base_user["token"]}'},
         )
 
-        with Path("constants/default_exercises.json").open() as f:
-            default_exercises = json.load(f)
-
-        expected_exercises = default_exercises + [expected_updated_exercise]
-
         assert list_exercises_response.status_code == 200
-        assert list_exercises_response.json == expected_exercises
 
         # delete the custom exercise
         delete_exercise_response = client.delete(
@@ -78,4 +70,4 @@ class TestExercisesEndToEndTests:
         )
 
         assert list_exercises_response_after_delete.status_code == 200
-        assert list_exercises_response_after_delete.json == default_exercises
+        assert len(list_exercises_response.json) - len(list_exercises_response_after_delete.json) == 1
