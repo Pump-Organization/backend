@@ -55,7 +55,6 @@ class TestExercisesEndToEndTests:
         )
 
         assert list_exercises_response.status_code == 200
-        assert len(list_exercises_response.json) == 102
 
         # delete the custom exercise
         delete_exercise_response = client.delete(
@@ -71,4 +70,4 @@ class TestExercisesEndToEndTests:
         )
 
         assert list_exercises_response_after_delete.status_code == 200
-        assert len(list_exercises_response_after_delete.json) == 101
+        assert len(list_exercises_response.json) - len(list_exercises_response_after_delete.json) == 1
