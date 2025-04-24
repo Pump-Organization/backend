@@ -13,6 +13,12 @@ class Service:
             self.session.commit()
         return instance
 
+    def bulk_add_data(self, instances, commit=True):
+        self.session.add_all(instances)
+        if commit:
+            self.session.commit()
+        return instances
+
     def get_data(self, id):
         instance = self.session.get(self.model, id)
         if not instance:

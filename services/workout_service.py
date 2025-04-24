@@ -7,9 +7,8 @@ from db.models.attendee import Attendee, AttendeeStatusEnum, AttendeeTypeEnum
 from db.models.like import Like
 from db.models.workout import Workout, WorkoutStatusEnum
 from db.models.workout_exercise import WorkoutExercise
-from db.models.workout_reports import (
-    WorkoutReport,
-)  # noqa: F401, for reporting functionality
+from db.models.workout_reports import WorkoutReport
+from db.models.workout_set import WorkoutSet
 from services.service import Service
 from services.attendee_service import AttendeeService
 from constants.error_constants import ForbiddenError, NotFoundError
@@ -46,17 +45,8 @@ class WorkoutService(Service):
         workout_data = self.add_data(new_workout, False)
         self.session.flush()
 
-        # add workout exercises
-        for exercise in data.get("routine", []):
-            exercise_model = WorkoutExercise(
-                workout_id=new_workout.id,
-                exercise_name=exercise.get("exercise_name"),
-                sets=exercise.get("sets"),
-                reps=exercise.get("reps"),
-                weight=exercise.get("weight"),
-                weight_unit=exercise.get("weight_unit"),
-            )
-            self.add_data(exercise_model)
+        # add workout exercise sets
+        self.__add_routine_sets(new_workout.id, data.get("routine", []))
 
         # add organizer and invitees to attendees table
         organizer_data = {
@@ -130,7 +120,7 @@ class WorkoutService(Service):
 
         # handle workout exercises if provided
         if "routine" in data:
-            self.edit_workout_exercises(workout_id, data["routine"])
+            self.__edit_workout_sets(workout_id, data["routine"])
 
         # handle attendee updates
         AttendeeService().batch_create_attendees(
@@ -260,6 +250,38 @@ class WorkoutService(Service):
         return self.update_workout(
             workout_id, {"status": "published", "published_at": datetime.now()}
         )  # noqa E501
+
+    def __edit_workout_sets(self, workout_id, new_routine):
+        # nuke existing sets, then add new ones
+        existing_sets = (
+            self.session.query(WorkoutSet).filter_by(workout_id=workout_id).all()
+        )
+        for existing_set in existing_sets:
+            self.session.delete(existing_set)
+        self.session.commit()
+
+        self.__add_routine_sets(workout_id, new_routine)
+        return
+
+    def __add_routine_sets(self, workout_id, routine):
+        workout_sets = []
+        for exercise in routine:
+            for exercise_set in exercise.get("sets", []):
+                workout_sets.append(
+                    WorkoutSet(
+                        workout_id=workout_id,
+                        exercise_id=exercise.get("exercise_id"),
+                        order=exercise_set.get("order"),
+                        reps=exercise_set.get("reps"),
+                        weight=exercise_set.get("weight"),
+                        duration_seconds=exercise_set.get("duration_seconds"),
+                        weight_unit=exercise_set.get("weight_unit", "lbs"),
+                        distance=exercise_set.get("distance"),
+                        distance_unit=exercise_set.get("distance_unit", "meters"),
+                    )
+                )
+        self.bulk_add_data(workout_sets)
+        return workout_sets
 
     def edit_workout_exercises(self, workout_id, new_routine):
         existing_exercises = {
