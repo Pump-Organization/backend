@@ -8,7 +8,7 @@ from db.models.like import Like
 from db.models.workout import Workout, WorkoutStatusEnum
 from db.models.workout_exercise import WorkoutExercise
 from db.models.workout_reports import WorkoutReport
-from db.models.workout_set import WorkoutSet
+from db.models.workout_set import DistanceUnitEnum, WeightUnitEnum, WorkoutSet
 from services.service import Service
 from services.attendee_service import AttendeeService
 from constants.error_constants import ForbiddenError, NotFoundError
@@ -267,6 +267,16 @@ class WorkoutService(Service):
         workout_sets = []
         for exercise in routine:
             for exercise_set in exercise.get("sets", []):
+                weight_unit = (
+                    exercise_set.get("weight_unit")
+                    if exercise_set.get("weight_unit")
+                    else WeightUnitEnum.lbs
+                )
+                distance_unit = (
+                    exercise_set.get("distance_unit")
+                    if exercise_set.get("distance_unit")
+                    else DistanceUnitEnum.meters
+                )
                 workout_sets.append(
                     WorkoutSet(
                         workout_id=workout_id,
@@ -275,9 +285,9 @@ class WorkoutService(Service):
                         reps=exercise_set.get("reps"),
                         weight=exercise_set.get("weight"),
                         duration_seconds=exercise_set.get("duration_seconds"),
-                        weight_unit=exercise_set.get("weight_unit", "lbs"),
+                        weight_unit=weight_unit,
                         distance=exercise_set.get("distance"),
-                        distance_unit=exercise_set.get("distance_unit", "meters"),
+                        distance_unit=distance_unit,
                     )
                 )
         self.bulk_add_data(workout_sets)
