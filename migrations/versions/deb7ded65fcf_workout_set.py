@@ -1,8 +1,8 @@
 """workout_set
 
-Revision ID: 69ec70663d2e
+Revision ID: deb7ded65fcf
 Revises: 1112b6a07df6
-Create Date: 2025-04-22 04:56:34.336583
+Create Date: 2025-04-28 02:36:49.043955
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "69ec70663d2e"
+revision: str = "deb7ded65fcf"
 down_revision: Union[str, None] = "1112b6a07df6"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -31,12 +31,12 @@ def upgrade() -> None:
         sa.Column("weight", sa.Integer(), nullable=True),
         sa.Column("duration_seconds", sa.Integer(), nullable=True),
         sa.Column(
-            "weight_unit", sa.Enum("kg", "lbs", name="weightunitenum"), nullable=True
+            "weight_unit", sa.Enum("kg", "lbs", name="weightunit"), nullable=True
         ),
         sa.Column("distance", sa.Float(), nullable=True),
         sa.Column(
             "distance_unit",
-            sa.Enum("meters", "kilometers", "miles", "yards", name="distanceunitenum"),
+            sa.Enum("km", "mi", "yd", name="distanceunit"),
             nullable=True,
         ),
         sa.ForeignKeyConstraint(

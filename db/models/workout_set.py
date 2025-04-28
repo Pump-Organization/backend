@@ -6,16 +6,15 @@ from sqlalchemy.types import Enum, UUID
 from db.db import db
 
 
-class WeightUnitEnum(str, enum.Enum):
+class WeightUnit(str, enum.Enum):
     kg = "kg"
     lbs = "lbs"
 
 
-class DistanceUnitEnum(str, enum.Enum):
-    meters = "meters"
-    kilometers = "kilometers"
-    miles = "miles"
-    yards = "yards"
+class DistanceUnit(str, enum.Enum):
+    km = "km"
+    mi = "mi"
+    yd = "yd"
 
 
 class WorkoutSet(db.Model):
@@ -30,9 +29,9 @@ class WorkoutSet(db.Model):
     reps = Column(Integer, nullable=True)
     weight = Column(Integer, nullable=True)
     duration_seconds = Column(Integer, nullable=True)
-    weight_unit = Column(Enum(WeightUnitEnum), nullable=True)
+    weight_unit = Column(Enum(WeightUnit), nullable=True)
     distance = Column(Float, nullable=True)
-    distance_unit = Column(Enum(DistanceUnitEnum), nullable=True)
+    distance_unit = Column(Enum(DistanceUnit), nullable=True)
 
     workout = relationship("Workout", back_populates="sets")
     exercise = relationship("CustomUserExercise")
