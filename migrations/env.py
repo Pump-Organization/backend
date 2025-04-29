@@ -20,6 +20,7 @@ from db.models import (
     UserDevice,
     Workout,
     WorkoutReport,
+    WorkoutSet,
 )
 
 # this is the Alembic Config object, which provides

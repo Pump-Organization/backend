@@ -1,6 +1,7 @@
 import datetime as dt
 import enum
 import uuid
+from collections import defaultdict
 from constants.error_constants import BadDataError
 from sqlalchemy import Column, String, DateTime
 from sqlalchemy.types import UUID
@@ -29,6 +30,7 @@ class Workout(db.Model):
     created_at: str = Column(DateTime, default=dt.datetime.now(dt.timezone.utc))
 
     exercises = db.relationship("WorkoutExercise", back_populates="workout")
+    sets = db.relationship("WorkoutSet", back_populates="workout")
     attendees = db.relationship("Attendee", back_populates="workout")
     likes = db.relationship("Like", back_populates="workout")
     comments = db.relationship("Comment", back_populates="workout")
@@ -78,7 +80,7 @@ class Workout(db.Model):
         }
 
     def to_full(self, num_attendees=3):
-        # include attendees
+        # include attendees and routine
         return {
             "id": self.id,
             "title": self.title,
@@ -89,8 +91,47 @@ class Workout(db.Model):
             "datetime": self.datetime.isoformat(),
             "endtime": self.endtime.isoformat(),
             "status": self.status,
-            "routine": [exercise.to_json() for exercise in self.exercises],
+            "routine": self.__get_routine_from_sets(self.sets),
             "attendees": [
                 attendee.to_json() for attendee in self.attendees[:num_attendees]
             ],
         }
+
+    @staticmethod
+    def __get_routine_from_sets(sets):
+        exercise_groups = defaultdict(list)
+        for s in sets:
+            exercise_groups[s.exercise_id].append(s)
+
+        routine = []
+        for exercise_id, grouped_sets in exercise_groups.items():
+            exercise = grouped_sets[
+                0
+            ].exercise  # Assume all sets share the same exercise
+            routine.append(
+                {
+                    "exercise_id": str(exercise_id),
+                    "name": exercise.name,
+                    "metric_type": exercise.metric_type,
+                    "sets": [
+                        {
+                            "order": s.order,
+                            "reps": s.reps if s.reps else None,
+                            "weight": s.weight if s.weight else None,
+                            "weight_unit": (
+                                s.weight_unit.value if s.weight_unit else None
+                            ),
+                            "duration_seconds": (
+                                s.duration_seconds if s.duration_seconds else None
+                            ),
+                            "distance": s.distance if s.distance else None,
+                            "distance_unit": (
+                                s.distance_unit.value if s.distance_unit else None
+                            ),
+                        }
+                        for s in sorted(grouped_sets, key=lambda s: s.order)
+                    ],
+                }
+            )
+
+        return routine

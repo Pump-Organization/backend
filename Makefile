@@ -47,6 +47,6 @@ help:
 	@echo "  make test      	 Run unit tests and print coverage report"
 	@echo "  make upgrade           Apply the latest Alembic migrations"
 	@echo "  make migration \"msg\"   Create a new Alembic migration with a message"
-	@echo "  make downgrade REVISION=\"rev\"      Downgrade the database to a specific revision"
+	@echo "  make downgrade"      Downgrade the database to the previous revision"
 
 .PHONY: detached down build restart logs migrate makemigration downgrade test help

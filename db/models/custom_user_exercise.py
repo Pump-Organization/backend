@@ -19,6 +19,7 @@ class ExerciseMuscleGroupEnum(str, enum.Enum):
 
 class ExerciseMetricTypeEnum(str, enum.Enum):
     weight_reps = "weight_reps"
+    weight_duration = "weight_duration"
     duration = "duration"
     time_distance = "time_distance"
     bodyweight_reps = "bodyweight_reps"
@@ -36,7 +37,7 @@ class ExerciseEquipmentEnum(str, enum.Enum):
 
 
 class CustomUserExercise(db.Model):
-    __tablename__ = "custom_user_exercises"
+    __tablename__ = "custom_user_exercise"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
@@ -53,7 +54,6 @@ class CustomUserExercise(db.Model):
     def to_json(self):
         return {
             "id": self.id,
-            "user_id": self.user_id,
             "name": self.name,
             "equipment": self.equipment,
             "muscle_group": self.muscle_group,

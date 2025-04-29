@@ -15,3 +15,9 @@ def append_dau(date):
         writer.writerow([date, dau_count])
 
     print(f"Appended DAU for {date}: {dau_count}")
+
+
+# if __name__ == "__main__":
+#     for i in range(1,22):
+#         date = f"2025-04-{i}"
+#         append_dau(date)

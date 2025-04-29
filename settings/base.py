@@ -1,4 +1,5 @@
 import os
+import uuid
 from dotenv import load_dotenv
 
 
@@ -22,6 +23,8 @@ FORGOT_PASSWORD_SECRET = os.getenv("FORGOT_PASSWORD_SECRET")
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 SNS_PLATFORM_APPLICATION_ARN = os.getenv("SNS_PLATFORM_APPLICATION_ARN")
+
+SYSTEM_USER_ID = uuid.UUID("00000000-0000-0000-0000-000000000001")
 
 ####################### DATABASE ############################
 POSTGRES_HOST = "pump-db-host:5432"

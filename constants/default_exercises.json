@@ -599,28 +599,28 @@
     "name": "Farmer's Carry",
     "equipment": "Dumbbell",
     "muscle_group": "Core",
-    "metric_type": "time_distance"
+    "metric_type": "weight_duration"
   },
   {
     "id": "default-suitcase-carry",
     "name": "Suitcase Carry",
     "equipment": "Dumbbell",
     "muscle_group": "Core",
-    "metric_type": "time_distance"
+    "metric_type": "weight_duration"
   },
   {
     "id": "default-front-rack-carry",
     "name": "Front Rack Carry",
     "equipment": "Barbell",
     "muscle_group": "Core",
-    "metric_type": "time_distance"
+    "metric_type": "weight_duration"
   },
   {
     "id": "default-overhead-carry",
     "name": "Overhead Carry",
     "equipment": "Dumbbell",
     "muscle_group": "Core",
-    "metric_type": "time_distance"
+    "metric_type": "weight_duration"
   },
   {
     "id": "default-bird-dog",
