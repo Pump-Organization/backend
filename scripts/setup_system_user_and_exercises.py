@@ -10,12 +10,27 @@ def create_system_user_and_exercises():
     # create the system user
     create_system_user()
 
+    # create the default exercises
+    add_default_exercises()
+
+
+def add_default_exercises():
     # create the system user exercises
     with Path("constants/default_exercises.json").open("r") as f:
         default_exercises = json.load(f)
 
     with DbSession() as session:
         for exercise in default_exercises:
+            # skip if the exercise already exists
+            if (
+                session.query(CustomUserExercise)
+                .filter_by(
+                    name=exercise["name"],
+                )
+                .first()
+            ):
+                continue
+
             custom_exercise = CustomUserExercise(
                 user_id=SYSTEM_USER_ID,
                 name=exercise["name"],

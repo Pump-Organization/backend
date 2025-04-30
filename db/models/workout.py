@@ -3,7 +3,7 @@ import enum
 import uuid
 from collections import defaultdict
 from constants.error_constants import BadDataError
-from sqlalchemy import Column, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.types import UUID
 from sqlalchemy.orm import validates
 from db.db import db
@@ -23,6 +23,7 @@ class Workout(db.Model):
     workout_pic: str = Column(String, nullable=True)  # url
     location: str = Column(String, nullable=True)
     city: str = Column(String, nullable=True)
+    intensity: int = Column(Integer, nullable=True)
     datetime: dt.datetime = Column(DateTime)
     endtime: dt.datetime = Column(DateTime)
     status: str = Column(String, default=WorkoutStatusEnum.pending)
@@ -60,6 +61,12 @@ class Workout(db.Model):
             raise BadDataError
         return description
 
+    @validates("intensity")
+    def validate_workout_intensity(self, key, intensity):
+        if intensity and (intensity < 1 or intensity > 10):
+            raise BadDataError
+        return intensity
+
     @validates("workout_pic")
     def validate_workout_pic_url(self, key, url):
         if url and len(url) > 2083:
@@ -73,6 +80,7 @@ class Workout(db.Model):
             "description": self.description,
             "workout_pic": self.workout_pic,
             "location": self.location,
+            "intensity": self.intensity,
             "city": self.city,
             "datetime": self.datetime.isoformat(),  # serialize datetime to ISO format
             "endtime": self.endtime.isoformat(),
@@ -87,6 +95,7 @@ class Workout(db.Model):
             "description": self.description,
             "workout_pic": self.workout_pic,
             "location": self.location,
+            "intensity": self.intensity,
             "city": self.city,
             "datetime": self.datetime.isoformat(),
             "endtime": self.endtime.isoformat(),

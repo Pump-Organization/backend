@@ -35,6 +35,13 @@
     "metric_type": "weight_reps"
   },
   {
+    "id": "default-chest-fly-cable",
+    "name": "Chest Fly (Cable)",
+    "equipment": "Cable",
+    "muscle_group": "Chest",
+    "metric_type": "weight_reps"
+  },
+  {
     "id": "default-push-up",
     "name": "Push-up",
     "equipment": "Bodyweight",
@@ -46,6 +53,13 @@
     "name": "Cable Crossover",
     "equipment": "Cable",
     "muscle_group": "Chest",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-cable-pull-through",
+    "name": "Cable Pull Through",
+    "equipment": "Cable",
+    "muscle_group": "Back",
     "metric_type": "weight_reps"
   },
   {
@@ -127,14 +141,14 @@
   },
   {
     "id": "default-leg-curl",
-    "name": "Leg Curl",
+    "name": "Hamstring Curl",
     "equipment": "Machine",
     "muscle_group": "Legs",
     "metric_type": "weight_reps"
   },
   {
     "id": "default-leg-extension",
-    "name": "Leg Extension",
+    "name": "Quad Extension",
     "equipment": "Machine",
     "muscle_group": "Legs",
     "metric_type": "weight_reps"
@@ -399,6 +413,34 @@
     "metric_type": "weight_reps"
   },
   {
+    "id": "default-hip-adductor-machine",
+    "name": "Hip Adductor (Machine)",
+    "equipment": "Machine",
+    "muscle_group": "Legs",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-hip-abductor-machine",
+    "name": "Hip Abductor (Machine)",
+    "equipment": "Machine",
+    "muscle_group": "Legs",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-seated-calf-raise",
+    "name": "Seated Calf Raise",
+    "equipment": "Machine",
+    "muscle_group": "Legs",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-side-lunge",
+    "name": "Side Lunge",
+    "equipment": "Bodyweight",
+    "muscle_group": "Legs",
+    "metric_type": "bodyweight_reps"
+  },
+  {
     "id": "default-standing-calf-raise",
     "name": "Standing Calf Raise",
     "equipment": "Bodyweight",
@@ -416,6 +458,13 @@
     "id": "default-rear-delt-fly",
     "name": "Rear Delt Fly",
     "equipment": "Dumbbell",
+    "muscle_group": "Shoulders",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-reverse-fly-machine",
+    "name": "Reverse Fly (Machine)",
+    "equipment": "Machine",
     "muscle_group": "Shoulders",
     "metric_type": "weight_reps"
   },
@@ -458,6 +507,13 @@
     "id": "default-overhead-tricep-extension",
     "name": "Overhead Tricep Extension",
     "equipment": "Dumbbell",
+    "muscle_group": "Arms",
+    "metric_type": "weight_reps"
+  },
+  {
+    "id": "default-tricep-extension-machine",
+    "name": "Tricep Extension (Machine)",
+    "equipment": "Machine",
     "muscle_group": "Arms",
     "metric_type": "weight_reps"
   },
