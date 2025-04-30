@@ -10,6 +10,7 @@ class TestWorkoutsEndToEndTests:
         "description": "I hope you like rowing...",
         "location": "Office Gym",
         "title": "Friday pull day",
+        "intensity": None,
         "workout_pic": None,
         "status": WorkoutStatusEnum.pending.value,
     }
@@ -91,6 +92,7 @@ class TestWorkoutsEndToEndTests:
             "location": "Office Gym",
             "title": "Updated Friday pull day",
             "workout_pic": None,
+            "intensity": None,
             "status": WorkoutStatusEnum.pending.value,
             "routine": [],
             "attendees": [
@@ -191,6 +193,7 @@ class TestWorkoutsEndToEndTests:
             "title": "Updated Friday pull day",
             "workout_pic": None,
             "status": WorkoutStatusEnum.published.value,
+            "intensity": None,
             "routine": [],
             "attendees": [
                 {

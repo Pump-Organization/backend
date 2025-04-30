@@ -38,6 +38,7 @@ class WorkoutService(Service):
             description=data.get("description"),
             workout_pic=data.get("workout_pic"),
             location=data.get("location"),
+            intensity=data.get("intensity"),
             city=data.get("city"),
             datetime=parsed_datetime,
             endtime=parsed_endtime,
