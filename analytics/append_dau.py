@@ -18,6 +18,6 @@ def append_dau(date):
 
 
 if __name__ == "__main__":
-    for i in range(22,28):
+    for i in range(22, 28):
         date = f"2025-04-{i}"
         append_dau(date)
