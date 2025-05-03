@@ -4,6 +4,7 @@ from constants.error_constants import ForbiddenError
 from middleware.check_privacy import check_privacy
 from middleware.token_required import token_required
 from middleware.with_blocked_users_context import with_blocked_users_context
+from schemas.users import UserCreateRequest
 from services.user_service import UserService
 
 
@@ -13,7 +14,8 @@ class UsersView(FlaskView):
     @route("", methods=["POST"])
     def create_user(self):
         request_data = request.get_json()
-        service_data = UserService().create_user(request_data)
+        validated_data = UserCreateRequest(**request_data)
+        service_data = UserService().create_user(validated_data.model_dump())
         return service_data.to_json(), 200
 
     @route("/<user_id>", methods=["GET"])
