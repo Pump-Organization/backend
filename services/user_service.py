@@ -15,7 +15,7 @@ from db.models.follower import Follower, FollowStatusEnum
 from db.models.user_block import UserBlock
 from services.event_emitter_service import EventEmitterService
 from services.service import Service
-from sqlalchemy import case, and_
+from sqlalchemy import case, and_, func
 from utils.user_utils import is_user_public
 
 
@@ -370,3 +370,23 @@ class UserService(Service):
         ).all()
 
         return [user.to_quickview() for user in blocked_users] if blocked_users else []
+
+    def get_follow_recommendations(self):
+        # To be improved later
+        # get 5 random users that are not current user, followed, or blocking/blocked
+        recommendations = (
+            self.session.query(User)
+            .filter(
+                User.id != g.user_id,
+                ~User.id.in_(g.blocked_users),
+                ~User.id.in_(
+                    self.session.query(Follower.followed_id).filter(
+                        Follower.follower_id == g.user_id
+                    )
+                ),
+            )
+            .order_by(func.random())
+            .limit(5)
+        ).all()
+
+        return [user.to_quickview() for user in recommendations]
