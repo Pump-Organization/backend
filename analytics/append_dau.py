@@ -18,6 +18,15 @@ def append_dau(date):
 
 
 if __name__ == "__main__":
-    for i in range(22, 28):
-        date = f"2025-04-{i}"
-        append_dau(date)
+    from datetime import datetime, timedelta
+
+    # Define start and end dates
+    start_date = datetime(2025, 4, 28)
+    end_date = datetime(2025, 5, 3)
+    
+    # Generate all dates in the range
+    current_date = start_date
+    while current_date <= end_date:
+        date_str = current_date.strftime("%Y-%m-%d")
+        append_dau(date_str)
+        current_date += timedelta(days=1)
