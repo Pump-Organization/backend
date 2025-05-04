@@ -107,3 +107,11 @@ class UsersView(FlaskView):
         # unblock a user
         UserService().unblock_user(user_id)
         return "", 204
+
+    @route("/recommendations", methods=["GET"])
+    @token_required
+    @with_blocked_users_context
+    def get_recommendations(self):
+        # get follow recommendations
+        service_data = UserService().get_follow_recommendations()
+        return service_data, 200
