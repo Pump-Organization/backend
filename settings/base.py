@@ -8,7 +8,7 @@ if env == "local":
     load_dotenv()
 
 FRONTEND_URL = "https://develop.d2xo9p5soqfkmt.amplifyapp.com"
-NO_REPLY_EMAIL = "maxsich6@gmail.com"
+NO_REPLY_EMAIL = "no-reply@thepumpapp.com"
 AWS_REGION = "us-west-1"
 MEDIA_BUCKET_NAME = f"pump-media-{env}"
 COMMENTS_PER_PAGE = 5
