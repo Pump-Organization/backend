@@ -24,8 +24,8 @@ class Workout(db.Model):
     location: str = Column(String, nullable=True)
     city: str = Column(String, nullable=True)
     intensity: int = Column(Integer, nullable=True)
-    datetime: dt.datetime = Column(DateTime)
-    endtime: dt.datetime = Column(DateTime)
+    datetime: dt.datetime = Column(DateTime, nullable=False)
+    endtime: dt.datetime = Column(DateTime, nullable=True)
     status: str = Column(String, default=WorkoutStatusEnum.pending)
     published_at: dt.datetime = Column(DateTime, nullable=True)
     created_at: str = Column(DateTime, default=dt.datetime.now(dt.timezone.utc))
@@ -83,7 +83,6 @@ class Workout(db.Model):
             "intensity": self.intensity,
             "city": self.city,
             "datetime": self.datetime.isoformat(),  # serialize datetime to ISO format
-            "endtime": self.endtime.isoformat(),
             "status": self.status,
         }
 
@@ -98,7 +97,6 @@ class Workout(db.Model):
             "intensity": self.intensity,
             "city": self.city,
             "datetime": self.datetime.isoformat(),
-            "endtime": self.endtime.isoformat(),
             "status": self.status,
             "routine": self.__get_routine_from_sets(self.sets),
             "attendees": [

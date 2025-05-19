@@ -28,9 +28,6 @@ class WorkoutService(Service):
         parsed_datetime = datetime.strptime(
             data["datetime"], settings.DATETIME_REPRESENTATION
         )
-        parsed_endtime = datetime.strptime(
-            data["endtime"], settings.DATETIME_REPRESENTATION
-        )
 
         # create workout model and flush to get id
         new_workout = Workout(
@@ -41,7 +38,6 @@ class WorkoutService(Service):
             intensity=data.get("intensity"),
             city=data.get("city"),
             datetime=parsed_datetime,
-            endtime=parsed_endtime,
         )
         workout_data = self.add_data(new_workout, False)
         self.session.flush()
@@ -179,7 +175,7 @@ class WorkoutService(Service):
         workouts = (
             self.session.query(Workout)
             .join(Attendee, Attendee.workout_id == Workout.id)
-            .filter(Workout.endtime < datetime.now())
+            .filter(Workout.datetime < datetime.now())
             .filter(Attendee.user_id == g.user_id)
             .filter(Attendee.attendee_type == AttendeeTypeEnum.organizer)
             .filter(Workout.status == WorkoutStatusEnum.pending)
