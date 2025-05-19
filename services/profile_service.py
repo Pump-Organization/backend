@@ -53,7 +53,7 @@ class ProfileService(Service):
             .filter(
                 Attendee.user_id == user_id,
                 Attendee.status == AttendeeStatusEnum.accepted,
-                Workout.endtime < now,
+                Workout.datetime < now,
             )
             .options(joinedload(Workout.attendees).joinedload(Attendee.user))
             .order_by(Workout.datetime.desc(), Workout.id)
@@ -115,7 +115,7 @@ class ProfileService(Service):
                 and_(
                     Attendee.user_id.in_(following_ids),
                     Attendee.status == AttendeeStatusEnum.accepted,
-                    Workout.endtime < current_time,
+                    Workout.datetime < current_time,
                 )
             )
             .options(joinedload(Workout.attendees).joinedload(Attendee.user))

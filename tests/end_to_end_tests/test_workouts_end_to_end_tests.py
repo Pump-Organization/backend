@@ -6,7 +6,6 @@ class TestWorkoutsEndToEndTests:
     expected_workout = {
         "city": "San Francisco",
         "datetime": "2024-08-30T08:00:00",
-        "endtime": "2024-08-30T09:00:00",
         "description": "I hope you like rowing...",
         "location": "Office Gym",
         "title": "Friday pull day",
@@ -21,7 +20,6 @@ class TestWorkoutsEndToEndTests:
             json={
                 "city": "San Francisco",
                 "datetime": "08/30/24 08:00",
-                "endtime": "08/30/24 09:00",
                 "description": "I hope you like rowing...",
                 "location": "Office Gym",
                 "title": "Friday pull day",
@@ -73,7 +71,6 @@ class TestWorkoutsEndToEndTests:
         updated_workout = {
             "city": "San Francisco",
             "datetime": "08/30/24 08:30",
-            "endtime": "08/30/24 09:30",
             "description": "I hope you like rowing...",
             "location": "Office Gym",
             "title": "Updated Friday pull day",
@@ -87,7 +84,6 @@ class TestWorkoutsEndToEndTests:
             "id": self.expected_workout["id"],
             "city": "San Francisco",
             "datetime": "2024-08-30T08:30:00",
-            "endtime": "2024-08-30T09:30:00",
             "description": "I hope you like rowing...",
             "location": "Office Gym",
             "title": "Updated Friday pull day",
@@ -187,7 +183,6 @@ class TestWorkoutsEndToEndTests:
             "id": self.expected_workout["id"],
             "city": "San Francisco",
             "datetime": "2024-08-30T08:30:00",
-            "endtime": "2024-08-30T09:30:00",
             "description": "I hope you like rowing...",
             "location": "Office Gym",
             "title": "Updated Friday pull day",

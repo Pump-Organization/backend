@@ -23,7 +23,7 @@ if __name__ == "__main__":
     # Define start and end dates
     start_date = datetime(2025, 4, 28)
     end_date = datetime(2025, 5, 3)
-    
+
     # Generate all dates in the range
     current_date = start_date
     while current_date <= end_date:
