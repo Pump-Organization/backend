@@ -9,6 +9,7 @@ from db.models.workout import Workout, WorkoutStatusEnum
 from db.models.workout_exercise import WorkoutExercise
 from db.models.workout_reports import WorkoutReport
 from db.models.workout_set import DistanceUnit, WeightUnit, WorkoutSet
+from difflib import get_close_matches
 from services.service import Service
 from services.attendee_service import AttendeeService
 from constants.error_constants import ForbiddenError, NotFoundError
@@ -344,3 +345,48 @@ class WorkoutService(Service):
             raise e
 
         return
+
+    def suggest_routine(self, data):
+        """
+        Suggest a workout routine based on draft data + past workouts.
+        """
+        workout_title = data.get("title")
+        last_workouts = self.get_last_n_workouts(5)
+
+        possible_match = get_close_matches(
+            workout_title,
+            [workout["title"] for workout in last_workouts],
+            n=1,
+            cutoff=0.6,
+        )
+        if possible_match:
+            previous_similar_workout = next(
+                workout
+                for workout in last_workouts
+                if workout["title"] == possible_match[0]
+            )
+            suggested_routine = previous_similar_workout.get("routine", [])
+        else:
+            suggested_routine = []
+
+        if not suggested_routine:
+            # check for extra word
+            title_lower = workout_title.lower()
+            for workout in last_workouts:
+                if title_lower in workout.get("title").lower() or workout.get("title").lower() in title_lower:  # fmt: skip
+                    suggested_routine = workout.get("routine")
+                    break
+
+        return suggested_routine
+
+    def get_last_n_workouts(self, n):
+        workouts = (
+            self.session.query(Workout)
+            .join(Attendee, Attendee.workout_id == Workout.id)
+            .filter(Attendee.user_id == g.user_id)
+            .order_by(Workout.datetime.desc())
+            .limit(n)
+            .all()
+        )
+
+        return [workout.to_full() for workout in workouts]
