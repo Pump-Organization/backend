@@ -103,7 +103,6 @@ def test_base_workout(client, test_base_user):
     test_workout = {
         "city": "San Francisco",
         "datetime": "08/30/24 08:00",
-        "endtime": "08/30/24 09:00",
         "description": "Test",
         "location": "Test",
         "title": "Base Test",

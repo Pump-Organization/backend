@@ -39,6 +39,14 @@ class WorkoutsView(FlaskView):
         )
         return service_data, 200
 
+    @route("/suggestion", methods=["POST"])
+    @token_required
+    def suggest_workout(self):
+        request_data = request.get_json()
+        request_data["organizer_id"] = g.user_id
+        service_data = WorkoutService().suggest_routine(request_data)
+        return service_data, 200
+
     @route("", methods=["POST"])
     @token_required
     def create_workout(self):
