@@ -119,6 +119,7 @@ class Workout(db.Model):
                 {
                     "exercise_id": str(exercise_id),
                     "name": exercise.name,
+                    "muscle_group": exercise.muscle_group,
                     "metric_type": exercise.metric_type,
                     "sets": [
                         {
