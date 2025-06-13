@@ -6,6 +6,7 @@ from flask import Flask
 from flask_cors import CORS
 from api.users import UsersView
 from api.workouts import WorkoutsView
+from api.workout_analytics import WorkoutAnalyticsView
 from api.attendees import AttendeesView
 from api.comments import CommentsView
 from api.custom_exercises import CustomExercisesView, ExercisesView
@@ -46,6 +47,7 @@ db.init_app(app)
 #################################### REGISTER VIEWS ##########################################
 UsersView.register(app)
 WorkoutsView.register(app)
+WorkoutAnalyticsView.register(app)
 AttendeesView.register(app)
 ProfilesView.register(app)
 LikesView.register(app)

@@ -15,7 +15,7 @@ from services.attendee_service import AttendeeService
 from constants.error_constants import ForbiddenError, NotFoundError
 from utils.comment_utils import get_num_comments
 from utils.like_utils import get_num_likes
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import g
 from sqlalchemy.orm import joinedload
 
@@ -161,15 +161,20 @@ class WorkoutService(Service):
 
         return
 
-    def get_num_workouts(self, user_id):
-        num_workouts = (
-            self.session.query(Attendee.workout_id)
+    def get_num_workouts(self, user_id, timeframe=None):
+        query = (
+            self.session.query(Workout.id)
+            .join(Attendee, Attendee.workout_id == Workout.id)
             .filter(
                 Attendee.user_id == user_id,
                 Attendee.status == AttendeeStatusEnum.accepted,
             )
-            .count()
         )
+
+        if timeframe:
+            query = query.filter(Workout.datetime >= timeframe)
+
+        num_workouts = query.distinct().count()
         return num_workouts
 
     def get_pending_workouts(self, page=1):
@@ -351,7 +356,7 @@ class WorkoutService(Service):
         Suggest a workout routine based on draft data + past workouts.
         """
         workout_title = data.get("title")
-        last_workouts = self.get_last_n_workouts(5)
+        last_workouts = self._get_last_n_workouts(5)
 
         possible_match = get_close_matches(
             workout_title,
@@ -379,7 +384,7 @@ class WorkoutService(Service):
 
         return suggested_routine
 
-    def get_last_n_workouts(self, n):
+    def _get_last_n_workouts(self, n):
         workouts = (
             self.session.query(Workout)
             .join(Attendee, Attendee.workout_id == Workout.id)
@@ -390,3 +395,132 @@ class WorkoutService(Service):
         )
 
         return [workout.to_full() for workout in workouts]
+
+    def _get_monthly_workout_dates(self, month, year):
+        """
+        Get all user workouts for a specific month and year.
+        """
+        start_date = datetime(year, month, 1)
+        if month == 12:
+            end_date = datetime(year + 1, 1, 1)
+        else:
+            end_date = datetime(year, month + 1, 1)
+
+        workouts = (
+            self.session.query(Workout)
+            .join(Attendee, Attendee.workout_id == Workout.id)
+            .filter(Attendee.user_id == g.user_id)
+            .filter(Attendee.status == AttendeeStatusEnum.accepted)
+            .filter(Workout.datetime >= start_date, Workout.datetime < end_date)
+            .all()
+        )
+
+        return [workout.datetime.day for workout in workouts]
+
+    def _get_muscle_group_distribution(self, start_date, end_date):
+        """
+        Get the distribution of muscle groups worked out by the user in a given date range.
+        """
+        workouts = (
+            self.session.query(Workout)
+            .join(Attendee, Attendee.workout_id == Workout.id)
+            .filter(
+                Attendee.user_id == g.user_id,
+                Attendee.status == AttendeeStatusEnum.accepted,
+                Workout.datetime >= start_date,
+                Workout.datetime < end_date,
+            )
+            .all()
+        )
+
+        muscle_group_distribution = {}
+        for workout in workouts:
+            for workout_set in workout.sets:
+                exercise = workout_set.exercise
+                muscle_group = exercise.muscle_group
+                if muscle_group:
+                    if muscle_group not in muscle_group_distribution:
+                        muscle_group_distribution[muscle_group] = 0
+                    muscle_group_distribution[muscle_group] += 1
+
+        return muscle_group_distribution
+
+    def _get_workout_intensity_distribution(self, start_date, end_date):
+        """
+        Get the distribution of workout intensities for the user in a given date range.
+        """
+        workouts = (
+            self.session.query(Workout)
+            .join(Attendee, Attendee.workout_id == Workout.id)
+            .filter(
+                Attendee.user_id == g.user_id,
+                Attendee.status == AttendeeStatusEnum.accepted,
+                Workout.datetime >= start_date,
+                Workout.datetime < end_date,
+            )
+            .all()
+        )
+
+        intensity_distribution = {}
+        for workout in workouts:
+            intensity = workout.intensity
+            if intensity is not None:
+                if intensity not in intensity_distribution:
+                    intensity_distribution[intensity] = 0
+                intensity_distribution[intensity] += 1
+
+        return intensity_distribution
+
+    def get_workout_analytics(self):
+        """
+        Get workout analytics for the user.
+        """
+        user_id = g.user_id
+
+        return {
+            "workout_counts": {
+                "total": self.get_num_workouts(user_id),
+                "7_days": self.get_num_workouts(
+                    user_id, datetime.now() - timedelta(days=7)
+                ),
+                "30_days": self.get_num_workouts(
+                    user_id, datetime.now() - timedelta(days=30)
+                ),
+                "90_days": self.get_num_workouts(
+                    user_id, datetime.now() - timedelta(days=90)
+                ),
+            },
+            "monthly_workout_dates": {
+                f"{datetime.now().month}-{datetime.now().year}": self._get_monthly_workout_dates(
+                    datetime.now().month, datetime.now().year
+                )
+            },
+            "muscle_group_distributions": {
+                "7_days": self._get_muscle_group_distribution(
+                    datetime.now() - timedelta(days=7), datetime.now()
+                ),
+                "30_days": self._get_muscle_group_distribution(
+                    datetime.now() - timedelta(days=30), datetime.now()
+                ),
+                "90_days": self._get_muscle_group_distribution(
+                    datetime.now() - timedelta(days=90), datetime.now()
+                ),
+                "all_time": self._get_muscle_group_distribution(
+                    datetime.min, datetime.now()
+                ),
+            },
+            "workout_intensity_distributions": {
+                "7_days": self._get_workout_intensity_distribution(
+                    datetime.now() - timedelta(days=7), datetime.now()
+                ),
+                "30_days": self._get_workout_intensity_distribution(
+                    datetime.now() - timedelta(days=30), datetime.now()
+                ),
+                "90_days": self._get_workout_intensity_distribution(
+                    datetime.now() - timedelta(days=90), datetime.now()
+                ),
+                "all_time": self._get_workout_intensity_distribution(
+                    datetime.min, datetime.now()
+                ),
+            },
+        }
