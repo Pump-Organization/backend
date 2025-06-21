@@ -32,7 +32,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 cors_resources = {
-    "/login/reset-password": {
+    "/login/forgot-password": {
         "origins": settings.FRONTEND_URL,
     }
 }
