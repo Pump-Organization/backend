@@ -477,6 +477,27 @@ class WorkoutService(Service):
         """
         user_id = g.user_id
 
+        # generate monthly workout dates from January 2025 to now
+        monthly_workout_dates = {}
+        current_date = datetime.now()
+        start_year = 2024
+        start_month = 12
+
+        year = start_year
+        month = start_month
+
+        while year < current_date.year or (
+            year == current_date.year and month <= current_date.month
+        ):
+            monthly_workout_dates[f"{month}-{year}"] = self._get_monthly_workout_dates(
+                month, year
+            )
+
+            month += 1
+            if month > 12:
+                month = 1
+                year += 1
+
         return {
             "workout_counts": {
                 "total": self.get_num_workouts(user_id),
@@ -490,11 +511,7 @@ class WorkoutService(Service):
                     user_id, datetime.now() - timedelta(days=90)
                 ),
             },
-            "monthly_workout_dates": {
-                f"{datetime.now().month}-{datetime.now().year}": self._get_monthly_workout_dates(
-                    datetime.now().month, datetime.now().year
-                )
-            },
+            "monthly_workout_dates": monthly_workout_dates,
             "muscle_group_distributions": {
                 "7_days": self._get_muscle_group_distribution(
                     datetime.now() - timedelta(days=7), datetime.now()
