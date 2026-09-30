@@ -5,9 +5,9 @@ RUN apk update && apk add --no-cache postgresql-dev gcc musl-dev libffi-dev
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY requirements.txt requirements-dev.txt .
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements-dev.txt
 
 COPY . .
 

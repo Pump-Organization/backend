@@ -1,3 +1,4 @@
+.DS_Store
 .coverage
 .env
 .env.development
@@ -7,9 +8,13 @@
 .serverless
 node_modules/
 venv/
+.venv/
 __pycache__/
 infrastructure/terraform.tfvars
 *.tfstate
 *.tfstate.backup
 **/.terraform/*
 **/.terragrunt-cache/*
+.vercel
+.env*
+gitleaks.json
